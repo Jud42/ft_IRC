@@ -12,8 +12,7 @@ Recherche d'un client adequoit
 ```
 sudo apt install irssi
 ```
-
-    - https://datatracker.ietf.org/doc/html/rfc1459
+  - https://datatracker.ietf.org/doc/html/rfc1459
     
     
     RFC2810
