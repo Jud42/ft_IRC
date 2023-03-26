@@ -1,10 +1,17 @@
 irc.geeknode.org port 6697 avec TLS
 irc.geeknode.org port 6667 sans chiffrement
 
-/list
---> 
+/connect OFTC
 
-localhost 6667
+/join #debian
+
+/quit
+
+
+
+---
+
+/connect localhost 6667
 
         451     ERR_NOTREGISTERED
                         ":You have not registered"
