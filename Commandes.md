@@ -1,6 +1,8 @@
 irc.geeknode.org port 6697 avec TLS
 irc.geeknode.org port 6667 sans chiffrement
 
+irssi
+
 /connect OFTC
 
 /join #debian
