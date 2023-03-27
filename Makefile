@@ -1,23 +1,25 @@
 NAME	=	ircserv
 # sources --------------------------------------------------
-SRCD	=	/
-SRCS	=	$(SRCD)/main.cpp 
+SRCD	=	./srcs
+SRCS	=	$(SRCD)/main.cpp
+SRCS	+=	$(SRCD)/server.cpp 
+
 # sources --------------------------------------------------
 
 UNAME := $(shell uname -s)
 
 ifeq ($(UNAME), Darwin)
-CC		=	g++-12
+CC	=	g++-12
 CFLAGS	=	-Wall
 CFLAGS	+=	-Wextra
 CFLAGS	+=	-Werror
-CFALGS	+=  -Wfatal-errors
+CFALGS	+=  	-Wfatal-errors
 CFLAGS	+=	-g
 CFLAGS	+=	-std=c++98
 endif
 
 ifeq ($(UNAME), Linux)
-CC		=	g++
+CC	=	g++
 CFLAGS	=	-Wall
 CFLAGS	+=	-Wextra
 CFLAGS	+=	-Werror
@@ -31,7 +33,7 @@ OFLAGS	=	-fsanitize=address
 OBJD	=	objs
 OBJS	=	$(addprefix $(OBJD)/, $(notdir $(SRCS:.cpp=.o)))
 
-RM		=	rm -rf
+RM	=	rm -rf
 
 all : $(NAME)
 
@@ -40,10 +42,10 @@ $(NAME):	$(OBJS)
 	@$(CC) $(OBJS) $(OFLAGS) $(CLIB) -o $(NAME)
 	@printf "$(GREEN)---> $(NAME) is ready$(DEFAULT)\n"
 
-$(OBJD)/%.o : %.cpp | $(OBJD)
+$(OBJD)/%.o : $(SRCD)/%.cpp | $(OBJD)
 	@printf "$(YELLOW)----------------------------------------- $<\n"
 	@printf "$(YELLOW)Compiling $(DEFAULT)$<\n"
-	@$(CC) $(CFLAGS) -I$(SRCD) -o $@ -c $<
+	@$(CC) $(CFLAGS) -I $(SRCD) -o $@ -c $<
 
 $(OBJD) :
 	@mkdir -p $(OBJD)
