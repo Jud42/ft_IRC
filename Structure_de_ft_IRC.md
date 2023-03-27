@@ -12,10 +12,12 @@ Fonction server
   Gestion des messages recus en entree
   
     Parsing du message
+  
   ```
       /say
       /msg
   ```
+  
     Action selon la commande
   
   Emission de messages en sortie pour le channel
