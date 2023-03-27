@@ -18,11 +18,11 @@ Parsing du message
       /msg
       ```
   
-# Action selon la commande
+### Action selon la commande
   
 ## Emission de messages en sortie pour le channel
   
-#  Emission de messages en sortie personnel
+###  Emission de messages en sortie personnel
   
 
 
