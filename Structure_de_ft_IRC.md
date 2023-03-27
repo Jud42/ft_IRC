@@ -1,6 +1,6 @@
 Structure
 
-- irc.config
+- irc.config (definir si necessaire pour quel contenu)
 - ./ircserv <PORT> <PASSWORD>
 
 Controle des parametres d'entree (p. ex. port 6667 et password)
@@ -14,8 +14,8 @@ Parse du fichier de config si besoin.
 Parsing du message
   
       ```
-      /say
-      /msg
+      /say Hello
+      /msg 
       ```
   
 ### Action selon la commande
