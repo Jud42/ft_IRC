@@ -13,10 +13,10 @@ Fonction server
   
     Parsing du message
   
-  ```
+      ```
       /say
       /msg
-  ```
+      ```
   
     Action selon la commande
   
