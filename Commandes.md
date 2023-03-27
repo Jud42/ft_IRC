@@ -7,6 +7,10 @@ irssi
 
 /join #debian
 
+/say <mon message>
+        
+/bye
+        
 /quit
 
 
