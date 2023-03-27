@@ -29,3 +29,7 @@ irssi
                   /set nick
                   
                   
+https://github.com/Ccommiss/ft_irc
+        
+https://github.com/clbouche/ft_irc
+        
