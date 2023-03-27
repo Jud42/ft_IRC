@@ -1,9 +1,23 @@
-Structure des fonctions
+Structure
 
-Parse des parametres d'entree (p. ex. port 6667 et password)
+- irc.config
+- ./ircserv <PORT> <PASSWORD>
 
-Parse du fichier de config
+Controle des parametres d'entree (p. ex. port 6667 et password)
 
-Gestion des erreurs
+Parse du fichier de config si besoin.
+  
+Fonction server
+
+  Gestion des messages recus en entree
+    Parsing du message
+      /say
+      /msg
+    Action selon la commande
+  Emission de messages en sortie pour le channel
+  Emission de messages en sortie personnel
+  
+
+
 
 
