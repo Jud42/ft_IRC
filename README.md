@@ -24,3 +24,6 @@ sudo apt install irssi
 
 # Autre project similaire de server irc
   - https://www.cs.cmu.edu/~srini/15-441/S10/project1/pj1_description.pdf
+
+# Socket
+ - https://www.tutorialspoint.com/unix_sockets/socket_core_functions.htm

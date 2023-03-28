@@ -2,7 +2,8 @@ NAME	=	ircserv
 # sources --------------------------------------------------
 SRCD	=	./srcs
 SRCS	=	$(SRCD)/main.cpp
-SRCS	+=	$(SRCD)/Server.cpp 
+SRCS	+=	$(SRCD)/ConfigFile.cpp
+SRCS	+=	$(SRCD)/Server.cpp
 
 # sources --------------------------------------------------
 
