@@ -265,7 +265,14 @@ Sources :
 
 # signal
 
+```#include <csignal>```
 
+Specifies a way to handle the signals with the signal number specified by sig.
+
+Sources :
+  - https://cplusplus.com/reference/csignal/signal/
+  - https://en.cppreference.com/w/cpp/utility/program/signal
+  - https://www.enseignement.polytechnique.fr/informatique/INF478/docs/Cpp/en/cpp/utility/program/signal.html
 
 # socket
 
@@ -274,11 +281,25 @@ Specifies a socket that was created with socket(), has been bound to an address 
 
 ![image](https://user-images.githubusercontent.com/83389924/228445722-a093b09a-b70a-4b08-be6e-116692a3ad75.png)
 
-Sources: 
+Sources : 
 
   - https://www.geeksforgeeks.org/socket-programming-cc/
   - https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/?ref=lbp
+  
+  Voir egalement les documents dans README.md sous Socket
 
 
 # recv
+
+```#include <sys/types.h>```
+```#include <sys/socket.h>```
+
+The recv() call is normally used only on a connected socket (see connect(2)) and is identical to recvfrom() with a NULL src_addr argument.
+
+The recvfrom() and recvmsg() calls are used to receive messages from a socket, and may be used to receive data on a socket whether or not it is connection-oriented. 
+
+Sources :
+  - https://linux.die.net/man/2/recv
+
+
 
