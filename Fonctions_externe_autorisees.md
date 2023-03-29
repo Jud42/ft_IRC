@@ -2,7 +2,7 @@ Tout ce qui respecte la norme C++ 98.
 
 # accept
 
-```#include <sys/socket.h>
+```#include <sys/socket.h>```
 
 The accept() function shall extract the first connection on the queue of pending connections, create a new socket with the same socket type protocol and address family as the specified socket, and allocate a new file descriptor for that socket. 
 
@@ -12,7 +12,7 @@ Sources :
 
 # bind
 
-```#include <functional>
+```#include <functional>```
 
 Returns a function object based on fn, but with its arguments bound to args.
 
@@ -25,7 +25,7 @@ Sources :
 
 # connect
 
-```#include <sys/socket.h>
+```#include <sys/socket.h>```
   
 More dedicated to the client side
 
