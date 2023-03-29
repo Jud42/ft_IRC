@@ -30,15 +30,15 @@ The connect() function shall attempt to make a connection on a socket. The funct
 
 socket
   
-    - Specifies the file descriptor associated with the socket. 
+  - Specifies the file descriptor associated with the socket. 
   
 address
   
-    - Points to a sockaddr structure containing the peer address. The length and format of the address depend on the address family of the socket. 
+  - Points to a sockaddr structure containing the peer address. The length and format of the address depend on the address family of the socket. 
   
 address_len
   
-    - Specifies the length of the sockaddr structure pointed to by the address argument.
+  - Specifies the length of the sockaddr structure pointed to by the address argument.
   
 Sources : 
   - https://linux.die.net/man/3/connect
