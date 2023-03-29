@@ -48,6 +48,24 @@ Sources :
 
 # fcntl
 
+```#include <unistd.h>
+
+#include <fcntl.h>```
+
+The operating characteristics of sockets can be controlled with the fcntl() call. The operations to be controlled are determined by cmd. The arg parameter is a variable with a meaning that depends on the value of the cmd parameter.
+
+Parameter
+  - Description
+socket
+  - The socket descriptor.
+cmd
+  - The command to perform.
+arg
+  - The data associated with cmd. 
+
+Sources :
+  - https://www.ibm.com/docs/en/zvse/6.2?topic=SSB27H_6.2.0/fa2ti_call_fcntl.htm
+
 # fstat
 
 # freeaddrinfo
