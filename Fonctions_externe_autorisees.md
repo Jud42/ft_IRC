@@ -48,11 +48,9 @@ Sources :
 
 # fcntl
 
-```
-#include <unistd.h>
+``` #include <unistd.h> ```
 
-#include <fcntl.h>
-```
+``` #include <fcntl.h> ```
 
 The operating characteristics of sockets can be controlled with the fcntl() call. The operations to be controlled are determined by cmd. The arg parameter is a variable with a meaning that depends on the value of the cmd parameter.
 
