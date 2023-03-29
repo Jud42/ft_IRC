@@ -1,26 +1,28 @@
-NAME	=	ircserv
+TARGET				:= ircserv
+BUILD				:=
+
 # sources --------------------------------------------------
-SRCD	=	./srcs
-SRCS	=	$(SRCD)/main.cpp
-SRCS	+=	$(SRCD)/ConfigFile.cpp
-SRCS	+=	$(SRCD)/Server.cpp
+SOURCES		+= \
+srcs/main.cpp \
+srcs/ConfigFile.cpp \
+srcs/Server/Server.cpp 
 
 # sources --------------------------------------------------
 
 UNAME := $(shell uname -s)
 
 ifeq ($(UNAME), Darwin)
-CC	=	g++-12
+CXX	=	g++-12
 CFLAGS	=	-Wall
 CFLAGS	+=	-Wextra
 CFLAGS	+=	-Werror
-CFALGS	+=  	-Wfatal-errors
+CFALGS	+=  -Wfatal-errors
 CFLAGS	+=	-g
 CFLAGS	+=	-std=c++98
 endif
 
 ifeq ($(UNAME), Linux)
-CC	=	g++
+CXX	=	g++
 CFLAGS	=	-Wall
 CFLAGS	+=	-Wextra
 CFLAGS	+=	-Werror
@@ -29,40 +31,98 @@ CFLAGS	+=	-std=c++98
 CFLAGS	+=	-lstdc++
 endif
 
-OFLAGS	=	-fsanitize=address
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR				:= srcs
+INCDIR				:= includes
+BUILDDIR			:= objs
+TARGETDIR			:= ./
+SRCEXT				:= cpp
+DEPEXT				:= d
+OBJEXT				:= o
 
-OBJD	=	objs
-OBJS	=	$(addprefix $(OBJD)/, $(notdir $(SRCS:.cpp=.o)))
+OBJECTS				:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+OBJECTS_BONUS		:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_BONUS:.$(SRCEXT)=.$(OBJEXT)))
 
-RM	=	rm -rf
+#Flags, Libraries and Includes
+cflags.release		:= -Wall -Werror -Wextra #-DDEBUG -DDEBUG_SV -DDEBUG_US
+cflags.valgrind		:= -Wall -Werror -Wextra -DDEBUG -DDEBUG_SV 
+cflags.debug		:= -Wall -Werror -Wextra -DDEBUG -ggdb -fsanitize=address -fno-omit-frame-pointer
+CFLAGS				:= $(cflags.$(BUILD))
+CPPFLAGS			:= $(cflags.$(BUILD))
 
-all : $(NAME)
+lib.release			:= 
+lib.valgrind		:= $(lib.release)
+lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
+LIB					:= $(lib.$(BUILD))
 
-$(NAME):	$(OBJS)
-	@printf "$(YELLOW)Creating executable..$(DEFAULT)\n"
-	@$(CC) $(OBJS) $(OFLAGS) $(CLIB) -o $(NAME)
-	@printf "$(GREEN)---> $(NAME) is ready$(DEFAULT)\n"
+INC					:= -I$(INCDIR) -I/usr/local/include
+INCDEP				:= -I$(INCDIR)
 
-$(OBJD)/%.o : $(SRCD)/%.cpp | $(OBJD)
-	@printf "$(YELLOW)----------------------------------------- $<\n"
-	@printf "$(YELLOW)Compiling $(DEFAULT)$<\n"
-	@$(CC) $(CFLAGS) -I $(SRCD) -o $@ -c $<
+# Colors
+C_RESET				:= \033[0m
+C_PENDING			:= \033[0;36m
+C_SUCCESS			:= \033[0;32m
 
-$(OBJD) :
-	@mkdir -p $(OBJD)
+# Multi platforms
+ECHO				:= echo
 
+# Escape sequences (ANSI/VT100)
+ES_ERASE			:= "\033[1A\033[2K\033[1A"
+ERASE				:= $(ECHO) $(ES_ERASE)
+
+GREP				:= grep --color=auto --exclude-dir=.git
+NORMINETTE			:= norminette `ls`
+
+# Default Make
+all: $(TARGETDIR)/$(TARGET)
+	@printf "$(CYAN)Executable created.. $(TARGET) $(DEFAULT)\n"
+
+# Remake
+re: fclean all
+
+# Clean only Objects
 clean:
-	@$(RM) $(OBJD)
-	@printf "$(RED)Removed $(CYAN)$(OBJD)$(DEFAULT)\n"
+	@printf "$(RED)Removed ./$(TARGET)  $(DEFAULT)\n"
+	@$(RM) -f *.d *.o
+	@printf "$(RED)Removed ./$(BUILDDIR)  $(DEFAULT)\n"
+	@$(RM) -rf $(BUILDDIR)
 
+
+# Full Clean, Objects and Binaries
 fclean: clean
-	@$(RM) $(NAME)
-	@printf "$(RED)Removed $(CYAN)$(NAME)$(DEFAULT)\n"
-
-re:	fclean all
+	@printf "$(RED)Removed $(TARGET)  $(DEFAULT)\n"
+	@$(RM) -rf $(TARGETDIR)/$(TARGET)
 
 
-.PHONY: all clean fclean re
+# Pull in dependency info for *existing* .o files
+-include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
+
+# Link
+$(TARGETDIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(TARGETDIR)
+	@printf "$(GREEN)linking.. $^ $(DEFAULT)\n"
+	$(CXX) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	@printf "$(YELLOW)Linking $(TARGET)  $(DEFAULT)\n"
+
+$(BUILDIR):
+	@mkdir -p $@
+
+# Compile
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	@printf "$(YELLOW)Creating executable.. $@ $(DEFAULT)\n"
+		$(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<
+	@$(CXX) $(CPPFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+	@$(ERASE)
+	@$(ERASE)
+	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
+	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
+	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
+	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
+
+
+# Non-File Targets
+.PHONY: all re clean fclean
 
 #COLORS
 RED = \033[1;31m

@@ -1,5 +1,5 @@
 #include <iostream>
-//#include "Server.hpp"
+#include "Server.hpp"
 #include "ConfigFile.hpp"
 
 int main (int argc, char *argv[])
@@ -18,13 +18,16 @@ int main (int argc, char *argv[])
 	// launch the irc.config loading for on-demand use
 	ConfigFile IRCconfig("./srcs/irc.config");
 
-	std::string valueConfig = IRCconfig.getConfigValue("DEBUG");
+	// std::string valueConfig = IRCconfig.getConfigValue("DEBUG");
 	// return flase on other input 
-	bool DEBUG = (valueConfig == "1");
+	// bool DEBUG = (valueConfig == "1");
 
 	// define the server
 	Server *srv = NULL;
-	try { srv = new Server(argv[1], argv[2]); }
+	try 
+	{ 
+		srv = new Server(argv[1], argv[2], &IRCconfig);
+	}
 	catch (std::exception &	e)
 	{
 		std::cerr <<"[MAIN] - Exception catched during srv INIT: " << e.what() << std::endl;
