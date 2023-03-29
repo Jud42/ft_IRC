@@ -22,9 +22,12 @@ Sources :
   - https://cplusplus.com/reference/functional/bind/
   - https://www.geeksforgeeks.org/bind-function-placeholders-c/
 
+
 # connect
-  
+
 #include <sys/socket.h>
+  
+More dedicated to the client side
 
 The connect() function shall attempt to make a connection on a socket. The function takes the following arguments:
 
