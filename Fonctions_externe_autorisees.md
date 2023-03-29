@@ -110,7 +110,8 @@ Given node and service, which identify an Internet host and a service,
 
 ```int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints,
-                struct addrinfo **res);```
+                struct addrinfo **res);
+```
 
 Sources :
   - https://linux.die.net/man/3/freeaddrinfo
