@@ -263,9 +263,9 @@ The send() call may be used only when the socket is in a connected state (so tha
 Sources :
   - https://linux.die.net/man/2/send
 
-
-
 # signal
+
+
 
 # socket
 
