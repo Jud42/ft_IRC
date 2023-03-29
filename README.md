@@ -27,3 +27,4 @@ sudo apt install irssi
 
 # Socket
  - https://www.tutorialspoint.com/unix_sockets/socket_core_functions.htm
+ - https://bousk.developpez.com/cours/reseau-c++/TCP/05-envoi-reception-serveur/
