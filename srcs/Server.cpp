@@ -2,32 +2,13 @@
 
 Server::Server( const char * port, const char * pass ) : _port(strtol(port, NULL, 10)), _pass(pass), _oper_pass(OPER_PASSWORD), _addrs(NULL), _listener(-1), _nb_ev(0)
 {
+	// http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml
+	// the port number allowed must be in the range of 1024 - 49151 (User Ports) or
+	// in the range of 49152 to 65535 (Dynamic and/or Private Ports)
 	if (_port < 1024 || _port > 65535)
-		throw std::runtime_error("port not correct");
-	try
-	{
-        //...
-	}
-	catch (std::exception &e)
-	{
-		std::cerr << "[SERVER] - Exception catched : " << e.what() << std::endl;
-        // shutdowm server
-		throw e;
-	}
-	std::cout << "Server constructed with success" << std::endl;
-	std::cout << std::left << std::setw(15) <<"Hostname : " << hostname << std::endl;
-	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
-}
+		throw std::runtime_error("[SERVER] - Port not in expected range (1024 - 65535)");
 
-Server::~Server( void ) {
-	std::cout << "Server destroyed with success" << std::endl;
-}
+	
 
-void	Server::run( void )
-{
-	while (1)
-	{
-		sleep 10
-	}
 	
 }

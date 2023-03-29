@@ -9,7 +9,13 @@ int main (int argc, char *argv[])
         std::cerr << "[MAIN] Require execution paramaters like :" << argv[0] << " <PORT> <PASSWORD>" << std::endl;
     }
 
-	// lauch the irc.config loading for on-demand use
+	// as per document RFC7194, ports are following hit the concensus
+	// 6667 for incommint IRC connections non encrypted
+	// 6697 for incomming IRC connections encrypted
+
+
+
+	// launch the irc.config loading for on-demand use
 	ConfigFile IRCconfig("./srcs/irc.config");
 
 	std::string valueConfig = IRCconfig.getConfigValue("DEBUG");
