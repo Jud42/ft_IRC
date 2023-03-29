@@ -63,12 +63,38 @@ cmd
 arg
   - The data associated with cmd. 
 
+Look at the sources as description of commands must be review.
+
 Sources :
   - https://www.ibm.com/docs/en/zvse/6.2?topic=SSB27H_6.2.0/fa2ti_call_fcntl.htm
+  - https://linux.die.net/man/3/fcntl
 
 # fstat
 
+```#include <sys/types.h>```
+
+```#include <sys/stat.h>```
+
+```#include <unistd.h>```
+
+These functions return information about a file. No permissions are required on the file itself, but-in the case of stat() and lstat() - execute (search) permission is required on all of the directories in path that lead to the file.
+
+  -stat() stats the file pointed to by path and fills in buf.
+  -lstat() is identical to stat(), except that if path is a symbolic link, then the link itself is stat-ed, not the file that it refers to.
+  -fstat() is identical to stat(), except that the file to be stat-ed is specified by the file descriptor fd. 
+
+Look at the sources to have information about the stat structure
+
+Sources :
+  - https://linux.die.net/man/2/fstat
+
 # freeaddrinfo
+
+```#include <sys/types.h>```
+```#include <sys/socket.h>```
+```#include <netdb.h>```
+
+
 
 # getaddrinfo
 
