@@ -72,9 +72,7 @@ Sources :
 # fstat
 
 ```#include <sys/types.h>```
-
 ```#include <sys/stat.h>```
-
 ```#include <unistd.h>```
 
 These functions return information about a file. No permissions are required on the file itself, but-in the case of stat() and lstat() - execute (search) permission is required on all of the directories in path that lead to the file.
@@ -94,9 +92,28 @@ Sources :
 ```#include <sys/socket.h>```
 ```#include <netdb.h>```
 
+Look at source to have more information about the addrinfo structure
 
+```void freeaddrinfo(struct addrinfo *res);```
+
+Sources :
+  - https://linux.die.net/man/3/freeaddrinfo
 
 # getaddrinfo
+
+```#include <sys/types.h>```
+```#include <sys/socket.h>```
+```#include <netdb.h>```
+
+Given node and service, which identify an Internet host and a service, 
+  - getaddrinfo() returns one or more addrinfo structures, each of which contains an Internet address that can be specified in a call to bind(2) or connect(2). The getaddrinfo() function combines the functionality provided by the gethostbyname(3) and getservbyname(3) functions into a single interface, but unlike the latter functions, getaddrinfo() is reentrant and allows programs to eliminate IPv4-versus-IPv6 dependencies. 
+
+```int getaddrinfo(const char *node, const char *service,
+                const struct addrinfo *hints,
+                struct addrinfo **res);```
+
+Sources :
+  - https://linux.die.net/man/3/freeaddrinfo
 
 # gethostbyname
 
