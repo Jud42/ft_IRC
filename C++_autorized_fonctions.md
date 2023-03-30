@@ -278,13 +278,13 @@ Sources :
 
 ```#include <sys/socket.h>```
 
-Specifies a socket that was created with socket(), has been bound to an address with bind(), and has issued a successful call to listen(). 
-
+Create an endpoint for communication
 
 ![image](https://user-images.githubusercontent.com/83389924/228445722-a093b09a-b70a-4b08-be6e-116692a3ad75.png)
 
 Sources : 
 
+  - https://pubs.opengroup.org/onlinepubs/009604499/functions/socket.html
   - https://www.geeksforgeeks.org/socket-programming-cc/
   - https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/?ref=lbp
   - https://www.bogotobogo.com/cplusplus/sockets_server_client.php
