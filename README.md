@@ -8,10 +8,16 @@ Recherche d'un client adequoit
   - https://irssi.org/documentation/help/server/
 
   
- Installation de irssi
+ Installation de irssi sous Debian
  
 ```
 sudo apt install irssi
+```
+
+Installation sous MacOS
+
+```
+brew install irssi
 ```
 
 # Information sur les protocoles
