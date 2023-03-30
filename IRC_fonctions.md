@@ -1,5 +1,5 @@
-irc.geeknode.org port 6697 avec TLS
-irc.geeknode.org port 6667 sans chiffrement
+port 6697 avec TLS
+port 6667 sans chiffrement
 
 # irssi
 
