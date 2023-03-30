@@ -2,10 +2,8 @@ TARGET				:= ircserv
 BUILD				:=
 
 # sources --------------------------------------------------
-SOURCES		+= \
-srcs/main.cpp \
-srcs/ConfigFile.cpp \
-srcs/Server/Server.cpp 
+
+include Makefile_SRCS.mk
 
 # sources --------------------------------------------------
 
@@ -58,10 +56,14 @@ LIB					:= $(lib.$(BUILD))
 INC					:= -I$(INCDIR) -I/usr/local/include
 INCDEP				:= -I$(INCDIR)
 
-# Colors
-C_RESET				:= \033[0m
-C_PENDING			:= \033[0;36m
-C_SUCCESS			:= \033[0;32m
+
+
+#COLORS
+RED = \033[1;31m
+GREEN = \033[1;32m
+YELLOW = \033[1;33m
+CYAN = \033[1;36m
+DEFAULT = \033[0m
 
 # Multi platforms
 ECHO				:= echo
@@ -75,7 +77,7 @@ NORMINETTE			:= norminette `ls`
 
 # Default Make
 all: $(TARGETDIR)/$(TARGET)
-	@printf "$(CYAN)Executable created.. $(TARGET) $(DEFAULT)\n"
+	@printf "$(GREEN)Executable created.. $(TARGET) $(DEFAULT)\n"
 
 # Remake
 re: fclean all
@@ -94,15 +96,14 @@ fclean: clean
 	@$(RM) -rf $(TARGETDIR)/$(TARGET)
 
 
-# Pull in dependency info for *existing* .o files
--include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
-
 # Link
 $(TARGETDIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
-	@printf "$(GREEN)linking.. $^ $(DEFAULT)\n"
+	@printf "$(YELLOW)linking.. $^ $(DEFAULT)\n"
 	$(CXX) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
-	@printf "$(YELLOW)Linking $(TARGET)  $(DEFAULT)\n"
+	@$(ERASE)
+	@$(ERASE)
+	@printf "$(GREEN)Linking completed $(TARGET)  $(DEFAULT)\n"
 
 $(BUILDIR):
 	@mkdir -p $@
@@ -111,7 +112,7 @@ $(BUILDIR):
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	@printf "$(YELLOW)Creating executable.. $@ $(DEFAULT)\n"
-		$(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<
+	$(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<
 	@$(CXX) $(CPPFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 	@$(ERASE)
 	@$(ERASE)
@@ -124,9 +125,4 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 # Non-File Targets
 .PHONY: all re clean fclean
 
-#COLORS
-RED = \033[1;31m
-GREEN = \033[1;32m
-YELLOW = \033[1;33m
-CYAN = \033[1;36m
-DEFAULT = \033[0m
+

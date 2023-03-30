@@ -5,7 +5,6 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	_pass(pass),
 	_IRCconfig(IRCconfig),
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
-	//_oper_pass("OPER"),
 	_addrs(NULL),
 	_listener(-1),
 	_nb_ev(0)
@@ -21,8 +20,8 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	// get information about socket
 	try
 	{
-		//this->getInfos();
-		//test();
+		this->getInfos();
+		test();
 		
 	}
 	catch (std::exception &e)
@@ -35,6 +34,6 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 
 Server::~Server( void )
 {
-	freeaddrinfo(_addrs);
+	//freeaddrinfo(_addrs);
 }
 

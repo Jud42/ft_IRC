@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <cstring>
+#include <unistd.h>
 
 #include "to_str.hpp"
 #include "ConfigFile.hpp"
@@ -29,8 +30,8 @@ class	Server
 
     private:
 	// Server_getInfos.cpp
-	//		void getInfos (void);
-	//	void test (void);
+		void getInfos (void);
+		void test (void);
 
 		
 		int							_port;
