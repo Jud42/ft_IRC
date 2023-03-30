@@ -289,6 +289,10 @@ Sources :
   - https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/?ref=lbp
   - https://www.bogotobogo.com/cplusplus/sockets_server_client.php
   - https://www.tutorialspoint.com/unix_sockets/socket_core_functions.htm
+
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/01-premiers-pas/
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/02-envoi-reception/
+  - 
   - https://bousk.developpez.com/cours/reseau-c++/TCP/05-envoi-reception-serveur/
   
   Voir egalement les documents dans README.md sous Socket
