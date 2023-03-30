@@ -278,17 +278,22 @@ Sources :
 
 ```#include <sys/socket.h>```
 
-Specifies a socket that was created with socket(), has been bound to an address with bind(), and has issued a successful call to listen(). 
-
+Create an endpoint for communication
 
 ![image](https://user-images.githubusercontent.com/83389924/228445722-a093b09a-b70a-4b08-be6e-116692a3ad75.png)
 
 Sources : 
 
+  - https://pubs.opengroup.org/onlinepubs/009604499/functions/socket.html
   - https://www.geeksforgeeks.org/socket-programming-cc/
   - https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/?ref=lbp
   - https://www.bogotobogo.com/cplusplus/sockets_server_client.php
   - https://www.tutorialspoint.com/unix_sockets/socket_core_functions.htm
+
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/01-premiers-pas/
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/02-envoi-reception/
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/03-mise-en-place-protocole/
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/04-serveur-premiers-pas/
   - https://bousk.developpez.com/cours/reseau-c++/TCP/05-envoi-reception-serveur/
   
   Voir egalement les documents dans README.md sous Socket

@@ -1,7 +1,10 @@
-irc.geeknode.org port 6697 avec TLS
-irc.geeknode.org port 6667 sans chiffrement
+# irssi
 
-irssi
+ - port 6697 avec TLS
+ - port 6667 sans chiffrement
+
+
+# Commandes a utuliser 
 
 /connect OFTC
 
@@ -17,9 +20,4 @@ irssi
 
 ---
 
-                  
-                  
-https://github.com/Ccommiss/ft_irc
-        
-https://github.com/clbouche/ft_irc
         
