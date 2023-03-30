@@ -292,7 +292,8 @@ Sources :
 
   - https://bousk.developpez.com/cours/reseau-c++/TCP/01-premiers-pas/
   - https://bousk.developpez.com/cours/reseau-c++/TCP/02-envoi-reception/
-  - 
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/03-mise-en-place-protocole/
+  - https://bousk.developpez.com/cours/reseau-c++/TCP/04-serveur-premiers-pas/
   - https://bousk.developpez.com/cours/reseau-c++/TCP/05-envoi-reception-serveur/
   
   Voir egalement les documents dans README.md sous Socket
