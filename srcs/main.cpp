@@ -34,17 +34,8 @@ int main (int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-  /*  try { srv->run(); }
-	catch (std::exception &	e)
-	{
-		std::cerr <<"[MAIN] - Exception catched during srv RUN: " << e.what() << std::endl;
-		//sv->shutdown(NO_THROW);
-		delete srv;
-		exit(EXIT_FAILURE);
-	}
-*/
-
-	//sv->shutdown(THROW);
+	
+	srv->stop();
 	delete srv;
 	exit(EXIT_SUCCESS);
 	

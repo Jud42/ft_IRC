@@ -42,11 +42,11 @@ OBJECTS				:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEX
 OBJECTS_BONUS		:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_BONUS:.$(SRCEXT)=.$(OBJEXT)))
 
 #Flags, Libraries and Includes
-cflags.release		:= -Wall -Werror -Wextra #-DDEBUG -DDEBUG_SV -DDEBUG_US
-cflags.valgrind		:= -Wall -Werror -Wextra -DDEBUG -DDEBUG_SV 
-cflags.debug		:= -Wall -Werror -Wextra -DDEBUG -ggdb -fsanitize=address -fno-omit-frame-pointer
-CFLAGS				:= $(cflags.$(BUILD))
-CPPFLAGS			:= $(cflags.$(BUILD))
+CPPFLAGS := $(CFLAGS)
+cflags.release		:= 
+cflags.valgrind		:= -DDEBUG -DDEBUG_SV 
+cflags.debug		:= -DDEBUG -ggdb -fsanitize=address -fno-omit-frame-pointer
+CPPFLAGS			+= $(cflags.$(BUILD))
 
 lib.release			:= 
 lib.valgrind		:= $(lib.release)
@@ -55,8 +55,6 @@ LIB					:= $(lib.$(BUILD))
 
 INC					:= -I$(INCDIR) -I/usr/local/include
 INCDEP				:= -I$(INCDIR)
-
-
 
 #COLORS
 RED = \033[1;31m
@@ -72,12 +70,9 @@ ECHO				:= echo
 ES_ERASE			:= "\033[1A\033[2K\033[1A"
 ERASE				:= $(ECHO) $(ES_ERASE)
 
-GREP				:= grep --color=auto --exclude-dir=.git
-NORMINETTE			:= norminette `ls`
-
 # Default Make
 all: $(TARGETDIR)/$(TARGET)
-	@printf "$(GREEN)Executable created.. $(TARGET) $(DEFAULT)\n"
+	@printf "$(GREEN)Executable created.. $(TARGET) using: $(CPPFLAGS) $(DEFAULT)\n"
 
 # Remake
 re: fclean all

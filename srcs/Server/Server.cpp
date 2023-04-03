@@ -21,19 +21,24 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	try
 	{
 		this->getInfos();
+		this->listening();
+		this->monitoring();		
 		test();
 		
 	}
 	catch (std::exception &e)
 	{
-		
+		std::cerr << "[SERVER] - Exception catched : " << e.what() << std::endl;
+		this->stop();
+		throw e;		
 	}
-
+	std::cout << "[SERVER] - Server constructed with success" << std::endl;
+	std::cout << std::left << std::setw(15) <<"Hostname : " << _hostname << std::endl;
+	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
 
 }
 
 Server::~Server( void )
 {
-	//freeaddrinfo(_addrs);
 }
 
