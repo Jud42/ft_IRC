@@ -10,7 +10,7 @@
 
 ### Object : ConfigFile
 
-Loading and provide acces to information stored into irc.config at starting.
+Loading and provide access to information stored into irc.config at starting.
 
 To get the referenced value : getConfigValue()
 
