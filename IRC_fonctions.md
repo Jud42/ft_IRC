@@ -4,7 +4,7 @@
  - port 6667 sans chiffrement
 
 
-# Commandes a utuliser 
+# Commandes a utiliser 
 
 /connect OFTC
 
