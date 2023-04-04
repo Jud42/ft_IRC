@@ -7,4 +7,9 @@
 //socket's queue size after what ECONNREFUSED ist return
 # define BACKLOG 10
 
+//Buffer size
+# define BUFFER_SIZE 256
+
+//poll timeout
+#define TIMEOUT 0
 #endif

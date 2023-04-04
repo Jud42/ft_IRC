@@ -10,7 +10,7 @@ include Makefile_SRCS.mk
 UNAME := $(shell uname -s)
 
 ifeq ($(UNAME), Darwin)
-CXX	=	g++-12
+CXX	=	g++
 CFLAGS	=	-Wall
 CFLAGS	+=	-Wextra
 CFLAGS	+=	-Werror

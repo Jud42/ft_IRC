@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 
 	// std::string valueConfig = IRCconfig.getConfigValue("DEBUG");
 	// return flase on other input 
-	// bool DEBUG = (valueConfig == "1");
+	// bool DEBUG = (valueConfig == "DEBUG");
 
 	// define the server
 	Server *srv = NULL;
@@ -33,6 +33,8 @@ int main (int argc, char *argv[])
 		std::cerr <<"[MAIN] - Exception catched during srv INIT: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	
+	srv->test();
 
 	
 	srv->stop();

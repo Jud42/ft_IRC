@@ -1,11 +1,20 @@
 #include "Server.hpp"
 
 void	Server::stop(void)
-{
-	if (this->_addrs)
-	{
-		freeaddrinfo (_addrs);
-		_addrs = NULL;
-	}
-
+{  
+	
+  //do
+	//{
+    //int rc;
+		//rc = recv(fds[i].fd, buf sizeof(buf), 0);
+    //    if (rc < 0)
+    //    {
+    //        if (errno != EWOULDBLOCK)
+    //        {
+    //          perror("  recv() failed");
+    //          //close_conn = TRUE;
+    //        }
+  //          break;
+	//}
+  
 }
