@@ -15,7 +15,9 @@
 #include <cstring>
 #include <unistd.h>
 #include <iomanip>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
+
+#include <poll.h>
 #include <string>
 
 
@@ -35,6 +37,8 @@ class	Server
 	// Server_stop.cpp
 		void stop (void);			
 
+		void test (void);
+
     private:
 	// Server_getInfos.cpp
 			// Server_getInfos.cpp
@@ -45,7 +49,7 @@ class	Server
 		void listening (void);
 	// Server_monitoring.cpp
 		void monitoring (void);
-		void test (void);
+
 
 		
 		int							_port;
@@ -57,5 +61,6 @@ class	Server
 		int							_nb_ev;
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;
+		char						_buffer[BUFFER_SIZE];
 };
 #endif
