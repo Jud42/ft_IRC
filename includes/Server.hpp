@@ -1,12 +1,6 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#define		RED	"\033[31;1m"
-#define		GRE	"\033[32;1m"
-#define		YEL	"\033[33;1m"
-#define		BLU	"\033[34;1m"
-#define		NOC "\033[0m"
-
 #include <iostream>
 #include <cstdlib>
 #include <sys/types.h>
@@ -15,8 +9,6 @@
 #include <cstring>
 #include <unistd.h>
 #include <iomanip>
-//#include <sys/epoll.h>
-
 #include <poll.h>
 #include <string>
 
@@ -27,7 +19,7 @@
 
 class ConfigFile;
 
-class	Server 
+class	Server
 {
 
 	public:
@@ -35,7 +27,7 @@ class	Server
 		Server(const char * port, const char *pass, ConfigFile *IRCconfig);
 		~Server(void);
 	// Server_stop.cpp
-		void stop (void);			
+		void stop (void);
 
 		void test (void);
 
@@ -51,7 +43,7 @@ class	Server
 		void monitoring (void);
 
 
-		
+
 		int							_port;
 		std::string					_pass;
 		ConfigFile				*	_IRCconfig;
