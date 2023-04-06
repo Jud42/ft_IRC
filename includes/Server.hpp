@@ -10,8 +10,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
+#include <sys/socket.h> //socket manage
+#include <netdb.h> //socket manage
 #include <cstring>
 #include <unistd.h>
 #include <iomanip>
@@ -24,6 +24,8 @@
 #include "to_str.hpp"
 #include "define.hpp"
 #include "ConfigFile.hpp"
+
+#define DB_LISTENING "[SERVER_LISTENING]"
 
 class ConfigFile;
 
@@ -50,14 +52,18 @@ class	Server
 	// Server_monitoring.cpp
 		void monitoring (void);
 
+	//special debeug TEMP
+	void ifModeDebug(const std::string&, const std::string&, int&);
+
 
 		
 		int							_port;
-		std::string					_pass;
-		ConfigFile				*	_IRCconfig;
-		std::string					_oper_pass;
-		struct addrinfo			*	_addrs;
-		int 						_listener;
+		std::string					_pass; //password server
+		ConfigFile				*	_IRCconfig; //stock info config file
+		std::string					_oper_pass; //no use for moment
+		struct addrinfo			*	_addrs; //store info addr socket
+		int 						_listener; // socket fd
+		int 						_client_fd; // client fd
 		int							_nb_ev;
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;
