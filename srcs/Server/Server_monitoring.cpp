@@ -24,6 +24,7 @@ void Server::monitoring( void )
 
 
 	int res = poll(ev, nfds, TIMEOUT);
+
 	if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	{
 		std::cout << BLU;		

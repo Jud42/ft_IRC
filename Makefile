@@ -94,10 +94,8 @@ fclean: clean
 # Link
 $(TARGETDIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
-	@printf "$(YELLOW)linking.. $^ $(DEFAULT)\n"
+	@printf "$(GREEN)linking.. $^ $(DEFAULT)\n"
 	$(CXX) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
-	@$(ERASE)
-	@$(ERASE)
 	@printf "$(GREEN)Linking completed $(TARGET)  $(DEFAULT)\n"
 
 $(BUILDIR):
@@ -109,8 +107,6 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@printf "$(YELLOW)Creating executable.. $@ $(DEFAULT)\n"
 	$(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<
 	@$(CXX) $(CPPFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
-	@$(ERASE)
-	@$(ERASE)
 	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
 	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
 	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
