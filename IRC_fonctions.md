@@ -22,9 +22,9 @@
 
 
 
-## des infos sur des fonctions
+# des infos sur des fonctions et cie
 
-# recv
+## recv
 La fonction recv en C++ est utilisée pour recevoir des données d'un socket. Dans le cas d'un serveur IRC, elle serait utilisée pour recevoir des messages envoyés par les clients connectés au serveur.
 
 Lorsqu'elle est appelée, la fonction recv attend jusqu'à ce qu'elle reçoive des données sur le socket. Les données reçues sont stockées dans un tampon spécifié, et la fonction renvoie le nombre d'octets de données reçus.
@@ -47,3 +47,32 @@ Les paramètres de la fonction sont les suivants :
     flags : des indicateurs de contrôle supplémentaires, tels que MSG_WAITALL pour attendre que toutes les données demandées soient disponibles avant de les renvoyer.
 
 La fonction renvoie le nombre d'octets de données reçus, qui peut être inférieur à la taille maximale spécifiée dans len. Si elle renvoie une valeur de 0, cela indique que la connexion a été fermée par le côté distant. Si elle renvoie -1, cela indique qu'une erreur s'est produite et la raison de l'erreur peut être récupérée en appelant la fonction errno.
+
+# quelle soit les toutes premieres donnee qu'envoie un client lors de la connection
+
+Lorsqu'un client se connecte à un serveur IRC, il envoie une série de messages au serveur pour établir la connexion et s'identifier auprès du serveur. Voici les premiers messages envoyés par un client lorsqu'il se connecte à un serveur IRC :
+
+    Le client envoie un message PASS (mot de passe) s'il est nécessaire de fournir un mot de passe pour se connecter au serveur. Le message a la forme suivante :
+
+    php
+
+PASS <mot_de_passe>
+
+Le client envoie un message NICK (pseudo) pour indiquer le pseudo qu'il souhaite utiliser sur le serveur. Le message a la forme suivante :
+
+php
+
+NICK <pseudo>
+
+Le client envoie un message USER pour fournir des informations d'identification supplémentaires. Le message a la forme suivante :
+
+php
+
+    USER <identifiant> <hôte> <serveur> <nom réel>
+
+        <identifiant> : un identifiant unique pour le client, souvent le même que le pseudo.
+        <hôte> : le nom d'hôte ou l'adresse IP du client.
+        <serveur> : le nom d'hôte ou l'adresse IP du serveur IRC.
+        <nom réel> : le nom réel du client.
+
+Une fois que ces messages ont été envoyés avec succès, le serveur répondra avec un message 001 pour confirmer la connexion et donner la bienvenue au client sur le serveur.
