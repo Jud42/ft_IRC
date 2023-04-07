@@ -17,6 +17,7 @@
 #include <iomanip>
 //#include <sys/epoll.h>
 
+
 #include <poll.h>
 #include <string>
 
@@ -49,6 +50,8 @@ class	Server
 		void listening (void);
 	// Server_monitoring.cpp
 		void monitoring (void);
+	// Server_parse.cpp
+		void parse(const std::string message);
 
 
 		

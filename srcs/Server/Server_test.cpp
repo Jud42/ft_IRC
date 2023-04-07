@@ -2,68 +2,63 @@
 
 void Server::test(void)
 {
-    std::cout << "TEST"   << std::endl;
+    std::cout <<BLU << "TEST" << NOC <<std::endl;
 
     int res = 0;
 
     struct sockaddr client_addr;
     socklen_t client_addr_len;
     
-    //int s;
-
-
     res = recv(_listener, _buffer, sizeof(_buffer), 0);
-        //res = recvfrom(_listener, _buffer, BUFFER_SIZE, 0,
-        //               (struct sockaddr *) &peer_addr, &peer_addr_len);     
+    std::cout << "Buffer : " <<  _buffer << std::endl;
+ 
     
 
     //Accept incomming communication
     int newListener = accept(_listener, &client_addr, &client_addr_len);
 
-    std::cout << "NewListener" << newListener << std::endl;
+    std::cout << "NewListener " << newListener << std::endl;
+
+    int i = 0;
+    int snd;
+
+    std::string cap_response = "CAP * ACK";
+    snd = send(newListener, cap_response.c_str(), cap_response.length(), 0);
 
 
-
+    std::cout << "------------------------------------- " <<  std::endl;
     for (;;)
     {
 
-        res = recv(newListener, _buffer, sizeof(_buffer), 0);
-        //res = recvfrom(_listener, _buffer, BUFFER_SIZE, 0,
-        //               (struct sockaddr *) &peer_addr, &peer_addr_len);     
-        
-
-
+        res = recv(newListener, _buffer, sizeof(_buffer), 0);  
 
         if (res == -1)
             continue;               /* Ignore failed request */
         
-        if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
-        {
-            std::cout << BLU;		
-            std::cout << "[SERVER_TEST] DEBUG - recv value" << std::endl;
-            std::cout << " res <" << res << ">" << std::endl;
-            std::cout << " Buffer <" << _buffer << ">" << std::endl;
-            std::cout << NOC;
-        } // ---------------------------------------------------------------------------------------	
-            //char host[NI_MAXHOST], service[NI_MAXSERV];
-
-
-
-        std::string cap_response = "CAP * ACK :example.com/multi-prefix";
-        int snd = send(newListener, cap_response.c_str(), cap_response.length(), 0);
-        std::cout << " send response:<" << cap_response << ">" << std::endl;
-        std::cout << " send :<" << snd << ">" << std::endl;
-
+        
+        this->parse(_buffer);
+        std::string message = _buffer;
+        unsigned int pos_length = message.find("\r\n", 0);
+        std::string command = message.substr(0, pos_length);
 
         std::string nickname = "vroch";
-        cap_response = "Welcome to the server, " + nickname + "!\r\n";
-        snd = send(newListener, cap_response.c_str(), cap_response.length(), 0);
-        std::cout << " send response:<" << cap_response << ">" << std::endl;
-        std::cout << " send :<" << snd << ">" << std::endl;
 
+        std::cout << command << std::endl;
+
+        if (command == "CAP END" || command == "CAP LS")
+        {
+            std::cout << " CASE CAP END" << std::endl;
+            std::string cap_response = nickname + ":Welcome to the server, " + nickname + "!\r\n";
+            snd = send(newListener, cap_response.c_str(), cap_response.length(), 0);
+            std::cout << " send response:<" << cap_response << ">" << std::endl;
+            std::cout << " send :<" << snd << ">" << std::endl;
+        }
+
+        i++;
 
     }
 
-    
+    std::cout << "------------------------------------- " <<  std::endl;
+
 
 }
