@@ -2,7 +2,7 @@
 
 
 
-void	Server::parse(const std::string _buffer)
+std::string	Server::parse(const std::string _buffer)
 {
     std::string irc_cmd[3] = {"PASS", "NICK", "USER"};
     std::string segment[10];
@@ -19,24 +19,26 @@ void	Server::parse(const std::string _buffer)
     while(remains != message)
     {
 
-    pos_length = message.find("\r\n", pos_start);
+        pos_length = message.find("\r\n", pos_start);
 
-    pos_length += 2;
+        pos_length += 2;
 
-    segment[seg] = message.substr(pos_start, pos_length - 2);
-    remains = message.substr(pos_length, message.size());
-    message = remains;
-    remains = "";
+        segment[seg] = message.substr(pos_start, pos_length - 2);
+        remains = message.substr(pos_length, message.size());
+        message = remains;
+        remains = "";
 
-    std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl; 
+        std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl; 
 
-    pos_start = 0;
+        pos_start = 0;
 
-    if (segment[seg] != "")
-        seg += 1;
+        if (segment[seg] != "")
+            seg += 1;
 
     }
 
- 
+    
+
+    return segment[0];
 
 }
