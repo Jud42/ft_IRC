@@ -15,8 +15,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <iomanip>
-//#include <sys/epoll.h>
-
+#include <arpa/inet.h>
 
 #include <poll.h>
 #include <string>
@@ -51,7 +50,7 @@ class	Server
 	// Server_monitoring.cpp
 		void monitoring (void);
 	// Server_parse.cpp
-		void parse(const std::string message);
+		std::string parse(const std::string message);
 
 
 		
