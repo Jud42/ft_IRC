@@ -2,10 +2,13 @@
 
 
 
-std::string	Server::parse(const std::string _buffer)
+std::string	Server::parse(const std::string _buffer, const int newListener)
 {
     std::string irc_cmd[3] = {"PASS", "NICK", "USER"};
     std::string segment[10];
+    std::string nickname;
+    std::string pass;
+    std::string user;
 
     std::string message = _buffer;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl; 
@@ -29,6 +32,29 @@ std::string	Server::parse(const std::string _buffer)
         remains = "";
 
         std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl; 
+        
+        if (seg != 0)
+        {
+            // feed the client definition : to be added
+            if (segment[seg].find("PASS", 0) == 0)
+            {
+                pass = segment[seg].substr(5, segment[seg].size());
+                std::cout << GRE << "[FEED Client] PASS[" << pass << "] : " << newListener << "|" << NOC << std::endl;
+            }
+
+            if (segment[seg].find("NICK", 0) == 0)
+            {
+                nickname = segment[seg].substr(5, segment[seg].size());
+                std::cout << GRE << "[FEED Client] NICK[" << nickname << "] : " << newListener << "|" << NOC << std::endl;
+            }
+            
+            if (segment[seg].find("USER", 0) == 0)
+            {
+                user = segment[seg].substr(5, segment[seg].size());
+                std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
+            }
+
+        }
 
         pos_start = 0;
 

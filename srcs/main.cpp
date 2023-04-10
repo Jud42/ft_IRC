@@ -33,7 +33,8 @@ int main (int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	
-	srv->test();
+		
+	srv->treatment();
 
 	
 	srv->stop();
