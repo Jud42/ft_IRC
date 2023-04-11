@@ -54,19 +54,19 @@ Lorsqu'un client se connecte à un serveur IRC, il envoie une série de messages
 
     Le client envoie un message PASS (mot de passe) s'il est nécessaire de fournir un mot de passe pour se connecter au serveur. Le message a la forme suivante :
 
-    php
+
 
 PASS <mot_de_passe>
 
 Le client envoie un message NICK (pseudo) pour indiquer le pseudo qu'il souhaite utiliser sur le serveur. Le message a la forme suivante :
 
-php
+
 
 NICK <pseudo>
 
 Le client envoie un message USER pour fournir des informations d'identification supplémentaires. Le message a la forme suivante :
 
-php
+
 
     USER <identifiant> <hôte> <serveur> <nom réel>
 
@@ -76,3 +76,30 @@ php
         <nom réel> : le nom réel du client.
 
 Une fois que ces messages ont été envoyés avec succès, le serveur répondra avec un message 001 pour confirmer la connexion et donner la bienvenue au client sur le serveur.
+
+
+#std::istringstream
+std::istringstream est une classe de la bibliothèque standard C++ qui permet de traiter une chaîne de caractères comme un flux d'entrée, de la même manière que std::cin peut être utilisé pour traiter l'entrée à partir de la console.
+
+La classe std::istringstream est définie dans l'en-tête <sstream> et hérite de la classe std::basic_istringstream, qui est un tampon d'entrée basé sur une chaîne de caractères (std::basic_string).
+
+Pour utiliser std::istringstream, vous pouvez créer une instance de la classe en passant une chaîne de caractères dans le constructeur. Vous pouvez ensuite extraire des valeurs à partir de cette instance en utilisant l'opérateur >> de flux d'entrée, tout comme vous le feriez avec std::cin.
+
+Voici un exemple de code qui utilise std::istringstream pour extraire un entier à partir d'une chaîne de caractères :
+
+c++
+
+#include <sstream>
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string inputStr = "42";
+    std::istringstream iss(inputStr);
+    int value;
+    iss >> value;
+    std::cout << "La valeur extraite est : " << value << std::endl;
+    return 0;
+}
+
+L'exemple ci-dessus crée un objet std::istringstream à partir de la chaîne "42", extrait l'entier 42 à partir de l'objet et l'affiche à la console.

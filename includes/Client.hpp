@@ -25,7 +25,7 @@ public:
 	std::string getNickname();
 
 	int
-	Client(/* args */);
+	Client(int client_fd, std::string client_data);
 	~Client();
 };
 
