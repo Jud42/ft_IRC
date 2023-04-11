@@ -34,7 +34,9 @@ class	Server
 	// Server_stop.cpp
 		void stop (void);
 	// Server_treatment.cpp
-		void treatment (void);
+		void treatment (int client_fd);
+	// Server_monitoring.cpp
+		void monitoring (void);
 
     private:
 	// Server_getInfos.cpp
@@ -44,8 +46,7 @@ class	Server
 		void close_fd (int &fd, bool exception);
 	// Server_listening.cpp
 		void listening (void);
-	// Server_monitoring.cpp
-		void monitoring (void);
+
 
 	// Server_parse.cpp
 		std::string parse(const std::string message, const int newListener);
@@ -63,6 +64,7 @@ class	Server
 		struct addrinfo			*	_addrs;
 		int 						_listener;
 		std::vector< int >			_client_fd;
+
 		int							_nb_client;
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;

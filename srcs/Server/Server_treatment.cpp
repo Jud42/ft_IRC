@@ -1,85 +1,83 @@
 #include "Server.hpp"
 
-void Server::treatment(void)
+void Server::treatment(int client_fd)
 {
     int res = 0;
 
-    struct sockaddr client_addr;
-    socklen_t client_addr_len;
+    // struct sockaddr client_addr;
+    // socklen_t client_addr_len;
 
-    //Accept incomming communication
-    int newListener = accept(_listener, &client_addr, &client_addr_len);
+    // //Accept incomming communication
+    // int client_fd = accept(_listener, &client_addr, &client_addr_len);
 
-    std::cout << "NewListener " << newListener << std::endl;
+    // std::cout << "client_fd " << client_fd << std::endl;
 
-    if (newListener == -1)
-    {
-        return;
-    }
+    // if (client_fd == -1)
+    // {
+    //     return;
+    // }
 
     int i = 0;
 
     std::string command = "";
 
     std::cout << "------------------------------------- " <<  std::endl;
-    for (;;)
-    {
-
+    // for (;;)
+    // {
         memset(&_buffer,0,256);
-        //std::cout << "newListener : " << newListener << std::endl;
-        res = recv(newListener, _buffer, sizeof(_buffer), 0);  
-        //std::cout << "res : " << res << std::endl;
+        //std::cout << "client_fd : " << client_fd << std::endl;
+        res = recv(client_fd, _buffer, sizeof(_buffer), 0);
+        std::cout << "res : " << res << std::endl;
         if (res == -1)
         {
-            continue;               /* Ignore failed request */
+            return;               /* Ignore failed request */
         }
 
         if (res == 0)
         {
-            continue;               /* Receive empty */
+            return;               /* Receive empty */
         }
         std::cout << "res : " << res << std::endl;
-        std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;            
-        
-        command = this->parse(this->_buffer, newListener);
-        
+        std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
+
+        command = this->parse(this->_buffer, client_fd);
+
         // temp value, to be replaced by a call to client
         std::string nickname = "vroch";
 
         if (command.find("CAP ",0) == 0)
         {
-            this->Cmds_CAP(newListener, nickname);
+            this->Cmds_CAP(client_fd, nickname);
         }
 
         if (command.find("PING", 0) == 0)
         {
-            this->Cmds_ping(newListener);
+            this->Cmds_ping(client_fd);
         }
 
         if (command.find("NICK", 0) == 0)
         {
 
-        }       
+        }
 
         if (command.find("QUIT", 0) == 0)
         {
             // deconnecter le client
             //continue;
-            break;
-        }   
+        }
 
         if (command.find("squit", 0) == 0)
         {
             // deconnecter le client
-            break;
-        } 
+            // ;
+        }
 
         i++;
 
-    }
+    // }
 
     std::cout << "------------------------------------- " <<  std::endl;
 
-    
+
 
 }
