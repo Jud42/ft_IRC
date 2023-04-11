@@ -5,14 +5,13 @@
 #define HOSTNAME_SIZE 256
 
 //socket's queue size after what ECONNREFUSED ist return
-# define BACKLOG 10
+# define MAX_CLIENTS 10 //BACKLOG
 
 //Buffer size
 # define BUFFER_SIZE 256
 
 //poll timeout
-#define TIMEOUT 0
-#endif
+#define TIMEOUT -1
 
 // colors
 #define		RED	"\033[31;1m"
@@ -20,3 +19,5 @@
 #define		YEL	"\033[33;1m"
 #define		BLU	"\033[34;1m"
 #define		NOC "\033[0m"
+
+#endif

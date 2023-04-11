@@ -44,7 +44,7 @@ void Server::treatment(void)
         command = this->parse(this->_buffer, newListener);
         
         // temp value, to be replaced by a call to client
-        std::string nickname = "exo";
+        std::string nickname = "vroch";
 
         if (command.find("CAP ",0) == 0)
         {

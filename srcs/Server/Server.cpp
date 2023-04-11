@@ -7,7 +7,8 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
 	_addrs(NULL),
 	_listener(-1),
-	_nb_ev(0)
+	_client_fd(),
+	_nb_client(0)
 {
 	// http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml
 	// the port number allowed must be in the range of 1024 - 49151 (User Ports) or
