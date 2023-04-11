@@ -16,11 +16,33 @@
 
 /quit
 
+PASS
 
+PRIVMSG
 
 ---
 
+une liste de commandes couramment utilisées sur un serveur IRC (Internet Relay Chat). Les commandes peuvent varier légèrement en fonction du client IRC spécifique que vous utilisez, mais voici quelques-unes des commandes les plus courantes :
 
+    /join <#canal> : Rejoindre un canal de discussion spécifié.   =>JOIN #canal
+    /part <#canal> : Quitter un canal de discussion spécifié.   =>PART #canal :canal
+    /msg <utilisateur> <message> : Envoyer un message privé à un utilisateur spécifié.   =>PRIVMSG  user :message
+    /nick <nouveau_pseudo> : Changer de pseudo ou de surnom sur le serveur IRC.    =>NICK newnick
+    /quit <raison> : Quitter le serveur IRC avec une raison spécifiée.
+    /list : Afficher la liste des canaux de discussion disponibles sur le serveur.   =>LIST
+    /whois <utilisateur> : Obtenir des informations détaillées sur un utilisateur spécifié.   =>
+    /ignore <utilisateur> : Ignorer les messages d'un utilisateur spécifié.   =>
+    /unignore <utilisateur> : Arrêter d'ignorer les messages d'un utilisateur spécifié.   =>
+    /mode <#canal> <mode> : Changer le mode d'un canal de discussion spécifié.   =>
+    /topic <#canal> <nouveau_sujet> : Changer le sujet d'un canal de discussion spécifié.    =>
+    /kick <#canal> <utilisateur> <raison> : Exclure un utilisateur d'un canal de discussion spécifié.   =>
+    /ban <#canal> <utilisateur> : Bannir un utilisateur d'un canal de discussion spécifié.    =>
+    /invite <utilisateur> <#canal> : Inviter un utilisateur à rejoindre un canal de discussion spécifié.    =>
+    /oper <mot_de_passe> : S'identifier en tant qu'opérateur (administrateur) du serveur IRC.    =>
+
+Veuillez noter que certaines commandes peuvent nécessiter des privilèges d'opérateur (ou "op") pour être utilisées. Il est important de respecter les règles et les politiques du serveur IRC sur lequel vous vous connectez et d'utiliser ces commandes de manière responsable et appropriée.
+
+____
 
 # des infos sur des fonctions et cie
 

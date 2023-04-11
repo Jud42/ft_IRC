@@ -14,7 +14,7 @@ private:
 	std::string _realname;
 	std::string _password;
 	std::string _modes;
-
+	std::string _canal;
 	int			_clientFd;
 
 public:

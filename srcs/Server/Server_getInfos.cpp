@@ -15,10 +15,10 @@ void Server::getInfos(void)
 	//   to free-up use freeadrinfo() see--> Server::stop
 
 	int res = getaddrinfo (NULL, (to_str(_port)).c_str(), &s_addrinfo, &_addrs);
-			
+
 	if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	{
-		// retrieve error code of getaddrinfo command 
+		// retrieve error code of getaddrinfo command
 		std::cout << BLU;
 		std::cout  << "[SERVER_GETINFOS] - DEBUG Provide getaddrinfo error code" << std::endl;
 		if (res)
@@ -37,8 +37,8 @@ void Server::getInfos(void)
 
 	if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	{
-		std::cout << BLU;		
-		// retrieve error code of getaddrinfo command 
+		std::cout << BLU;
+		// retrieve error code of getaddrinfo command
 		std::cout << "[SERVER_GETINFOS] DEBUG - Provide gethostname value" << std::endl;
 		if (res)
 			std::cout << " gethostname KO - " << gai_strerror(res) << std::endl;
@@ -50,7 +50,7 @@ void Server::getInfos(void)
 		throw std::runtime_error("[SERVER-GETINFOS] - ERROR gethostname failed");
 
 
-	// objective is to retrieve the server ip address 
+	// objective is to retrieve the server ip address
 	// but the result is giving 0.0.0.0 ???
 	void* addr_type;
     char ipstr[INET6_ADDRSTRLEN];
