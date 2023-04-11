@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <cstring>
 #include <unistd.h>
@@ -19,6 +20,8 @@
 
 #include <poll.h>
 #include <string>
+#include <cstring>
+#include <vector>
 
 
 #include "to_str.hpp"
@@ -59,16 +62,14 @@ class	Server
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const newListener);
 	
-
-
-		
 		int							_port;
 		std::string					_pass;
 		ConfigFile				*	_IRCconfig;
 		std::string					_oper_pass;
 		struct addrinfo			*	_addrs;
 		int 						_listener;
-		int							_nb_ev;
+		std::vector< int >			_client_fd;
+		int							_nb_client;
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
