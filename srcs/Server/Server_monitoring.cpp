@@ -43,8 +43,9 @@ void Server::monitoring( void )
 			pollclient->revents = 0;
 			fds.push_back(pollclient);
 			_nb_client++;
-			std::string a("welcome");
-			send(client_fd, &a, a.size(), 0);
+			//std::string a("welcome");
+			//send(client_fd, &a, a.size(), 0);
+			this->treatment (client_fd);
 			continue ;
 
 		}

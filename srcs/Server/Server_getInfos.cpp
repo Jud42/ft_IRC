@@ -59,7 +59,7 @@ void Server::getInfos(void)
     addr_type = &(ipv4->sin_addr);
 	std::cout << "addr_type " << addr_type << ": " << std::endl;
 
-	inet_ntop(AF_INET, addr_type, ipstr, sizeof ipstr);
+	inet_ntop(AF_INET, &addr_type, ipstr, sizeof ipstr);
     std::cout << "IP address of " << _hostname << ": " << ipstr << std::endl;
 
 
