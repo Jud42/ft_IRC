@@ -26,6 +26,7 @@ brew install irssi
   - https://datatracker.ietf.org/doc/html/rfc2811 (Chanel management)
   - https://datatracker.ietf.org/doc/html/rfc2812 (Client protocol)
   - https://datatracker.ietf.org/doc/html/rfc2813 (Server protocol)
+  - https://modern.ircdocs.horse/
 
 
 # Autre project similaire de server irc

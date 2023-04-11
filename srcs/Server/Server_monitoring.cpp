@@ -61,3 +61,36 @@ void Server::monitoring( void )
 	//close(_listener);
 	//close() //all fd_client
 }
+	struct pollfd ev[200];
+	memset (ev, 0, sizeof(ev));
+	ev[0].events = POLLIN;
+	ev[0].fd = _listener;
+	int nfds = 1;
+	
+	// upadate the epoll instance with the new epoll 
+	// EPOLL_CTL_ADD = Add an entry to the interest list of the epoll file
+	//int res = epoll_ctl (_efd, EPOLL_CTL_ADD, _listener, &ev);
+
+
+	int res = poll(ev, nfds, TIMEOUT);
+
+	if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
+	{
+		std::cout << BLU;		
+		std::cout << "[SERVER_MONITORING] DEBUG - Provide poll value" << std::endl;
+		std::cout << " res <" << res << ">" << std::endl;
+		std::cout << " ev.events <" << ev->events << ">" << std::endl;
+		std::cout << " ev.fd <" << ev->fd << ">" << std::endl;
+		std::cout << " ev.revents <" << ev->revents << ">" << std::endl;
+		std::cout << " nfds <" << nfds << ">" << std::endl;
+		std::cout << NOC;
+	} // ---------------------------------------------------------------------------------------	
+	if (res < 0)
+		throw std::runtime_error("[SERVER_MONITORING]- ERROR poll failed");
+	//if (res == 0)
+	//	throw std::runtime_error("[SERVER_MONITORING]- ERROR poll timed out");		
+
+	
+
+
+}
