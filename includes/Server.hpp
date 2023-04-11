@@ -9,6 +9,8 @@
 #include <cstring>
 #include <unistd.h>
 #include <iomanip>
+#include <arpa/inet.h>
+
 #include <poll.h>
 #include <string>
 
@@ -28,8 +30,8 @@ class	Server
 		~Server(void);
 	// Server_stop.cpp
 		void stop (void);
-
-		void test (void);
+	// Server_treatment.cpp
+		void treatment (void);
 
     private:
 	// Server_getInfos.cpp
@@ -41,6 +43,16 @@ class	Server
 		void listening (void);
 	// Server_monitoring.cpp
 		void monitoring (void);
+
+	// Server_parse.cpp
+		std::string parse(const std::string message, const int newListener);
+
+	// cmd CAP - answer welcome
+		void Cmds_CAP(int const newListener, std::string const nickname);
+
+	// cmd Ping - answer Pong
+		void Cmds_ping(int const newListener);
+
 
 
 

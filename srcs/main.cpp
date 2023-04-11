@@ -7,15 +7,14 @@ int main (int argc, char *argv[])
     if (argc != 3)
     {
         std::cerr << "[MAIN] Require execution paramaters like :" << argv[0] << " <PORT> <PASSWORD>" << std::endl;
+		return(0);
     }
-
 	// as per document RFC7194, ports are following hit the concensus
 	// 6667 for incommint IRC connections non encrypted
 	// 6697 for incomming IRC connections encrypted
 
-
-
 	// launch the irc.config loading for on-demand use
+	
 	ConfigFile IRCconfig("./srcs/irc.config");
 
 	// std::string valueConfig = IRCconfig.getConfigValue("DEBUG");
@@ -34,7 +33,8 @@ int main (int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	
-	srv->test();
+		
+	srv->treatment();
 
 	
 	srv->stop();

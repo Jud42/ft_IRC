@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
-Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) : 
-	_port(strtol(port, NULL, 10)), 
+Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :  
+	_port(atoi(port)), 
 	_pass(pass),
 	_IRCconfig(IRCconfig),
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
@@ -22,8 +22,7 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	{
 		this->getInfos();
 		this->listening();
-		this->monitoring();		
-		
+		this->monitoring();
 		
 	}
 	catch (std::exception &e)
