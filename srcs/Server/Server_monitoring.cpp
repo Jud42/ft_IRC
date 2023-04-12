@@ -24,17 +24,19 @@ bool Server::isClient(int fd) {
 
 	for (it = _client_fd.begin(); it != _client_fd.end(); it++)
 		if ()
-	
+
 }
 */
 void Server::monitoring( void )
 {
 	struct pollfd server = {_listener, POLLIN, 0};
 	_fds[_nb_clients] = server;
+
+
 	int	retpoll = -1;
 
 	while (true) {
-	
+
 		//wait evenement
 		retpoll = poll(_fds, _nb_clients + 1, TIMEOUT);
 		if (retpoll == 0)
@@ -49,8 +51,9 @@ void Server::monitoring( void )
 		if (_fds[0].revents & POLLIN) {
 		
 			std::cout << "total client: " << _nb_clients << std::endl;
+			std::cout << "je passe" << std::endl;
 			if (_nb_clients == MAX_CLIENTS)
-				break ;//manage max client 
+				break ;//manage max client
 
 			socklen_t addrlen = sizeof(_addrclients[_nb_clients]);
 			int client_fd = accept(_listener, &_addrclients[_nb_clients], &addrlen);
@@ -66,7 +69,7 @@ void Server::monitoring( void )
 		//check event on fd_client if there are a data available
 		for (int i = 1; i != _nb_clients + 1; i++) {
 
-			if (_fds[i].revents == POLLIN) {	
+			if (_fds[i].revents == POLLIN) {
 				std::cout << _fds[i].fd << std::endl;
 
 			/****/
@@ -76,8 +79,8 @@ void Server::monitoring( void )
 				if (res < 0)
 					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
 
-				std::cout << "res : " << res << std::endl;
-				std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
+				//std::cout << "res : " << res << std::endl;
+				std::cout << _fds[i].fd << "[Client->Server]" << this->_buffer << std::endl;
 
 				std::string command = this->parse(this->_buffer, _fds[i].fd);
 
@@ -103,7 +106,6 @@ void Server::monitoring( void )
 				{
 					// deconnecter le client
 					//continue;
-					break;
 				}
 
 				if (command.find("squit", 0) == 0)
@@ -118,6 +120,6 @@ void Server::monitoring( void )
 			/****/
 	}
 
-	//close(_listener);
-	//close() //all fd_client
+//	close(_listener);
+//	close() //all fd_client
 }
