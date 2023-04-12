@@ -76,5 +76,6 @@ class	Server
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
 		struct pollfd				_fds[MAX_CLIENTS + 1];
+		char 						_ipstr[INET6_ADDRSTRLEN];
 };
 #endif

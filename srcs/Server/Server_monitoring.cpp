@@ -5,6 +5,7 @@ void Server::monitoring( void )
 {
 	struct pollfd server = {_listener, POLLIN, 0};
 	_fds[_nb_client] = server;
+	
 	int	retpoll = -1;
 
 	while (true) {
@@ -17,7 +18,7 @@ void Server::monitoring( void )
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll()");
 
 		for (int i = 0; i < MAX_CLIENTS + 1; i++)
-			std::cout << "_fds fd: " << _fds[i].fd << "revents: " << _fds[i].revents << std::endl;
+			std::cout << "_fds fd: " << _fds[i].fd << " revents: " << _fds[i].revents << std::endl;
 
 		//check a new connexion
 		if (_fds[0].revents & POLLIN) {
@@ -53,8 +54,8 @@ void Server::monitoring( void )
 				if (res < 0)
 					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
 
-				std::cout << "res : " << res << std::endl;
-				std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
+				//std::cout << "res : " << res << std::endl;
+				std::cout << _fds[i].fd << "[Client->Server]" << this->_buffer << std::endl;
 
 				std::string command = this->parse(this->_buffer, _fds[i].fd);
 
@@ -80,7 +81,6 @@ void Server::monitoring( void )
 				{
 					// deconnecter le client
 					//continue;
-					break;
 				}
 
 				if (command.find("squit", 0) == 0)
@@ -95,6 +95,6 @@ void Server::monitoring( void )
 			/****/
 	}
 
-	//close(_listener);
-	//close() //all fd_client
+//	close(_listener);
+//	close() //all fd_client
 }
