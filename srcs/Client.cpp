@@ -1,10 +1,12 @@
 #include "Client.hpp"
 
-Client::Client(int client_fd, std::string client_data)
-: _modes(i), _canal(main), _clientFd(client_fd)
-{
+Client::Client(){}
 
-    std::string message = _buffer;
+Client::Client(int client_fd, char *client_data)
+: _modes("i"), _clientFd(client_fd)
+{
+	_canal.push_back("main");
+    std::string message = client_data;
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;
@@ -13,6 +15,8 @@ Client::Client(int client_fd, std::string client_data)
     std::string remains = "";
 
     int seg = 0;
+	std::string irc_cmd[3] = {"PASS", "NICK", "USER"};
+    std::string segment[10];
 
     while(remains != message)
     {
@@ -34,19 +38,19 @@ Client::Client(int client_fd, std::string client_data)
             if (segment[seg].find("PASS", 0) == 0)
             {
                 this->_password = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] PASS[" << pass << "] : " << newListener << "|" << NOC << std::endl;
+                std::cout << GRE << "[FEED Client] PASS[" << this->_password << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("NICK", 0) == 0)
             {
                 this->_nickname = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] NICK[" << nickname << "] : " << newListener << "|" << NOC << std::endl;
+                std::cout << GRE << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("USER", 0) == 0)
             {
                 this->_username = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
+                std::cout << GRE << "[FEED Client] USER[" << this->_username << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
         }
@@ -55,14 +59,15 @@ Client::Client(int client_fd, std::string client_data)
 
         if (segment[seg] != "")
             seg += 1;
+	}
 }
 
 Client::~Client()
 {
-	send(client_fd, "Goodbye", 8, 0);
+	send(this->_clientFd, "Goodbye", 8, 0);
 
     // Fermer la connexion avec le serveur IRC
-    close(client_fd);
+    close(this->_clientFd);
 
 }
 

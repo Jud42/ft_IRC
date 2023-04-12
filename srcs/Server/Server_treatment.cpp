@@ -4,18 +4,21 @@ void Server::treatment(int client_fd)
 {
     int res = 0;
 
-    // struct sockaddr client_addr;
-    // socklen_t client_addr_len;
+    //struct sockaddr client_addr;
+    //socklen_t client_addr_len;
 
-    // //Accept incomming communication
-    // int client_fd = accept(_listener, &client_addr, &client_addr_len);
+    //Accept incomming communication
 
-    // std::cout << "client_fd " << client_fd << std::endl;
+	int NewListener = 0;
+    //int newListener = accept(_listener, &client_addr, &client_addr_len);
 
-    // if (client_fd == -1)
-    // {
-    //     return;
-    // }
+    //std::cout << "NewListener " << newListener << std::endl;
+
+
+    if (client_fd == -1)
+    {
+        return;
+    }
 
     int i = 0;
 
@@ -35,10 +38,10 @@ void Server::treatment(int client_fd)
 
         if (res == 0)
         {
-            return;               /* Receive empty */
+            break;               /* Receive empty */
         }
         std::cout << "res : " << res << std::endl;
-        std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
+        std::cout << std::endl << client_fd << "[Client->Server]" << this->_buffer << std::endl;
 
         command = this->parse(this->_buffer, client_fd);
 

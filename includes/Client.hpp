@@ -4,30 +4,34 @@
 # include "define.hpp"
 # include <iostream>
 # include <string>
+# include "ConfigFile.hpp"
+# include "Server.hpp"
 
 class Client
 {
-private:
+	private:
 
-	std::string			_nickname;
-	std::string			_username;
-	std::string			_realname;
-	std::string			_password;
-	std::string			_modes;
-	std::vector<std::string>	_canal;
-	int					_clientFd;
+		std::string			_nickname;
+		std::string			_username;
+		// std::string			_realname;
+		std::string			_password;
+		std::string			_modes;
+		std::vector<std::string>	_canal;
+		int					_clientFd;
+		// struct sockaddr		_addrClient;
 
-public:
+	public:
 
-	void setNickname(std::string newNick);
-	std::string getNickname();
-	std::string getPassword();
-	std::string getModes();
-	std::vector<std::string>	getCanal();
-	int	getClientFd();
+		void setNickname(std::string newNick);
+		std::string getNickname();
+		std::string getPassword();
+		std::string getModes();
+		std::vector<std::string>	getCanal();
+		int	getClientFd();
 
-	Client(int client_fd, std::string client_data);
-	~Client();
+		Client();
+		Client(int client_fd, char *client_data);
+		~Client();
 };
 
 #endif

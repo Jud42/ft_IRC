@@ -1,10 +1,10 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+#include <sys/socket.h>
 #include <iostream>
 #include <cstdlib>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <cstring>
@@ -35,8 +35,7 @@ class	Server
 		~Server(void);
 	// Server_stop.cpp
 		void stop (void);
-	// Server_treatment.cpp
-		void treatment (int client_fd);
+
 	// Server_monitoring.cpp
 		void monitoring (void);
 
@@ -48,6 +47,10 @@ class	Server
 		void close_fd (int &fd, bool exception);
 	// Server_listening.cpp
 		void listening (void);
+	// Server_treatment.cpp
+		void treatment (int client_fd);
+	// Server_treatment_new.cpp creation new client
+		int treatment_new(int client_fd);
 
 
 	// Server_parse.cpp
@@ -72,5 +75,6 @@ class	Server
 		char 							_hostname[HOSTNAME_SIZE];
 		int								_efd;
 		char							_buffer[BUFFER_SIZE];
+		struct pollfd					_fds[MAX_CLIENTS + 1];
 };
 #endif

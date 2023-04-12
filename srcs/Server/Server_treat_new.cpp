@@ -22,22 +22,22 @@ int Server::treatment_new(int client_fd)
 	}
 	std::cout << "res : " << res << std::endl;
 	std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
-	Client temp = new Client(client_fd, _buffer);
-	if (temp.getPassword() != this->_pass)
+	Client *temp = new Client(client_fd, _buffer);
+	if (temp->getPassword() != this->_pass)
 	{
 		send(client_fd, "ERR_PASSWDMISMATCH", 19, 0);
-		std::cout << "Erreur d'authentification : mot de passe invalide" << std::endl;
+		std::cout << "Erreur d'authentification : mot de passe invalide" << temp->getPassword() << this->_pass << std::endl;
 		delete temp;
 		return (1);
 	}
-	if (_clientList.count(temp.getNickname()) > 0)
+	if (_clientList.count(temp->getNickname()) > 0)
 	{
 		send(client_fd, "ERR_NICKNAMEINUSE", 18, 0);
 		std::cout << "Nickname already used" << std::endl;
 		delete temp;
 		return (1);
 	}
-	_clientList[temp.getNickname()] = temp;
+	_clientList[temp->getNickname()] = *temp;
 
     std::cout << "------------------------------------- " <<  std::endl;
 	return(0);

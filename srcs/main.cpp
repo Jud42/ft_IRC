@@ -34,8 +34,8 @@ int main (int argc, char *argv[])
 	}
 
 
+//	srv->treatment();
 	srv->monitoring();
-
 
 	srv->stop();
 	delete srv;
