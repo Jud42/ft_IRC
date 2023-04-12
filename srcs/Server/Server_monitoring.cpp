@@ -48,7 +48,7 @@ void Server::monitoring( void )
 				int res = 1;
 
 				memset(&_buffer,0,256);
-				int res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
+				res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
 				//std::cout << "res : " << res << std::endl;
 				if (res < 0)
 					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
