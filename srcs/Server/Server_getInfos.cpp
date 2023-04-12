@@ -52,13 +52,14 @@ void Server::getInfos(void)
 
 	// objective is to retrieve the server ip address 
 	// but the result is giving 0.0.0.0 ???
-	void* addr_type;
-    char ipstr[INET6_ADDRSTRLEN];
-    struct sockaddr_in* ipv4 = (struct sockaddr_in*) _addrs->ai_addr;
-	
-    addr_type = &(ipv4->sin_addr);
-	std::cout << "addr_type " << addr_type << ": " << std::endl;
+	for (struct addrinfo* p = _addrs; p != nullptr; p = p->ai_next)
+	{
+		char ipstr[INET6_ADDRSTRLEN];
+		void* addr;
+		struct sockaddr_in* ipv4 = reinterpret_cast<struct sockaddr_in*>(p->ai_addr);
+		addr = &(ipv4->sin_addr);
 
-	inet_ntop(AF_INET, &addr_type, ipstr, sizeof ipstr);
-    std::cout << "IP address of " << _hostname << ": " << ipstr << std::endl;
+		inet_ntop(s_addrinfo.ai_family, addr, ipstr, sizeof ipstr);
+		std::cout << "IP address: " << ipstr << '\n';
+	}
 }

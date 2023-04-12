@@ -75,9 +75,13 @@ class	Server
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
 		struct pollfd				_fds[MAX_CLIENTS + 1];
+<<<<<<< HEAD
+		char 						_ipstr[INET6_ADDRSTRLEN];
+=======
 
 		//data clients temp
 		std::vector< int >			_client_fd;
 		struct sockaddr				_addrclients[MAX_CLIENTS];
+>>>>>>> main
 };
 #endif

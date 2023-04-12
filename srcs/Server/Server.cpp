@@ -37,12 +37,21 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	std::cout << std::left << std::setw(15) <<"Hostname : " << _hostname << std::endl;
 	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
 
+<<<<<<< HEAD
+	for (int i = 0; i < MAX_CLIENTS + 1; i++)
+	{
+=======
 	for (int i = 0; i < MAX_CLIENTS + 1; i++) {
+>>>>>>> main
 		_fds[i].fd = -1;
 		_fds[i].events = -1;
 		_fds[i].revents = -1;
 	}
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> main
 }
 
 Server::~Server( void )
