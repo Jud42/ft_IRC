@@ -30,7 +30,7 @@
 
 class ConfigFile;
 
-class	Server 
+class	Server
 {
 
 	public:
@@ -38,7 +38,7 @@ class	Server
 		Server(const char * port, const char *pass, ConfigFile *IRCconfig);
 		~Server(void);
 	// Server_stop.cpp
-		void stop (void);			
+		void stop (void);
 
 	// Server_monitoring.cpp
 		void monitoring (void);
@@ -60,10 +60,10 @@ class	Server
 
 	// cmd CAP - answer welcome
 		void Cmds_CAP(int const newListener, std::string const nickname);
-	
+
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const newListener);
-	
+
 		int							_port;
 		std::string					_pass;
 		ConfigFile				*	_IRCconfig;
@@ -75,13 +75,9 @@ class	Server
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
 		struct pollfd				_fds[MAX_CLIENTS + 1];
-<<<<<<< HEAD
-		char 						_ipstr[INET6_ADDRSTRLEN];
-=======
 
 		//data clients temp
 		std::vector< int >			_client_fd;
 		struct sockaddr				_addrclients[MAX_CLIENTS];
->>>>>>> main
 };
 #endif

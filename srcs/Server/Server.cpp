@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
-Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :  
-	_port(atoi(port)), 
+Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
+	_port(atoi(port)),
 	_pass(pass),
 	_IRCconfig(IRCconfig),
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
@@ -25,33 +25,23 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 		this->getInfos();
 		this->listening();
 		//this->monitoring();
-		
+
 	}
 	catch (std::exception &e)
 	{
 		std::cerr << "[SERVER] - Exception catched : " << e.what() << std::endl;
 		this->stop();
-		throw e;		
+		throw e;
 	}
 	std::cout << "[SERVER] - Server constructed with success" << std::endl;
 	std::cout << std::left << std::setw(15) <<"Hostname : " << _hostname << std::endl;
 	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
 
-<<<<<<< HEAD
-	for (int i = 0; i < MAX_CLIENTS + 1; i++)
-	{
-=======
 	for (int i = 0; i < MAX_CLIENTS + 1; i++) {
->>>>>>> main
 		_fds[i].fd = -1;
 		_fds[i].events = -1;
 		_fds[i].revents = -1;
 	}
-<<<<<<< HEAD
-	
-=======
-
->>>>>>> main
 }
 
 Server::~Server( void )

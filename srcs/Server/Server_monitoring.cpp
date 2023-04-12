@@ -7,19 +7,19 @@ bool Server::isClient(int fd) {
 
 	for (it = _client_fd.begin(); it != _client_fd.end(); it++)
 		if ()
-	
+
 }
 */
 void Server::monitoring( void )
 {
 	struct pollfd server = {_listener, POLLIN, 0};
-	_fds[_nb_client] = server;
-	
+	_fds[_nb_clients] = server;
+
 
 	int	retpoll = -1;
 
 	while (true) {
-	
+
 		//wait evenement
 		retpoll = poll(_fds, _nb_clients + 1, TIMEOUT);
 		if (retpoll == 0)
@@ -32,10 +32,10 @@ void Server::monitoring( void )
 
 		//check a new connexion
 		if (_fds[0].revents & POLLIN) {
-		
+
 			std::cout << "je passe" << std::endl;
 			if (_nb_clients == MAX_CLIENTS)
-				break ;//manage max client 
+				break ;//manage max client
 
 			socklen_t addrlen = sizeof(_addrclients[_nb_clients]);
 			int client_fd = accept(_listener, &_addrclients[_nb_clients], &addrlen);
@@ -52,7 +52,7 @@ void Server::monitoring( void )
 		//check event on fd_client if there are a data available
 		for (int i = 1; i != _nb_clients + 1; i++) {
 
-			if (_fds[i].revents == POLLIN) {	
+			if (_fds[i].revents == POLLIN) {
 				std::cout << _fds[i].fd << std::endl;
 
 			/****/
