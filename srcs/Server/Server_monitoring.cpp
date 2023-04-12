@@ -19,7 +19,7 @@ void Server::monitoring( void )
 
 	std::cout << test.fd << std::endl;
 
-	while (true) 
+	while (true)
 	{
 		//wait evenement
 		std::cout << "start" << std::endl;
@@ -30,7 +30,7 @@ void Server::monitoring( void )
 		std::cout << "POLLIN " << POLLIN << std::endl;
 		std::cout << "fds.front()->fd " << fds.front()->fd << std::endl;
 
-		if (fds.front()->events & POLLIN) 
+		if (fds.front()->events & POLLIN)
 		{
 			std::cout << "je passe" << std::endl;
 			if (_nb_client == MAX_CLIENTS)
@@ -41,7 +41,7 @@ void Server::monitoring( void )
 			if (client_fd == -1)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
 			//add new fd_client in vector pollfd
-			treatment(_listener);
+			treatment(client_fd);
 			pollfd *pollclient = new pollfd;
 			pollclient->fd = client_fd;
 			pollclient->events = POLLIN;

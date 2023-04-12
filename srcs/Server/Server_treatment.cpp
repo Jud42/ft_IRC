@@ -62,13 +62,21 @@ void Server::treatment(int client_fd)
 
         if (command.find("QUIT", 0) == 0)
         {
-            // deconnecter le client
-            //continue;
+
+			// std::string nick = _fd_nick_list[client_fd];
+			// delete(_clientList[nick]); //egalement clot le fd
+			// _clientList.erase(nick);
+            // _fd_nick_list.erase(client_fd);
+            // //continue;
         }
 
         if (command.find("squit", 0) == 0)
         {
-            // deconnecter le client
+			// std::string nick = _fd_nick_list[client_fd];
+			// delete(_clientList[nick]); //egalement clot le fd
+			// _clientList.erase(nick);
+            // _fd_nick_list.erase(client_fd);
+            // // deconnecter le client
             // ;
         }
 

@@ -1,8 +1,14 @@
-#include "Client.hpp"
+#include "Server.hpp"
 
-Client::Client(int client_fd, std::string client_data)
-: _modes(i), _canal(main), _clientFd(client_fd)
+
+
+std::string	Server::parse_new(const std::string _buffer, const int newListener)
 {
+    std::string irc_cmd[3] = {"PASS", "NICK", "USER"};
+    std::string segment[10];
+    std::string nickname;
+    std::string pass;
+    std::string user;
 
     std::string message = _buffer;
 	std::cout << RED << "START PARSE" << std::endl;
@@ -33,19 +39,19 @@ Client::Client(int client_fd, std::string client_data)
             // feed the client definition : to be added
             if (segment[seg].find("PASS", 0) == 0)
             {
-                this->_password = segment[seg].substr(5, segment[seg].size());
+                pass = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] PASS[" << pass << "] : " << newListener << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("NICK", 0) == 0)
             {
-                this->_nickname = segment[seg].substr(5, segment[seg].size());
+                nickname = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] NICK[" << nickname << "] : " << newListener << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("USER", 0) == 0)
             {
-                this->_username = segment[seg].substr(5, segment[seg].size());
+                user = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
             }
 
@@ -55,55 +61,11 @@ Client::Client(int client_fd, std::string client_data)
 
         if (segment[seg] != "")
             seg += 1;
-}
 
-Client::~Client()
-{
-	send(client_fd, "Goodbye", 8, 0);
+    }
 
-    // Fermer la connexion avec le serveur IRC
-    close(client_fd);
+
+
+    return segment[0];
 
 }
-
-void Client::setNickname(std::string newNick)
-{
-	this->_nickname = newNick;
-}
-
-std::string Client::getNickname()
-{
-	return(this->_nickname);
-}
-
-std::string Client::getPassword()
-{
-	return(this->_password);
-}
-
-std::string Client::getModes()
-{
-	return(this->_modes);
-}
-
-std::vector<std::string> Client::getCanal()
-{
-	return(this->_canal);
-}
-
-int Client::getClientFd()
-{
-	return(this->_clientFd);
-}
-
-
-
-/*
-
-client_data exemple:
-
-CAP LS
-NICK vhaefeli
-USER vhaefeli vhaefeli c1r4s1.42lausanne.ch :Vanessa Haefeli
-
-*/

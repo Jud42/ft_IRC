@@ -21,8 +21,10 @@
 #include "to_str.hpp"
 #include "define.hpp"
 #include "ConfigFile.hpp"
+#include "Client.hpp"
 
 class ConfigFile;
+class Client;
 
 class	Server
 {
@@ -57,17 +59,18 @@ class	Server
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const newListener);
 
-		int							_port;
-		std::string					_pass;
-		ConfigFile				*	_IRCconfig;
-		std::string					_oper_pass;
-		struct addrinfo			*	_addrs;
-		int 						_listener;
-		std::vector< int >			_client_fd;
-
-		int							_nb_client;
-		char 						_hostname[HOSTNAME_SIZE];
-		int							_efd;
-		char						_buffer[BUFFER_SIZE];
+		int								_port;
+		std::string						_pass;
+		ConfigFile					*	_IRCconfig;
+		std::string						_oper_pass;
+		struct addrinfo				*	_addrs;
+		int 							_listener;
+		std::vector< int >				_client_fd;
+		std::map<std::string, Client>	_clientList;
+		std::map<int, std::string>		_fd_nick_list;
+		int								_nb_client;
+		char 							_hostname[HOSTNAME_SIZE];
+		int								_efd;
+		char							_buffer[BUFFER_SIZE];
 };
 #endif

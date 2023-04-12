@@ -70,7 +70,7 @@ Les paramètres de la fonction sont les suivants :
 
 La fonction renvoie le nombre d'octets de données reçus, qui peut être inférieur à la taille maximale spécifiée dans len. Si elle renvoie une valeur de 0, cela indique que la connexion a été fermée par le côté distant. Si elle renvoie -1, cela indique qu'une erreur s'est produite et la raison de l'erreur peut être récupérée en appelant la fonction errno.
 
-# quelle soit les toutes premieres donnee qu'envoie un client lors de la connection
+# quelle sont les toutes premieres donnee qu'envoie un client lors de la connection
 
 Lorsqu'un client se connecte à un serveur IRC, il envoie une série de messages au serveur pour établir la connexion et s'identifier auprès du serveur. Voici les premiers messages envoyés par un client lorsqu'il se connecte à un serveur IRC :
 
@@ -100,7 +100,8 @@ Le client envoie un message USER pour fournir des informations d'identification 
 Une fois que ces messages ont été envoyés avec succès, le serveur répondra avec un message 001 pour confirmer la connexion et donner la bienvenue au client sur le serveur.
 
 
-#std::istringstream
+# std::istringstream
+
 std::istringstream est une classe de la bibliothèque standard C++ qui permet de traiter une chaîne de caractères comme un flux d'entrée, de la même manière que std::cin peut être utilisé pour traiter l'entrée à partir de la console.
 
 La classe std::istringstream est définie dans l'en-tête <sstream> et hérite de la classe std::basic_istringstream, qui est un tampon d'entrée basé sur une chaîne de caractères (std::basic_string).
