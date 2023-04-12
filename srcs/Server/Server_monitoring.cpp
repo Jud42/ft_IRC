@@ -13,6 +13,7 @@ void Server::monitoring( void )
 	pollfd server = {_listener, POLLIN, 0};
 	fds.push_back(&server);
 
+	std::cout << "fd serveur " << server.fd << std::endl;
 	pollfd test;
 	memset(&test, 0, sizeof(test));
 
@@ -21,10 +22,13 @@ void Server::monitoring( void )
 	while (true) {
 
 		//wait evenement
+		std::cout << "start" << std::endl;
 		if (poll(*fds.data(), fds.size(), TIMEOUT) <= 0)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll() failed: timeout");
 		std::cout << "poll activation" << std::endl;
 		//iterate each fd for check event
+		std::cout << "POLLIN" << POLLIN << std::endl;
+		std::cout << "fds.front()->revents" << fds.front()->revents << std::endl;
 
 		if (fds.front()->revents & POLLIN) {
 
@@ -36,31 +40,40 @@ void Server::monitoring( void )
 			std::cout << "new client_fd:" << client_fd << std::endl;
 			if (client_fd == -1)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
-			treatment(client_fd);
+			std::cout << "nb client" << _nb_client << std::endl;
 			//add new fd_client in vector pollfd
-			pollfd *pollclient = new pollfd;
-			pollclient->fd = client_fd;
-			pollclient->events = POLLIN;
-			pollclient->revents = 0;
-			fds.push_back(pollclient);
-			_nb_client++;
-			std::string a("welcome");
-			send(client_fd, &a, a.size(), 0);
+			if (client_fd > (_nb_client + 3))
+			{
+				std::cout << "nb client" << _nb_client << std::endl;
+				treatment(client_fd);
+				pollfd *pollclient = new pollfd;
+				pollclient->fd = client_fd;
+				pollclient->events = POLLIN;
+				pollclient->revents = 0;
+				fds.push_back(pollclient);
+				_nb_client++;
+				std::string a("welcome");
+				// send(client_fd, &a, a.size(), 0);
+			// }
+			else
+			{
+				std::vector< pollfd * >::iterator it = fds.begin();
+				std::vector< pollfd * >::iterator it_end = fds.end();
+				for (it += 1; it != it_end; it++) {
+				std::cout << "*fd:" << (*it)->fd << std::endl;
+					if ((*it)->revents == POLLIN)
+					{
+						std::cout << "_fd:" << (*it)->fd << std::endl;
+						treatment((*it)->fd);
+						std::cout << "receive" << std::endl;
+					}
+				}
+			}
 			// continue ;
 
 		}
 
-		std::vector< pollfd * >::iterator it = fds.begin();
-		std::vector< pollfd * >::iterator it_end = fds.end();
-		for (it += 1; it != it_end; it++) {
-			std::cout << "*fd:" << (*it)->fd << std::endl;
-			if ((*it)->revents == POLLIN)
-			{
-				std::cout << "_fd:" << (*it)->fd << std::endl;
-				treatment((*it)->fd);
-				std::cout << "receeive" << std::endl;
-			}
-		}
+
 	}
 
 	//close(_listener);
