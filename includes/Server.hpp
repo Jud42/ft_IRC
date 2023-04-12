@@ -68,11 +68,14 @@ class	Server
 		std::string					_oper_pass;
 		struct addrinfo			*	_addrs;
 		int 						_listener;
-		std::vector< int >			_client_fd;
-		int							_nb_client;
+		int							_nb_clients;
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
 		struct pollfd				_fds[MAX_CLIENTS + 1];
+
+		//data clients temp
+		std::vector< int >			_client_fd;
+		struct sockaddr				_addrclients[MAX_CLIENTS];
 };
 #endif
