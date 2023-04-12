@@ -27,8 +27,10 @@
 #include "to_str.hpp"
 #include "define.hpp"
 #include "ConfigFile.hpp"
+#include "Client.hpp"
 
 class ConfigFile;
+class Client;
 
 class	Server
 {
@@ -53,6 +55,8 @@ class	Server
 		void listening (void);
 	// Server_treatment.cpp
 		void treatment (int client_fd);
+	// Server_treatment_new.cpp creation new client
+		int treatment_new(int client_fd);
 
 
 	// Server_parse.cpp
@@ -64,20 +68,22 @@ class	Server
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const newListener);
 
-		int							_port;
-		std::string					_pass;
-		ConfigFile				*	_IRCconfig;
-		std::string					_oper_pass;
-		struct addrinfo			*	_addrs;
-		int 						_listener;
-		int							_nb_clients;
-		char 						_hostname[HOSTNAME_SIZE];
-		int							_efd;
-		char						_buffer[BUFFER_SIZE];
-		struct pollfd				_fds[MAX_CLIENTS + 1];
+		int								_port;
+		std::string						_pass;
+		ConfigFile					*	_IRCconfig;
+		std::string						_oper_pass;
+		struct addrinfo				*	_addrs;
+		int 							_listener;
+		int								_nb_clients;
+		char 							_hostname[HOSTNAME_SIZE];
+		int								_efd;
+		char							_buffer[BUFFER_SIZE];
+		struct pollfd					_fds[MAX_CLIENTS + 1];
+		std::map<std::string, Client>	_clientList;
+		std::map<int, std::string>		_fd_nick_list;
 
 		//data clients temp
-		std::vector< int >			_client_fd;
-		struct sockaddr				_addrclients[MAX_CLIENTS];
+		std::vector< int >				_client_fd;
+		struct sockaddr					_addrclients[MAX_CLIENTS];
 };
 #endif
