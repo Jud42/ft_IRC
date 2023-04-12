@@ -29,6 +29,8 @@ class Client
 		std::vector<std::string>	getCanal();
 		int	getClientFd();
 
+		void setModes(std::string mode);
+
 		Client();
 		Client(int client_fd, char *client_data);
 		~Client();

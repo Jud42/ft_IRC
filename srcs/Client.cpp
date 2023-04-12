@@ -66,10 +66,8 @@ Client::Client(int client_fd, char *client_data)
 Client::~Client()
 {
 	send(this->_clientFd, "Goodbye", 8, 0);
-
+	std::cout << "destructeur client fd " << this->_clientFd << std::endl;
     // Fermer la connexion avec le serveur IRC
-    close(this->_clientFd);
-
 }
 
 void Client::setNickname(std::string newNick)
@@ -102,6 +100,10 @@ int Client::getClientFd()
 	return(this->_clientFd);
 }
 
+void Client::setModes(std::string mode)
+{
+	this->_modes = mode;
+}
 
 
 /*

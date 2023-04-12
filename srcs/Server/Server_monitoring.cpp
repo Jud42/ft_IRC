@@ -43,26 +43,23 @@ void Server::monitoring( void )
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
 			if (!this->treatment_new(client_fd))
 			{
-
 				_fds[_nb_clients + 1].fd = client_fd;
 				_fds[_nb_clients + 1].events = POLLIN;
 				_nb_clients++;
 				_client_fd.push_back(client_fd);
-				std::cout  << "client cree " << _fd_nick_list[client_fd] << std::endl;
+				std::cout  << "fd " << client_fd << "client cree " << _fd_nick_list[client_fd] << std::endl;
 			}
-			// memset(&_buffer,0,256);
-			// recv(_fds[0].fd, _buffer, sizeof(_buffer), 0);
-			std::cout << "buffer : " << _buffer << std::endl;
 			continue;
 		}
 
-		std::cout << "buffer avant recv: " << _buffer << std::endl;
+		// std::cout << "buffer avant recv: " << _buffer << std::endl;
 
 		//check event on fd_client if there are a data available
 		for (int i = 1; i != _nb_clients + 1; i++) {
 
 			if (_fds[i].revents == POLLIN) {
 				std::cout << _fds[i].fd << std::endl;
+				std::string nick = this->_fd_nick_list[_fds[i].fd];
 
 			/****/
 				memset(&_buffer,0,256);
@@ -73,12 +70,9 @@ void Server::monitoring( void )
 
 				if (res == 0)
 				{
-					// supprimer le client et enlever la donner des 2 map
 					std::cout << "deconnection du fd : " << _fds[i].fd << std::endl;
-					close(_fds[i].fd);
+					this->close_fd(_fds[i].fd, 0);
 					_fds[i].revents = -1;
-					exit(0);
-
 				}
 				//std::cout << "res : " << res << std::endl;
 				std::cout << _fds[i].fd << "[Client->Server]" << this->_buffer << std::endl;
@@ -103,12 +97,18 @@ void Server::monitoring( void )
 
 				}
 
+				if (command.find("OPER", 0) == 0)
+				{
+					// controle password
+					this->_clientList[nick].setModes("o");
+				}
+
 				if (command.find("QUIT", 0) == 0)
 				{
 					// deconnecter le client
 					//continue;
 					std::cout << "QUIT deconnection du fd : " << _fds[i].fd << std::endl;
-					close(_fds[i].fd);
+					this->close_fd(_fds[i].fd, 0);
 					_fds[i].revents = -1;
 					exit(0);
 				}
@@ -121,7 +121,15 @@ void Server::monitoring( void )
 				std::cout << "------------------------------------- " <<  std::endl;
 			}
 			else if (_fds[i].revents == 17)
-				exit(0);
+			{
+				std::string nick = this->_fd_nick_list[_fds[i].fd];
+				std::string mode = this->_clientList[nick].getModes();
+				std::cout << "QUIT deconnection du fd : " << _fds[i].fd << std::endl;
+				this->close_fd(_fds[i].fd, 0);
+				_fds[i].revents = -1;
+				if (mode == "o")
+					exit(0);
+			}
 		}
 
 			/****/
