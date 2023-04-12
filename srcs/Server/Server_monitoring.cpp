@@ -51,6 +51,8 @@ void Server::monitoring( void )
 		if (_fds[0].revents & POLLIN) {
 		
 			std::cout << "total client: " << _nb_clients << std::endl;
+		if (_fds[0].revents & POLLIN)
+		{
 			std::cout << "je passe" << std::endl;
 			if (_nb_clients == MAX_CLIENTS)
 				break ;//manage max client
@@ -64,7 +66,22 @@ void Server::monitoring( void )
 			_nb_clients++;
 			_client_fd.push_back(client_fd);
 			continue ;
+			if (!this->treatment_new(client_fd))
+			{
+
+				_fds[_nb_clients + 1].fd = client_fd;
+				_fds[_nb_clients + 1].events = POLLIN;
+				_nb_clients++;
+				_client_fd.push_back(client_fd);
+				std::cout  << "client cree " << _fd_nick_list[client_fd] << std::endl;
+			}
+			// memset(&_buffer,0,256);
+			// recv(_fds[0].fd, _buffer, sizeof(_buffer), 0);
+			std::cout << "buffer : " << _buffer << std::endl;
+			continue;
 		}
+
+		std::cout << "buffer avant recv: " << _buffer << std::endl;
 
 		//check event on fd_client if there are a data available
 		for (int i = 1; i != _nb_clients + 1; i++) {
@@ -75,21 +92,30 @@ void Server::monitoring( void )
 			/****/
 				memset(&_buffer,0,256);
 				int res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
-				//std::cout << "res : " << res << std::endl;
+				std::cout << "res : " << res << std::endl;
 				if (res < 0)
 					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
 
+				if (res == 0)
+				{
+					// supprimer le client et enlever la donner des 2 map
+					std::cout << "deconnection du fd : " << _fds[i].fd << std::endl;
+					close(_fds[i].fd);
+					_fds[i].revents = -1;
+					exit(0);
+
+				}
 				//std::cout << "res : " << res << std::endl;
 				std::cout << _fds[i].fd << "[Client->Server]" << this->_buffer << std::endl;
 
 				std::string command = this->parse(this->_buffer, _fds[i].fd);
 
 				// temp value, to be replaced by a call to client
-				std::string nickname = "exo";
+				// std::string nickname = "exo";
 
 				if (command.find("CAP ",0) == 0)
 				{
-					this->Cmds_CAP(_fds[i].fd, nickname);
+					this->Cmds_CAP(_fds[i].fd, _fd_nick_list[_fds[i].fd]);
 				}
 
 				if (command.find("PING", 0) == 0)
@@ -106,6 +132,10 @@ void Server::monitoring( void )
 				{
 					// deconnecter le client
 					//continue;
+					std::cout << "QUIT deconnection du fd : " << _fds[i].fd << std::endl;
+					close(_fds[i].fd);
+					_fds[i].revents = -1;
+					exit(0);
 				}
 
 				if (command.find("squit", 0) == 0)
@@ -115,6 +145,8 @@ void Server::monitoring( void )
 				}
 				std::cout << "------------------------------------- " <<  std::endl;
 			}
+			else if (_fds[i].revents == 17)
+				exit(0);
 		}
 
 			/****/

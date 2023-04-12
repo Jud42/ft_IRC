@@ -9,5 +9,7 @@ srcs/Server/Server_closeFD.cpp \
 srcs/Server/Server_stop.cpp \
 srcs/Server/Server_parse.cpp \
 srcs/Cmds/Cmds_CAP.cpp \
-srcs/Cmds/Cmds_ping.cpp 
+srcs/Cmds/Cmds_ping.cpp \
+srcs/Server/Server_treat_new.cpp \
+srcs/Client.cpp
 #srcs/Server/Server_treatment.cpp \
