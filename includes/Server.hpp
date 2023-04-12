@@ -61,7 +61,6 @@ class	Server
 
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const newListener);
-<<<<<<< HEAD
 
 		int								_port;
 		std::string						_pass;
@@ -72,28 +71,11 @@ class	Server
 		std::vector< int >				_client_fd;
 		std::map<std::string, Client>	_clientList;
 		std::map<int, std::string>		_fd_nick_list;
-		int								_nb_client;
+		int								_nb_clients;
 		char 							_hostname[HOSTNAME_SIZE];
 		int								_efd;
 		char							_buffer[BUFFER_SIZE];
 		struct pollfd					_fds[MAX_CLIENTS + 1];
-=======
-	
-		int							_port;
-		std::string					_pass;
-		ConfigFile				*	_IRCconfig;
-		std::string					_oper_pass;
-		struct addrinfo			*	_addrs;
-		int 						_listener;
-		int							_nb_clients;
-		char 						_hostname[HOSTNAME_SIZE];
-		int							_efd;
-		char						_buffer[BUFFER_SIZE];
-		struct pollfd				_fds[MAX_CLIENTS + 1];
-
-		//data clients temp
-		std::vector< int >			_client_fd;
-		struct sockaddr				_addrclients[MAX_CLIENTS];
->>>>>>> 6540c079bd55af3d910656544d4d3696bf3c8463
+		struct sockaddr					_addrclients[MAX_CLIENTS];
 };
 #endif

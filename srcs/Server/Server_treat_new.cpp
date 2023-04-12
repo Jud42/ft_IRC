@@ -6,7 +6,7 @@ int Server::treatment_new(int client_fd)
 
     std::string command = "";
 
-    std::cout << "------------------------------------- " <<  std::endl;
+    std::cout << "creation client fd " << client_fd << std::endl;
 	memset(&_buffer,0,256);
 	//std::cout << "client_fd : " << client_fd << std::endl;
 	res = recv(client_fd, _buffer, sizeof(_buffer), 0);

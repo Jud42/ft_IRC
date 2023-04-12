@@ -7,8 +7,8 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
 	_addrs(NULL),
 	_listener(-1),
-	_nb_clients(0),
 	_client_fd(),
+	_nb_clients(0),
 	_addrclients()
 {
 	// http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml
@@ -39,12 +39,9 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 
 	for (int i = 0; i < MAX_CLIENTS + 1; i++) {
 		_fds[i].fd = -1;
-<<<<<<< HEAD
-=======
 		_fds[i].events = -1;
 		_fds[i].revents = -1;
 	}
->>>>>>> 6540c079bd55af3d910656544d4d3696bf3c8463
 
 }
 

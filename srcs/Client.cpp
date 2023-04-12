@@ -59,6 +59,7 @@ Client::Client(int client_fd, char *client_data)
 
         if (segment[seg] != "")
             seg += 1;
+
 	}
 }
 
