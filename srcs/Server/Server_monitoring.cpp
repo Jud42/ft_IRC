@@ -1,17 +1,26 @@
 
 #include "Server.hpp"
 #include <vector>
+/*
+bool Server::isClient(int fd) {
 
+	std::vector< int >::iterator it;
+
+	for (it = _client_fd.begin(); it != _client_fd.end(); it++)
+		if ()
+	
+}
+*/
 void Server::monitoring( void )
 {
 	struct pollfd server = {_listener, POLLIN, 0};
-	_fds[_nb_client] = server;
+	_fds[_nb_clients] = server;
 	int	retpoll = -1;
 
 	while (true)
 	{
 		//wait evenement
-		retpoll = poll(_fds, _nb_client + 1, TIMEOUT);
+		retpoll = poll(_fds, _nb_clients + 1, TIMEOUT);
 		if (retpoll == 0)
 				throw std::runtime_error("[SERVER_MONITORING] - poll() timeout");
 		else if (retpoll < 1)
@@ -24,6 +33,7 @@ void Server::monitoring( void )
 		if (_fds[0].revents & POLLIN) {
 
 			std::cout << "je passe" << std::endl;
+<<<<<<< HEAD
 			if (_nb_client == MAX_CLIENTS)
 				break ;//manage max client
 
@@ -42,18 +52,32 @@ void Server::monitoring( void )
 				continue ;
 			}
 			//pollfd *pollclient = new pollfd;
+=======
+			if (_nb_clients == MAX_CLIENTS)
+				break ;//manage max client 
+
+			socklen_t addrlen = sizeof(_addrclients[_nb_clients]);
+			int client_fd = accept(_listener, &_addrclients[_nb_clients], &addrlen);
+			if (client_fd == -1)
+				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
+
+			_fds[_nb_clients + 1].fd = client_fd;
+			_fds[_nb_clients + 1].events = POLLIN;
+			_nb_clients++;
+			_client_fd.push_back(client_fd);
+			continue ;
+>>>>>>> 6540c079bd55af3d910656544d4d3696bf3c8463
 		}
 
-		for (int i = 1; i != _nb_client + 1; i++) {
+		//check event on fd_client if there are a data available
+		for (int i = 1; i != _nb_clients + 1; i++) {
 
 			if (_fds[i].revents == POLLIN) {
 				std::cout << _fds[i].fd << std::endl;
 
 			/****/
-				int res = 1;
-
 				memset(&_buffer,0,256);
-				res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
+				int res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
 				//std::cout << "res : " << res << std::endl;
 				if (res < 0)
 					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
