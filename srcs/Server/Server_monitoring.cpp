@@ -4,6 +4,23 @@
 bool Server::isClient(int fd) {
 
 	std::vector< int >::iterator it;
+	struct sockaddr_in client_addr;
+    socklen_t client_addr_len = sizeof(client_addr);
+
+    // Obtenir les informations d'adresse et de port pour le socket client
+    if (getpeername(fd, (struct sockaddr*)&client_addr, &client_addr_len) == -1) {
+        std::cerr << "Erreur lors de l'appel de getpeername\n";
+        return 1;
+    }
+
+    // Convertir l'adresse IP binaire en chaîne de caractères
+    char client_ip_str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(client_addr.sin_addr), client_ip_str, INET_ADDRSTRLEN);
+
+    // Afficher les informations d'adresse et de port pour le socket client
+    std::cout << "Adresse IP du client : " << client_ip_str << "\n";
+    std::cout << "Numéro de port du client : " << ntohs(client_addr.sin_port) << "\n";
+
 
 	for (it = _client_fd.begin(); it != _client_fd.end(); it++)
 		if ()
@@ -26,12 +43,12 @@ void Server::monitoring( void )
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll()");
 
 		for (int i = 0; i < MAX_CLIENTS + 1; i++)
-			std::cout << "_fds fd: " << _fds[i].fd << "revents: " << _fds[i].revents << std::endl;
+			std::cout << "_fds fd: " << _fds[i].fd << " revents: " << _fds[i].revents << std::endl;
 
 		//check a new connexion
 		if (_fds[0].revents & POLLIN) {
 		
-			std::cout << "je passe" << std::endl;
+			std::cout << "total client: " << _nb_clients << std::endl;
 			if (_nb_clients == MAX_CLIENTS)
 				break ;//manage max client 
 
@@ -39,7 +56,6 @@ void Server::monitoring( void )
 			int client_fd = accept(_listener, &_addrclients[_nb_clients], &addrlen);
 			if (client_fd == -1)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
-
 			_fds[_nb_clients + 1].fd = client_fd;
 			_fds[_nb_clients + 1].events = POLLIN;
 			_nb_clients++;
