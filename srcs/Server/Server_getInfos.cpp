@@ -60,5 +60,4 @@ void Server::getInfos(void)
 
 	inet_ntop(AF_INET, addr_type, ipstr, sizeof ipstr);
     std::cout << "IP address of " << _hostname << ": " << ipstr << std::endl;
-
 }

@@ -8,7 +8,7 @@ void Server::treatment(void)
     socklen_t client_addr_len;
 
     //Accept incomming communication
-    int newListener = accept(_listener, &client_addr, &client_addr_len);
+	int NewListener = 0;
 
     std::cout << "NewListener " << newListener << std::endl;
 

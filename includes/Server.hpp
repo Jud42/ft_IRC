@@ -7,10 +7,10 @@
 #define		BLU	"\033[34;1m"
 #define		NOC "\033[0m"
 
+#include <sys/socket.h>
 #include <iostream>
 #include <cstdlib>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <cstring>
@@ -73,5 +73,6 @@ class	Server
 		char 						_hostname[HOSTNAME_SIZE];
 		int							_efd;
 		char						_buffer[BUFFER_SIZE];
+		struct pollfd				_fds[MAX_CLIENTS + 1];
 };
 #endif

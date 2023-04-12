@@ -3,59 +3,96 @@
 
 void Server::monitoring( void )
 {
-	// Attendre une connexion entrante
-    //struct sockaddr_in client_addr;
-    //socklen_t client_addr_len = sizeof(client_addr);
-    
-	std::vector< pollfd * > fds;
-	//struct pollfd pollserver = {_listener, POLLIN, 0};
-	pollfd server = {_listener, POLLIN, 0};
-	fds.push_back(&server);
-
-	pollfd test;
-	memset(&test, 0, sizeof(test));
-
-	std::cout << test.fd << std::endl;
+	struct pollfd server = {_listener, POLLIN, 0};
+	_fds[_nb_client] = server;
+	int	retpoll = -1;
 
 	while (true) {
 	
 		//wait evenement
-		if (poll(*fds.data(), fds.size(), TIMEOUT) <= 0)
-				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll() failed: timeout");
+		retpoll = poll(_fds, _nb_client + 1, TIMEOUT);
+		if (retpoll == 0)
+				throw std::runtime_error("[SERVER_MONITORING] - poll() timeout");
+		else if (retpoll < 1)
+				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll()");
 
-		//iterate each fd for check event
+		for (int i = 0; i < MAX_CLIENTS + 1; i++)
+			std::cout << "_fds fd: " << _fds[i].fd << "revents: " << _fds[i].revents << std::endl;
 
-		if (fds.front()->revents & POLLIN) {
+		//check a new connexion
+		if (_fds[0].revents & POLLIN) {
 		
 			std::cout << "je passe" << std::endl;
 			if (_nb_client == MAX_CLIENTS)
-				;//manage max client 
+				break ;//manage max client 
 
 			socklen_t addrlen = _addrs->ai_addrlen;
 			int client_fd = accept(_listener, _addrs->ai_addr, &addrlen);
 			if (client_fd == -1)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
-					
 			//add new fd_client in vector pollfd
-			pollfd *pollclient = new pollfd;
-			pollclient->fd = client_fd;
-			pollclient->events = POLLIN;
-			pollclient->revents = 0;
-			fds.push_back(pollclient);
+			//pollfd *pollclient = new pollfd;
+			_fds[_nb_client + 1].fd = client_fd;
+			_fds[_nb_client + 1].events = POLLIN;
 			_nb_client++;
-			std::string a("welcome");
-			send(client_fd, &a, a.size(), 0);
+			_client_fd.push_back(client_fd);
 			continue ;
-
 		}
 
-		std::vector< pollfd * >::iterator it = fds.begin(); 
-		std::vector< pollfd * >::iterator it_end = fds.end(); 
-		for (it += 1; it != it_end; it++) {
+		for (int i = 1; i != _nb_client + 1; i++) {
 
-			if ((*it)->revents == POLLIN)	
-				std::cout << "receeive" << std::endl;
+			if (_fds[i].revents == POLLIN) {	
+				std::cout << _fds[i].fd << std::endl;
+
+			/****/
+				int res = 1;
+
+				memset(&_buffer,0,256);
+				int res = recv(_fds[i].fd, _buffer, sizeof(_buffer), 0);
+				//std::cout << "res : " << res << std::endl;
+				if (res < 0)
+					throw std::runtime_error("[SERVER_MONITORING] - ERROR recv() failed");
+
+				std::cout << "res : " << res << std::endl;
+				std::cout << std::endl << "[Client->Server]" << this->_buffer << std::endl;
+
+				std::string command = this->parse(this->_buffer, _fds[i].fd);
+
+				// temp value, to be replaced by a call to client
+				std::string nickname = "exo";
+
+				if (command.find("CAP ",0) == 0)
+				{
+					this->Cmds_CAP(_fds[i].fd, nickname);
+				}
+
+				if (command.find("PING", 0) == 0)
+				{
+					this->Cmds_ping(_fds[i].fd);
+				}
+
+				if (command.find("NICK", 0) == 0)
+				{
+
+				}
+
+				if (command.find("QUIT", 0) == 0)
+				{
+					// deconnecter le client
+					//continue;
+					break;
+				}
+
+				if (command.find("squit", 0) == 0)
+				{
+					// deconnecter le client
+					break;
+				}
+				std::cout << "------------------------------------- " <<  std::endl;
+			}
 		}
+
+			/****/
 	}
 
 	//close(_listener);
