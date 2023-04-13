@@ -18,7 +18,7 @@ class Client
 		std::string			_modes;
 		std::vector<std::string>	_canal;
 		int					_clientFd;
-		// struct sockaddr		_addrClient;
+		//struct sockaddr		_addrClient;
 
 	public:
 

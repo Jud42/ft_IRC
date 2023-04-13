@@ -55,8 +55,13 @@ class	Server
 		void listening (void);
 	// Server_treatment.cpp
 		void treatment (int client_fd);
-	// Server_treatment_new.cpp creation new client
-		int treatment_new(int client_fd);
+
+	//tmp
+		void createConnexion();
+		bool isNewClient(int &client_fd); //old treat_new
+		int readFdClient(int &fd);
+		void printAddressIp(int &fd);
+		void logoutClient(std::vector<struct pollfd>::iterator &, int);
 
 
 	// Server_parse.cpp
@@ -74,16 +79,15 @@ class	Server
 		std::string						_oper_pass;
 		struct addrinfo				*	_addrs;
 		int 							_listener;
-		int								_nb_clients;
 		char 							_hostname[HOSTNAME_SIZE];
 		int								_efd;
 		char							_buffer[BUFFER_SIZE];
-		struct pollfd					_fds[MAX_CLIENTS + 1];
+		std::vector< struct pollfd >	_fds;
 		std::map<std::string, Client>	_clientList;
 		std::map<int, std::string>		_fd_nick_list;
 
 		//data clients temp
-		std::vector< int >				_client_fd;
-		struct sockaddr					_addrclients[MAX_CLIENTS];
+		std::map< int, struct sockaddr >	_addrclient;
 };
+
 #endif

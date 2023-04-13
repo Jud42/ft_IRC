@@ -51,6 +51,6 @@ void Server::listening(void)
 	} 
 
 	// Configuration socket non bloquant
-    int flags = fcntl(_listener, F_GETFL, 0);
+	int flags = fcntl(_listener, F_GETFL, 0);
     fcntl(_listener, F_SETFL, flags | O_NONBLOCK);
 }

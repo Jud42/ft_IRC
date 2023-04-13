@@ -10,6 +10,9 @@ srcs/Server/Server_stop.cpp \
 srcs/Server/Server_parse.cpp \
 srcs/Cmds/Cmds_CAP.cpp \
 srcs/Cmds/Cmds_ping.cpp \
-srcs/Server/Server_treat_new.cpp \
+srcs/Server/Server_createConnexion.cpp \
+srcs/Server/Server_readFdClient.cpp \
+srcs/Server/Server_isNewClient.cpp\
+srcs/Server/Server_printAddressIp.cpp\
+srcs/Server/Server_logoutClient.cpp\
 srcs/Client.cpp
-#srcs/Server/Server_treatment.cpp \
