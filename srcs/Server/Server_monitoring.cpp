@@ -41,15 +41,14 @@ void Server::monitoring( void )
 			int client_fd = accept(_listener, &_addrclients[_nb_clients], &addrlen);
 			if (client_fd == -1)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR binding() failed");
-			if (!this->treatment_new(client_fd))
-			{
-
+			//if (!this->treatment_new(client_fd))
+			//{
 				_fds[_nb_clients + 1].fd = client_fd;
 				_fds[_nb_clients + 1].events = POLLIN;
 				_nb_clients++;
 				_client_fd.push_back(client_fd);
 				std::cout  << "client cree " << _fd_nick_list[client_fd] << std::endl;
-			}
+			//}
 			// memset(&_buffer,0,256);
 			// recv(_fds[0].fd, _buffer, sizeof(_buffer), 0);
 			std::cout << "buffer : " << _buffer << std::endl;
@@ -96,6 +95,11 @@ void Server::monitoring( void )
 				if (command.find("PING", 0) == 0)
 				{
 					this->Cmds_ping(_fds[i].fd);
+				}
+
+				if (command.find("JOIN", 0) == 0)
+				{
+					this->Cmds_join(_fds[i].fd, command.substr(5), _fd_nick_list[_fds[i].fd]);
 				}
 
 				if (command.find("NICK", 0) == 0)
