@@ -54,12 +54,11 @@ void Server::getInfos(void)
 	// but the result is giving 0.0.0.0 ???
 	for (struct addrinfo* p = _addrs; p != nullptr; p = p->ai_next)
 	{
-		char ipstr[INET6_ADDRSTRLEN];
 		void* addr;
 		struct sockaddr_in* ipv4 = reinterpret_cast<struct sockaddr_in*>(p->ai_addr);
 		addr = &(ipv4->sin_addr);
 
-		inet_ntop(s_addrinfo.ai_family, addr, ipstr, sizeof ipstr);
-		std::cout << "IP address: " << ipstr << '\n';
+		inet_ntop(s_addrinfo.ai_family, addr, _ipstr, sizeof _ipstr);
+		std::cout << "IP address: " << _ipstr << '\n';
 	}
 }

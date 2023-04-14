@@ -47,6 +47,16 @@ int Server::readFdClient(int &fd) {
 			std::cout << "je rentre dans ping" << std::endl;
 			this->Cmds_ping(fd);
 		}
+		else if (command.find("JOIN", 0) == 0)
+		{
+			std::cout << "je rentre dans join" << std::endl;
+			this->Cmds_join(fd, this->_buffer, _fd_nick_list[fd]);
+		}
+		else if (command.find("PART", 0) == 0)
+		{
+			std::cout << "je rentre dans part" << std::endl;
+			this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
+		}
 		/*---cmd envoyer par l'utilisateur client---*/
 		else if (command.find("NICK", 0) == 0) {}
 		else if (command.find("QUIT", 0) == 0)

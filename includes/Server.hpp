@@ -28,9 +28,11 @@
 #include "define.hpp"
 #include "ConfigFile.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 
 class ConfigFile;
 class Client;
+class Channel;
 
 class	Server
 {
@@ -68,11 +70,15 @@ class	Server
 		std::string parse(const std::string message, const int newListener);
 
 	// cmd CAP - answer welcome
-		void Cmds_CAP(int const newListener, std::string const nickname);
+		void Cmds_CAP(int const fd_client, std::string const nickname);
 
 	// cmd Ping - answer Pong
-		void Cmds_ping(int const newListener);
-
+		void Cmds_ping(int const fd_client);
+	// cmd Join - answer Pong
+		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
+	// cmd Part - answer Pong
+		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
+	// cmd Join - answer Pong
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
@@ -85,8 +91,10 @@ class	Server
 		std::vector< struct pollfd >	_fds;
 		std::map<std::string, Client>	_clientList;
 		std::map<int, std::string>		_fd_nick_list;
+		char 							_ipstr[INET6_ADDRSTRLEN];
 
-		//data clients temp
+		//data channel
+		std::map<std::string, Channel>	_channels;
 		std::map< int, struct sockaddr >	_addrclient;
 };
 
