@@ -6,6 +6,7 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 	{
 		// retrieve error code of getaddrinfo command 
 		std::cout << BLU;
+		std::cout << "[ Server::Cmds_join ]" << fd_client << std::endl;
         std::cout << "fd_client :" << fd_client << std::endl;
         std::cout << "channel :" << pchannel << std::endl;
     	std::cout << "nickname :" << nickname << std::endl; // WARNING missing info
@@ -71,9 +72,9 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 	std::string hostname = this->_hostname;
 
     std::string cap_response = "JOIN " + segment[0] + "\r\n";
-    std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+    //std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-    send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+    //send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 	// for the channel creator only
 	if (channelAlreadyDefined == false)
@@ -97,7 +98,7 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 	}
 
 
-	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+	//send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	
 
 	}

@@ -102,6 +102,11 @@ void Server::monitoring( void )
 					this->Cmds_join(_fds[i].fd, command.substr(5), _fd_nick_list[_fds[i].fd]);
 				}
 
+				if (command.find("PART", 0) == 0)
+				{
+					this->Cmds_part(_fds[i].fd, command.substr(5), _fd_nick_list[_fds[i].fd]);
+				}
+
 				if (command.find("NICK", 0) == 0)
 				{
 

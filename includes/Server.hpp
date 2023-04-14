@@ -71,7 +71,9 @@ class	Server
 		void Cmds_ping(int const fd_client);
 	// cmd Join - answer Pong
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
-
+	// cmd Part - answer Pong
+		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
+	// cmd Join - answer Pong
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
