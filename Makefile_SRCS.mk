@@ -17,5 +17,5 @@ srcs/Server/Server_readFdClient.cpp \
 srcs/Server/Server_isNewClient.cpp\
 srcs/Server/Server_printAddressIp.cpp\
 srcs/Client.cpp \
-srcs/Channel.cpp
-srcs/Server/Server_logoutManage.cpp\
+srcs/Channel.cpp \
+srcs/Server/Server_logoutManage.cpp \
