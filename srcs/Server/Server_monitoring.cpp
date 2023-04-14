@@ -48,6 +48,7 @@ void Server::monitoring( void )
 																 
 				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
+				break ;
 			}
 			//else if (it->revents & POLLERR) //error on fd
 		}
