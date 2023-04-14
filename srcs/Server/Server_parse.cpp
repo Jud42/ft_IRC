@@ -53,6 +53,19 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
                 user = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
             }
+            
+            if (segment[seg].find("JOIN", 0) == 0)
+            {
+                user = segment[seg].substr(5, segment[seg].size());
+                std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
+            }
+
+            if (segment[seg].find("PART", 0) == 0)
+            {
+                user = segment[seg].substr(5, segment[seg].size());
+                std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
+            }
+            
 
         }
 

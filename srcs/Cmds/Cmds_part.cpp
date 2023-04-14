@@ -1,8 +1,11 @@
 #include "Server.hpp"
 
-void Server::Cmds_part(int const fd_client, std::string const pchannel, std::string const nickname)
+void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
 {
-        if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
+    std::string pchannel = command.substr(5);
+	std::string hostname = this->_hostname;
+
+	if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	{
 		// retrieve error code of getaddrinfo command 
 		std::cout << BLU;
@@ -13,7 +16,7 @@ void Server::Cmds_part(int const fd_client, std::string const pchannel, std::str
 		std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 
-	std::string cap_response = "vroch!vroch@c1r6s4.42lausanne.ch PART";
+	std::string cap_response = "PART " + pchannel + "\r\n";
     std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 	
 	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
