@@ -22,7 +22,8 @@
 
 //connexion
 #define SUCCESS_LOG 1
-#define LOGOUT 2
-#define ERR_CLIENT_EXIST 3
+#define ERR_CLIENT_EXIST 2
+#define LOGOUT 3
+#define LOGOUT_SERVER 4
 
 #endif

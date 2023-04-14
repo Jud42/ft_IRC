@@ -64,6 +64,7 @@ class	Server
 		int readFdClient(int &fd);
 		void printAddressIp(int &fd);
 		void logoutClient(std::vector<struct pollfd>::iterator &, int);
+		void logoutServer();
 
 
 	// Server_parse.cpp

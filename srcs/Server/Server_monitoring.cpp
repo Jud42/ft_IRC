@@ -5,8 +5,9 @@ void Server::monitoring( void )
 	int	event;
 	struct pollfd server = {_listener, POLLIN, 0};
 	_fds.push_back(server);
+	int activity = SUCCESS_LOG;
 
-	while (true) {
+	while (activity != LOGOUT_SERVER) {
 
 		std::cout << "==av poll==" << std::endl;
 		//take evenement
@@ -30,9 +31,9 @@ void Server::monitoring( void )
 				}
 				//data available on fd_clients
 				else if (it->fd != _listener) {
-					int flag = this->readFdClient(it->fd); 
-					if (flag != SUCCESS_LOG) {//recv()
-						this->logoutClient(it, flag);
+					activity = this->readFdClient(it->fd); 
+					if (activity != SUCCESS_LOG) {//recv()
+						this->logoutClient(it, activity);
 						break ;
 					}
 					std::cout << "********CONNEXION******" << std::endl;

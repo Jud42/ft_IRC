@@ -66,7 +66,12 @@ int Server::readFdClient(int &fd) {
 				<< fd << std::endl;
 			return LOGOUT;
 		}
-		else if (command.find("squit", 0) == 0) { /* deconnecter le client */ }
+		else if (command.find("squit", 0) == 0) { 
+			std::cout << "[SERVER WILL DISCONNECT...]\n"
+				<< "List [socket] before logout_server: "
+				<< _fds.size() << std::endl;
+			return LOGOUT_SERVER;
+		}
 
 		std::cout << "------------------------------------- " <<  std::endl;
 		return SUCCESS_LOG;
