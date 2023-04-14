@@ -90,8 +90,9 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			//12:28 -!- Irssi: #blabla: Total of 1 nicks [1 ops, 0 halfops, 0 voices, 0         normal]
 			//12:28 -!- Channel #blabla created Fri Apr 14 12:28:33 2023
 			//12:28 -!- Irssi: Join to #blabla was synced in 0 secs
+
 			
-			cap_response = nickname + "!" + nickname + '@' + hostname + " has joined " + typeC[i] + segment[i] + "\r\n";
+			cap_response = nickname + "!" + nickname + '@' + hostname + " JOIN " + typeC[i] + segment[i] + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
