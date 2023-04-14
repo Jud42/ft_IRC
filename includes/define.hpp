@@ -20,4 +20,9 @@
 #define		BLU	"\033[34;1m"
 #define		NOC "\033[0m"
 
+//connexion
+#define SUCCESS_LOG 1
+#define LOGOUT 2
+#define ERR_CLIENT_EXIST 3
+
 #endif

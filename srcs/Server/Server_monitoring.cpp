@@ -1,31 +1,19 @@
 #include "Server.hpp"
-#include <vector>
-/*
-bool Server::isClient(int fd) {
 
-	std::vector< int >::iterator it;
-
-	for (it = _client_fd.begin(); it != _client_fd.end(); it++)
-		if ()
-
-}
-*/
 void Server::monitoring( void )
 {
+	int	event;
 	struct pollfd server = {_listener, POLLIN, 0};
-	_fds[_nb_clients] = server;
-
-
-	int	retpoll = -1;
+	_fds.push_back(server);
 
 	while (true) {
 
-		//wait evenement
-		retpoll = poll(_fds, _nb_clients + 1, TIMEOUT);
-		if (retpoll == 0)
-				throw std::runtime_error("[SERVER_MONITORING] - poll() timeout");
-		else if (retpoll < 1)
+		std::cout << "==av poll==" << std::endl;
+		//take evenement
+		event = poll(_fds.data(), _fds.size(), TIMEOUT);
+		if (event < 0)
 				throw std::runtime_error("[SERVER_MONITORING] - ERROR poll()");
+<<<<<<< HEAD
 
 		for (int i = 0; i < MAX_CLIENTS + 1; i++)
 			std::cout << "_fds fd: " << _fds[i].fd << " revents: " << _fds[i].revents << std::endl;
@@ -90,13 +78,37 @@ void Server::monitoring( void )
 				if (command.find("CAP ",0) == 0)
 				{
 					this->Cmds_CAP(_fds[i].fd, _fd_nick_list[_fds[i].fd]);
+=======
+		std::cout << "==ap poll==" << std::endl;
+		/**TEST PRINT FD**/
+		std::vector< struct pollfd >::iterator it;
+		for (it = _fds.begin(); it != _fds.end(); it++)
+			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << std::endl;
+		/*-----*/
+
+		for (it = _fds.begin(); it != _fds.end(); it++) {
+			//data in
+			if (it->revents == POLLIN) {
+				//incoming connection on server
+				if (it->fd == _listener) {
+					this->createConnexion(); //accept()
+					break ;
+>>>>>>> main
+				}
+				//data available on fd_clients
+				else if (it->fd != _listener) {
+					int flag = this->readFdClient(it->fd); 
+					if (flag != SUCCESS_LOG) {//recv()
+						this->logoutClient(it, flag);
+						break ;
+					}
+					std::cout << "********CONNEXION******" << std::endl;
+					this->printAddressIp(it->fd);
+					std::cout << "***********************" << std::endl;
+					continue ;
 				}
 
-				if (command.find("PING", 0) == 0)
-				{
-					this->Cmds_ping(_fds[i].fd);
-				}
-
+<<<<<<< HEAD
 				if (command.find("JOIN", 0) == 0)
 				{
 					this->Cmds_join(_fds[i].fd, command.substr(5), _fd_nick_list[_fds[i].fd]);
@@ -128,14 +140,19 @@ void Server::monitoring( void )
 					break;
 				}
 				std::cout << "------------------------------------- " <<  std::endl;
+=======
+>>>>>>> main
 			}
-			else if (_fds[i].revents == 17)
-				exit(0);
+			//else if (it->revents & POLLOUT) //le fd est pret pour l'ecriture
+			else if (it->revents == POLLHUP || 
+					it->revents == POLLIN + POLLHUP) {//logout client
+																 
+				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
+				this->logoutClient(it, LOGOUT);
+				break ;
+			}
+			//else if (it->revents & POLLERR) //error on fd
 		}
 
-			/****/
 	}
-
-//	close(_listener);
-//	close() //all fd_client
 }
