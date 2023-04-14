@@ -17,13 +17,13 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 
 
 	std::string segment[10];
-	char types[10];
+	std::string typeC[10];
 
 	// initialise
 	for (int i = 0 ; i < 10 ; i++)
 	{
 		segment[i] = "";
-		types[i] = ' ';
+		typeC[i] = "";
 	}
 
 	// identify if manny chanels are transfered in one JOIN and sepparated by a comma
@@ -34,7 +34,7 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 	}
 	else
 	{
-		types[0] = pchannel[0];
+		typeC[0] = pchannel.substr(0, 1);
 		segment[0] = pchannel.substr(1);
 	}
 	
@@ -44,10 +44,12 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 	
 	// find if the channel is already defined
 	std::map<std::string, Channel>::iterator it = this->_channels.find(segment[0]);
+	bool channelAlreadyDefined = false;
 	if (it != this->_channels.end())
 	{
 		// modifiy the existing object
 		this->_channels.find(segment[0])->second.getNbConnection();
+		channelAlreadyDefined = true;
 
 	}
 	else
@@ -73,9 +75,27 @@ void Server::Cmds_join(int const fd_client, std::string const pchannel, std::str
 
     send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
+	// for the channel creator only
+	if (channelAlreadyDefined == false)
+	{
 	//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
-	cap_response = "353 " + segment[0] + " :" + nick + "\r\n";
+	//cap_response = "353 " + typeC[0] + segment[0] + " :[[@]" + nick + "]\r\n";
+	cap_response = ":vroch!127.0.0.1 JOIN :#blabla";
     std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+	
+	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+	cap_response = ":c1r6s4.42lausanne.42 353 vroch = #blabla :@vroch vroch";
+    std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+	
+	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+	
+	cap_response = ":c1r6s4.42lausanne.42 366 vroch #blabla :End of NAMES list";
+    std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+	
+	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+	}
+
 
 	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	
