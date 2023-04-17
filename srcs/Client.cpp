@@ -41,19 +41,19 @@ Client::Client(int client_fd, char *client_data)
             if (segment[seg].find("PASS", 0) == 0)
             {
                 this->_password = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] PASS[" << this->_password << "] : " << client_fd << "|" << NOC << std::endl;
+                std::cout << RED << "[FEED Client] PASS[" << this->_password << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("NICK", 0) == 0)
             {
                 this->_nickname = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
+                std::cout << RED << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("USER", 0) == 0)
             {
                 this->_username = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] USER[" << this->_username << "] : " << client_fd << "|" << NOC << std::endl;
+                std::cout << RED << "[FEED Client] USER[" << this->_username << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
         }
@@ -64,6 +64,12 @@ Client::Client(int client_fd, char *client_data)
             seg += 1;
 
 	}
+}
+
+Client::Client(Client cpyClient, std::string newNickname)
+	: _nickname(newNickname), _username(cpyClient._username), _password(cpyClient._password),
+	_modes(cpyClient._modes), _channel(cpyClient._channel), _clientFd(cpyClient._clientFd)
+{
 }
 
 Client::~Client()

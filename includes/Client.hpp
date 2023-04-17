@@ -36,6 +36,7 @@ class Client
 
 		Client();
 		Client(int client_fd, char *client_data);
+		Client(Client cpyClient, std::string newNickname);
 		~Client();
 };
 

@@ -12,6 +12,7 @@ srcs/Cmds/Cmds_CAP.cpp \
 srcs/Cmds/Cmds_ping.cpp \
 srcs/Cmds/Cmds_join.cpp \
 srcs/Cmds/Cmds_part.cpp \
+srcs/Cmds/Cmds_nick.cpp \
 srcs/Server/Server_createConnexion.cpp \
 srcs/Server/Server_readFdClient.cpp \
 srcs/Server/Server_isNewClient.cpp\
