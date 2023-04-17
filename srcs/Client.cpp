@@ -1,3 +1,6 @@
+// a faire gestion des channels: 1er channel
+
+
 #include "Client.hpp"
 
 Client::Client(){}
@@ -5,7 +8,7 @@ Client::Client(){}
 Client::Client(int client_fd, char *client_data)
 : _modes("i"), _clientFd(client_fd)
 {
-	_canal.push_back("main");
+	// _channel.push_back("main");
     std::string message = client_data;
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
@@ -92,9 +95,33 @@ std::string Client::getModes()
 	return(this->_modes);
 }
 
-std::vector<std::string> Client::getCanal()
+bool	Client::findChannel(std::string channel_name)
 {
-	return(this->_canal);
+	std::vector<Channel>::iterator it;
+
+	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	{
+		if (it->getChannelName() == channel_name)
+			return (true);
+	}
+	return (false);
+}
+
+std::vector<Channel>	Client::getChannel()
+{
+	std::vector<Channel>::iterator it;
+
+	// print all channel but return the vector
+	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	{
+		std::cout << it->getChannelName() << std::endl;
+	}
+	return (this->_channel);
+}
+
+void	Client::addChannel(Channel channel)
+{
+	_channel.push_back(channel);
 }
 
 int Client::getClientFd()

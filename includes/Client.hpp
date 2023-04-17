@@ -28,9 +28,9 @@ class Client
 		std::string				getNickname();
 		std::string				getPassword();
 		std::string				getModes();
-		bool					findChannel();
+		bool					findChannel(std::string channel_name);
 		std::vector<Channel>	getChannel();
-		void					addChannel(std::vector<Channel>	channel);
+		void					addChannel(Channel channel);
 
 		int						getClientFd();
 
