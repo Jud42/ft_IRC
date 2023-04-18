@@ -6,7 +6,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
     if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	{
-		// retrieve error code of getaddrinfo command 
+		// retrieve error code of getaddrinfo command
 		std::cout << BLU;
 		std::cout << "[Server::Cmds_join ]" << fd_client << std::endl;
         std::cout << " fd_client :" << fd_client << std::endl;
@@ -41,7 +41,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		typeC[i] = pchannel.substr(0, 1);
 		segment[i] = pchannel.substr(1);
 	}
-	
+
 	// management fo the channels objects (one object per channel)
 
 	for (int i = 0; i < 10; i++)
@@ -116,11 +116,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
-		
+
 
 
 
 	}
-	
+
 
 	}

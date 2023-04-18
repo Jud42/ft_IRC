@@ -12,10 +12,11 @@ srcs/Cmds/Cmds_CAP.cpp \
 srcs/Cmds/Cmds_ping.cpp \
 srcs/Cmds/Cmds_join.cpp \
 srcs/Cmds/Cmds_part.cpp \
+srcs/Cmds/Cmds_nick.cpp \
 srcs/Server/Server_createConnexion.cpp \
 srcs/Server/Server_readFdClient.cpp \
 srcs/Server/Server_isNewClient.cpp\
 srcs/Server/Server_printAddressIp.cpp\
-srcs/Server/Server_logoutClient.cpp\
 srcs/Client.cpp \
-srcs/Channel.cpp
+srcs/Channel.cpp \
+srcs/Server/Server_logoutManage.cpp \

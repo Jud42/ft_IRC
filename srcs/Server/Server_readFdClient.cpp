@@ -58,15 +58,24 @@ int Server::readFdClient(int &fd) {
 			this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
 		}
 		/*---cmd envoyer par l'utilisateur client---*/
-		else if (command.find("NICK", 0) == 0) {}
+		else if (command.find("NICK", 0) == 0)
+		{
+			std::cout << "je rentre dans nick" << std::endl;
+			this->Cmds_nick(fd, this->_buffer);
+		}
 		else if (command.find("QUIT", 0) == 0)
 		{
 			// deconnecter le client
-			std::cout << "QUIT deconnection du fd : " 
+			std::cout << "QUIT deconnection du fd : "
 				<< fd << std::endl;
 			return LOGOUT;
 		}
-		else if (command.find("squit", 0) == 0) { /* deconnecter le client */ }
+		else if (command.find("squit", 0) == 0) {
+			std::cout << "[SERVER WILL DISCONNECT...]\n"
+				<< "List [socket] before logout_server: "
+				<< _fds.size() << std::endl;
+			return LOGOUT_SERVER;
+		}
 
 		std::cout << "------------------------------------- " <<  std::endl;
 		return SUCCESS_LOG;

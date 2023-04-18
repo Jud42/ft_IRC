@@ -39,7 +39,7 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	memset(&_fds, 0, sizeof(_fds));
 }
 
-Server::~Server( void )
-{
+Server::~Server( void ) { 
+	std::cout << "Class Server [DESTROYED] :)" << std::endl;
 }
 

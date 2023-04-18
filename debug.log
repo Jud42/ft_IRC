@@ -1,0 +1,13 @@
+<< CAP LS
+<< NICK rmamison
+<< USER rmamison rmamison c1r6s2.42lausanne.ch :Raphael Mamison
+>> 001 rmamison :Welcome to the server c1r6s2.42lausanne.ch!
+<< MODE rmamison +i
+>> 002 rmamison :Your host is c1r6s2.42lausanne.ch, version 1.0
+>> 003 rmamison :This server was created not so long time ago.
+>> 004 rmamison :Your are welcome. Enjoy!
+>> MODE rmamison +i
+<< PING c1r6s2.42lausanne.ch
+>> PONG c1r6s2.42lausanne.ch 127.0.0.1
+--> lag pong
+<< QUIT :leaving

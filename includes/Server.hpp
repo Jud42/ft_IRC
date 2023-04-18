@@ -64,6 +64,7 @@ class	Server
 		int readFdClient(int &fd);
 		void printAddressIp(int &fd);
 		void logoutClient(std::vector<struct pollfd>::iterator &, int);
+		void logoutServer();
 
 
 	// Server_parse.cpp
@@ -78,7 +79,10 @@ class	Server
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
 	// cmd Part - answer Pong
 		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
-	// cmd Join - answer Pong
+
+	// cmd nick
+		void Cmds_nick(int const fd_client, std::string const command);
+
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
@@ -89,8 +93,8 @@ class	Server
 		int								_efd;
 		char							_buffer[BUFFER_SIZE];
 		std::vector< struct pollfd >	_fds;
-		std::map<std::string, Client>	_clientList;
-		std::map<int, std::string>		_fd_nick_list;
+		std::map<std::string, Client *>	_clientList; //key nickname
+		std::map<int, std::string>		_fd_nick_list; //key client_fd
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel

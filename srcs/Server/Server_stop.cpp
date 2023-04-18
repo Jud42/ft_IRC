@@ -2,7 +2,6 @@
 
 void	Server::stop(void)
 {  
-	
-	freeaddrinfo(this->_addrs);
-
+	this->logoutServer();
+	//freeaddrinfo(this->_addrs);
 }
