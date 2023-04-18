@@ -92,7 +92,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			//12:28 -!- Irssi: Join to #blabla was synced in 0 secs
 
 			
-			cap_response = nickname + "!" + nickname + '@' + hostname + " JOIN " + typeC[i] + segment[i] + "\r\n";
+			cap_response = ":" + nickname + "!" + nickname + '@' + "127.0.0.1" + " JOIN " + typeC[i] + segment[i] + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
