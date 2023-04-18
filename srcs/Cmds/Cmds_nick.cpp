@@ -5,7 +5,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 	std::string newNick = command.substr(5);
 	size_t position = newNick.find_last_of("\r\n"); // find last occurency of "\r\n"
 	if (position != std::string::npos) { // if found
-    	newNick = newNick.substr(0, position); // extract the string until there
+    	newNick = newNick.substr(0, position - 1); // extract the string until there
 }
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
@@ -17,8 +17,8 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		std::cout << "[Server::Cmds_nick]" << std::endl;
         std::cout << " fd_client :" << fd_client << std::endl;
         std::cout << " old nick :" << oldNickname << std::endl;
-		std::cout << " new nick :" << newNick << std::endl;
-		std::cout << NOC;
+		std::cout << " new nick :" << newNick  << std::endl;
+		std::cout << NOC << std::endl;;
 	} // --------------------------------------------------------------------------------------
 
 	std::map<std::string, Client>::iterator it;
