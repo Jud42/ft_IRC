@@ -52,25 +52,15 @@ Client::Client(int client_fd, char *client_data)
 
             if (segment[seg].find("USER", 0) == 0)
             {
-                this->_username = segment[seg].substr(5, segment[seg].size());
+                this->_data = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << this->_data << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
         }
 
-		std::istringstream iss(_data);
-		int i = 0;
-		// Parcourt chaque mot de la chaîne
-		std::string word;
-		while (iss >> word)
-		{
-			i++;
-			if (i == 2)
-				_username = word;
-			if (i == 4)
-				_realname = word.substr(1,word.size());
-		}
-
+		_username = _data.substr(_data.find(" ") + 1);
+		_username = _username.substr(0, _username.find(" "));
+		_realname = _data.substr(_data.find(":") + 1);
         pos_start = 0;
 
         if (segment[seg] != "")
@@ -87,7 +77,7 @@ Client::Client(Client cpyClient, std::string newNickname)
 
 Client::~Client()
 {
-	td::cout << GRE << "destruction client" << NOC << std::endl;
+	std::cout << GRE << "destruction client" << NOC << std::endl;
 	send(this->_clientFd, "Goodbye", 8, 0);
 
     // Fermer la connexion avec le serveur IRC
@@ -149,7 +139,24 @@ int Client::getClientFd()
 	return(this->_clientFd);
 }
 
+void Client::set_ip(std::string ip)
+{
+	_ip = ip;
+}
 
+std::string Client::get_ip()
+{
+	return(_ip);
+}
+std::string Client::get_user()
+{
+	return(_username);
+}
+
+std::string Client::get_realname()
+{
+	return(_realname);
+}
 
 /*
 

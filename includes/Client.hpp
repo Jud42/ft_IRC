@@ -33,6 +33,10 @@ class Client
 		bool					findChannel(std::string channel_name);
 		std::vector<Channel>	getChannel();
 		void					addChannel(Channel channel);
+		void					set_ip(std::string ip);
+		std::string				get_ip();
+		std::string				get_user();
+		std::string				get_realname();
 
 		int						getClientFd();
 
