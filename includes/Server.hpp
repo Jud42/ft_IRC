@@ -83,6 +83,9 @@ class	Server
 	// cmd nick
 		void Cmds_nick(int const fd_client, std::string const command);
 
+	// cmd user
+		void Cmds_user(int const fd_client, std::string const command);
+
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;

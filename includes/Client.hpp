@@ -35,10 +35,13 @@ class Client
 		void					addChannel(Channel channel);
 		void					set_ip(std::string ip);
 		std::string				get_ip();
+		void					set_user(std::string user);
 		std::string				get_user();
+		void					set_realname(std::string realname);
 		std::string				get_realname();
 
 		int						getClientFd();
+		void					set_data(std::string data);
 
 		Client();
 		Client(int client_fd, char *client_data);

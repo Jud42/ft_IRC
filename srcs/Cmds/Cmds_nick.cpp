@@ -3,7 +3,7 @@
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
 	std::string newNick = command.substr(5);
-	size_t position = newNick.find_last_of("\r\n"); // find last occurency of "\r\n"
+	size_t position = newNick.find("\r\n"); // find first occurency of "\r\n"
 	if (position != std::string::npos) { // if found
     	newNick = newNick.substr(0, position - 1); // extract the string until there
 }

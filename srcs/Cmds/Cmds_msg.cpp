@@ -1,6 +1,8 @@
 #include "Server.hpp"
 
-void Server::Cmds_nick(int const fd_client, std::string const command)
+// PRIVMSG nicknamedest :message
+
+void Server::Cmds_msg(int const fd_client, std::string const command)
 {
 	std::string newNick = command.substr(5);
 	size_t position = newNick.find_last_of("\r\n"); // find last occurency of "\r\n"
@@ -51,7 +53,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		_clientList.erase(oldNickname); //delete the actualclient
 		_clientList.insert(std::pair<std::string, Client *>(newNick, tempClient));
 		_fd_nick_list[fd_client] = newNick;
-		//001     RPL_WELCOME     
+		//001     RPL_WELCOME
 		std::string cap_response = "001 You succefully change zour nickname. Your new nickname is: " + newNick + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);

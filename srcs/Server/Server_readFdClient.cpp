@@ -63,6 +63,11 @@ int Server::readFdClient(int &fd) {
 			std::cout << "je rentre dans nick" << std::endl;
 			this->Cmds_nick(fd, this->_buffer);
 		}
+		else if (command.find("USER", 0) == 0)
+		{
+			std::cout << "je rentre dans user" << std::endl;
+			this->Cmds_user(fd, this->_buffer);
+		}
 		else if (command.find("QUIT", 0) == 0)
 		{
 			// deconnecter le client

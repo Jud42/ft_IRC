@@ -6,7 +6,7 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _modes("i"), _clientFd(client_fd), _ip("0")
+: _data("to_be_filled"), _nickname("#"), _modes("i"), _clientFd(client_fd), _ip("0")
 {
 	// _channel.push_back("main");
     std::string message = client_data;
@@ -57,16 +57,14 @@ Client::Client(int client_fd, char *client_data)
             }
 
         }
-
-		_username = _data.substr(_data.find(" ") + 1);
-		_username = _username.substr(0, _username.find(" "));
-		_realname = _data.substr(_data.find(":") + 1);
         pos_start = 0;
 
         if (segment[seg] != "")
             seg += 1;
-
 	}
+	_username = _data.substr(_data.find(" ") + 1);
+	_username = _username.substr(0, _username.find(" "));
+	_realname = _data.substr(_data.find(":") + 1);
 }
 
 Client::Client(Client cpyClient, std::string newNickname)
@@ -148,14 +146,30 @@ std::string Client::get_ip()
 {
 	return(_ip);
 }
+
+void Client::set_user(std::string user)
+{
+	_username = user;
+}
+
 std::string Client::get_user()
 {
 	return(_username);
 }
 
+void Client::set_realname(std::string realname)
+{
+	_realname = realname;
+}
+
 std::string Client::get_realname()
 {
 	return(_realname);
+}
+
+void Client::set_data(std::string data)
+{
+	_data = data;
 }
 
 /*
