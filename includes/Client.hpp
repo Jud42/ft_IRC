@@ -13,13 +13,15 @@ class Client
 {
 	private:
 
+		std::string				_data;
 		std::string				_nickname;
 		std::string				_username;
-		// std::string			_realname;
+		std::string				_realname;
 		std::string				_password;
 		std::string				_modes;
 		std::vector<Channel>	_channel;
 		int						_clientFd;
+		std::string				_ip;
 		//struct sockaddr		_addrClient;
 
 	public:

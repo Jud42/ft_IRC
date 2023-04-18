@@ -6,7 +6,7 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _modes("i"), _clientFd(client_fd)
+: _modes("i"), _clientFd(client_fd), _ip("0")
 {
 	// _channel.push_back("main");
     std::string message = client_data;
@@ -53,10 +53,23 @@ Client::Client(int client_fd, char *client_data)
             if (segment[seg].find("USER", 0) == 0)
             {
                 this->_username = segment[seg].substr(5, segment[seg].size());
-                std::cout << GRE << "[FEED Client] USER[" << this->_username << "] : " << client_fd << "|" << NOC << std::endl;
+                std::cout << GRE << "[FEED Client] USER[" << this->_data << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
         }
+
+		std::istringstream iss(_data);
+		int i = 0;
+		// Parcourt chaque mot de la chaîne
+		std::string word;
+		while (iss >> word)
+		{
+			i++;
+			if (i == 2)
+				_username = word;
+			if (i == 4)
+				_realname = word.substr(1,word.size());
+		}
 
         pos_start = 0;
 

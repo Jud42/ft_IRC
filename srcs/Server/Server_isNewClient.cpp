@@ -14,7 +14,8 @@ bool Server::isNewClient(int &client_fd)
 	// }
 	if (_clientList.count(temp->getNickname()) > 0)
 	{
-		send(client_fd, "ERR_NICKNAMEINUSE", 18, 0);
+		std::string cap_response = "433 Nickname already exist, please choose another\r\n";
+		send(client_fd, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "Nickname already used" << std::endl;
 		delete temp;
 		return (false);
