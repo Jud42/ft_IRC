@@ -43,12 +43,12 @@ OBJECTS_BONUS		:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_BONUS:.$(SRCEXT
 
 #Flags, Libraries and Includes
 CPPFLAGS := $(CFLAGS)
-cflags.release		:= 
-cflags.valgrind		:= -DDEBUG -DDEBUG_SV 
+cflags.release		:=
+cflags.valgrind		:= -DDEBUG -DDEBUG_SV
 cflags.debug		:= -DDEBUG -ggdb -fsanitize=address -fno-omit-frame-pointer
 CPPFLAGS			+= $(cflags.$(BUILD))
 
-lib.release			:= 
+lib.release			:=
 lib.valgrind		:= $(lib.release)
 lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
 LIB					:= $(lib.$(BUILD))
