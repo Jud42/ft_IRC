@@ -4,8 +4,9 @@
 void Server::Cmds_msg(int const fd_client, std::string const command)
 {
 	std::string args = find_cmd_arg(command, "PRIVMSG");
-	size_t separation = args.find(":")
-	if (pos_start == std::string::npos) // if not found - npos represents an invalid or not-found position
+	size_t separation = args.find(":");
+	std::string nick = this->_fd_nick_list[fd_client];
+	if (separation == std::string::npos) // if not found - npos represents an invalid or not-found position
 	{
 		// this must never exist because the client don't send if there is no enough parameter
 		return ;
@@ -15,9 +16,10 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 
 	std::cout << "destination : " << dest << " msg : " << msg <<std::endl;
 
-	if ( dest[0] = '#')
+	if ( dest[0] == '#')
 	{
 		dest = args.substr(1);
+		std::map <std::string, char>    channelClients = this->_channels[dest]->getConnectedUsers();
 		if (this->_channels.count(dest) == 0)
 		{
 			std::string cap_response = "403 the channel doesn't exist\r\n";
@@ -25,16 +27,30 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			return ;
 		}
-		for(std::map <std::string, char>::iterator it = this->_channels[dest]._channelClients.begin() )
-		std::map <std::string, char>    _channelClients;
+		for(std::map <std::string, char>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
+		{
+			int fd_dest = this->_clientList[it->first]->getClientFd();
+			std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
+			std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
+			send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
+		}
 	}
-
-
-
+	else
+	{
+		if (this->_clientList.count(dest) == 0)
+		{
+			std::string cap_response = "401 the user doesn't exist\r\n";
+			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			return ;
+		}
+		int fd_dest = this->_clientList[dest]->getClientFd();
+		std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
+		std::cout << fd_dest<< " [Server->Client]" << cap_response << std::endl;
+		send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
+	}
 }
-std::string cap_response = "001 You succefully change our nickname. Your new nickname is: " + newNick + "\r\n";
-		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
 /*
 [PARSE] message : PRIVMSG #salonblabla :salut
 

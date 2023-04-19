@@ -73,6 +73,11 @@ int Server::readFdClient(int &fd) {
 			std::cout << "je rentre dans whois" << std::endl;
 			this->Cmds_whois(fd, this->_buffer);
 		}
+		else if (command.find("PRIVMSG", 0) == 0)
+		{
+			std::cout << "je rentre dans msg" << std::endl;
+			this->Cmds_msg(fd, this->_buffer);
+		}
 		else if (command.find("QUIT", 0) == 0)
 		{
 			// deconnecter le client
