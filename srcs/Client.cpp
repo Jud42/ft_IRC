@@ -74,7 +74,7 @@ Client::Client(Client cpyClient, std::string newNickname)
 
 Client::~Client()
 {
-	td::cout << GRE << "destruction client" << NOC << std::endl;
+	std::cout << GRE << "destruction client" << NOC << std::endl;
 	send(this->_clientFd, "Goodbye", 8, 0);
 
     // Fermer la connexion avec le serveur IRC
