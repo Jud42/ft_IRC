@@ -41,7 +41,7 @@ class Client
 		std::string				get_realname();
 
 		int						getClientFd();
-		void					set_data(std::string data);2
+		void					set_data(std::string data);
 
 		Client();
 		Client(int client_fd, char *client_data);
