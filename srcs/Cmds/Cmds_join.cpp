@@ -1,4 +1,7 @@
 #include "Server.hpp"
+#include "Channel.hpp"
+
+
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
@@ -8,67 +11,79 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	{
 		// retrieve error code of getaddrinfo command
 		std::cout << BLU;
-		std::cout << "[Server::Cmds_join ]" << fd_client << std::endl;
+		std::cout << "[Server::Cmds_join ]" << std::endl;
         std::cout << " fd_client :" << fd_client << std::endl;
         std::cout << " channel :" << pchannel << std::endl;
     	std::cout << " nickname :" << nickname << std::endl; // WARNING missing info
 		std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 
-	std::string segment[10];
-	std::string typeC[10];
+	int max_segment = 10;
+	std::string segment[max_segment];
+	std::string typeC[max_segment];
+	std::string channelUsers = "";
 
-	// initialise the 140 potentitial new join
-	for (int i = 0 ; i < 10 ; i++)
+	// initialise the 10 potentitial new join
+	for (int i = 0 ; i < max_segment ; i++)
 	{
 		segment[i] = "";
 		typeC[i] = "";
 	}
 
+	int i = 0;
 	// identify if manny chanels are transfered in one JOIN and separated by a comma
 	if (pchannel.find(",")==0)
 	{
-
-
-
-		// extract all channels - max 10;
-		// parse the pchannel
-
+		// TBC_VROCH, parse les differents channels demandes
 	}
 	else
 	{
-		int i = 0;
 		typeC[i] = pchannel.substr(0, 1);
-		segment[i] = pchannel.substr(1);
+		segment[i] = pchannel.substr(1, pchannel.find("\r") - 1);
+		std::cout << "*"<< segment[i] << "*" <<  std::endl;
 	}
 
-	// management fo the channels objects (one object per channel)
+	// management of each channels objects (one object per channel)
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < max_segment; i++)
 	{
 		if (segment[i] == "")
 			continue;
 
 		// find if the channel is already defined
-		std::map<std::string, Channel>::iterator it = this->_channels.find(segment[i]);
-		bool channelAlreadyDefined = false;
-		if (it != this->_channels.end())
+		std::cout << RED  << segment[i] << NOC << std::endl;
+		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
+		if (it == _channels.end())
 		{
-			// modify the existing object
-			this->_channels.find(segment[i])->second.getNbConnection();
-			channelAlreadyDefined = true;
-		}
-		else
-		{
-			// create a new map record and by consequence a new channel object
-			this->_channels[segment[i]]=(Channel(segment[i]));
-			// add the user to the list of connected users to this channel
-			this->_channels.find(segment[i])->second.setConnectedUser(nickname);
+			//	Create a new set into the _channel map
+			std::cout << RED  << "Channel creation" << NOC << std::endl;
+			std::cout << RED  << segment[i] << NOC << std::endl;
+			Channel *temp = new Channel(segment[i]);
+			
+			std::cout << RED  << temp->getChannelName() << NOC << std::endl;
+			this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
+			std::cout << RED  << "Channel created" << NOC << std::endl;
 		}
 
+		// re-find the current map segment
+		it = _channels.find(segment[i]);
+		if (it != _channels.end())
+		{
+			std::cout << RED  << "Channel edited" << NOC << std::endl;
+			it->second->setConnectedUser(nickname);
+		}
 
-		std::cout << "Object :" << this->_channels.find(segment[i])->second.getChannelName() << std::endl;
-		std::cout << "users :" << this->_channels.find(segment[i])->second.getConnectedUsers() << std::endl;
+		std::cout << RED  << segment[i] << NOC << std::endl;
+		std::cout << RED << " " << NOC << std::endl;
+
+		// add the user to the list of connected users to this channel
+
+			//this->_channels.find(segment[i])->second.setConnectedUser(segment[i]);
+		
+
+
+		//std::cout << "Object :" << this->_channels.find(segment[i])->second.getChannelName() << std::endl;
+		//std::cout << "users :" << this->_channels.find(segment[i])->second.getConnectedUsers() << std::endl;
 
 
 		std::string hostname = this->_hostname;
@@ -82,42 +97,27 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 		std::string cap_response = "";
 
-		if (channelAlreadyDefined == false)
-		{
-			//12:28 -!- vroch [~vroch@freenode-o6d.g28.dc9e5h.IP] has joined #blabla
-			//12:28 [Users #blabla]
-			//12:28 [@vroch]
-			//12:28 -!- Irssi: #blabla: Total of 1 nicks [1 ops, 0 halfops, 0 voices, 0         normal]
-			//12:28 -!- Channel #blabla created Fri Apr 14 12:28:33 2023
-			//12:28 -!- Irssi: Join to #blabla was synced in 0 secs
-
-			
-			cap_response = ":" + nickname + "!" + nickname + '@' + "127.0.0.1" + " JOIN " + typeC[i] + segment[i] + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-		}
-		else
-		{
-
-		}
-
-			cap_response = "332 " + typeC[i] + segment[i] + " :this is my channel \r\n";
+	
+			cap_response = ":" + nickname + '@' + "10.11.6.4" + " JOIN " + typeC[i] + segment[i] + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
 			//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
-			cap_response = "353 " + typeC[i] + segment[i] + ": [@" + nickname + "]\r\n";
+			// cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + nickname + "\r\n";
+			cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
+			//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
+			// cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
+			cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
+			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-
+			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
 	}
