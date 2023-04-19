@@ -5,7 +5,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 	std::string newNick = command.substr(5);
 	size_t position = newNick.find("\r\n"); // find first occurency of "\r\n"
 	if (position != std::string::npos) { // if found
-    	newNick = newNick.substr(0, position - 1); // extract the string until there
+    	newNick = newNick.substr(0, position); // extract the string until there
 }
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
@@ -36,7 +36,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "No new nickname given" << std::endl;
 	}
-	else if (newNick.length() > 8)
+	else if (newNick.length() > 20)
 	{
 		std::string cap_response = "432 Nickname " + newNick + " does not respond to standard \r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;

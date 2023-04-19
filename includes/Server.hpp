@@ -85,6 +85,8 @@ class	Server
 
 	// cmd user
 		void Cmds_user(int const fd_client, std::string const command);
+	// cmd whois
+		void Cmds_whois(int const fd_client, std::string const command);
 
 		int								_port;
 		std::string						_pass;

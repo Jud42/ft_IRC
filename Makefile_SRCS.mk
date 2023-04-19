@@ -14,6 +14,7 @@ srcs/Cmds/Cmds_join.cpp \
 srcs/Cmds/Cmds_part.cpp \
 srcs/Cmds/Cmds_nick.cpp \
 srcs/Cmds/Cmds_user.cpp \
+srcs/Cmds/Cmds_whois.cpp \
 srcs/Server/Server_createConnexion.cpp \
 srcs/Server/Server_readFdClient.cpp \
 srcs/Server/Server_isNewClient.cpp\

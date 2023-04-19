@@ -57,7 +57,7 @@ int Server::readFdClient(int &fd) {
 			std::cout << "je rentre dans part" << std::endl;
 			this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
 		}
-		/*---cmd envoyer par l'utilisateur client---*/
+		/*---cmd envoye par l'utilisateur client---*/
 		else if (command.find("NICK", 0) == 0)
 		{
 			std::cout << "je rentre dans nick" << std::endl;
@@ -67,6 +67,11 @@ int Server::readFdClient(int &fd) {
 		{
 			std::cout << "je rentre dans user" << std::endl;
 			this->Cmds_user(fd, this->_buffer);
+		}
+		else if (command.find("WHOIS", 0) == 0)
+		{
+			std::cout << "je rentre dans whois" << std::endl;
+			this->Cmds_whois(fd, this->_buffer);
 		}
 		else if (command.find("QUIT", 0) == 0)
 		{
