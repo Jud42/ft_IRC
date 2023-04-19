@@ -26,4 +26,6 @@
 #define LOGOUT 3
 #define LOGOUT_SERVER 4
 
+void print_all_caractere(std::string src);
+
 #endif

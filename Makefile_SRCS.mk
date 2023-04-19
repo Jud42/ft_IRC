@@ -22,3 +22,4 @@ srcs/Server/Server_printAddressIp.cpp\
 srcs/Client.cpp \
 srcs/Channel.cpp \
 srcs/Server/Server_logoutManage.cpp \
+srcs/print_all_caracter.cpp \

@@ -51,11 +51,4 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	}
 }
 
-/*
 
-Code de réponse 001 (RPL_WELCOME) : Il s'agit d'une réponse positive indiquant que le serveur a accepté le changement de pseudonyme et que l'utilisateur est maintenant connecté sous le nouveau pseudonyme. Le message peut ressembler à ceci : "001 : Bienvenue sur le serveur IRC. Votre pseudo est maintenant [nouveau_pseudonyme]".
-Code de réponse 431 (ERR_NONICKNAMEGIVEN) : Il s'agit d'une réponse d'erreur indiquant que le client n'a pas fourni de pseudonyme dans la commande "NICK". Le message peut ressembler à ceci : "431 : Erreur - aucun pseudonyme fourni. Veuillez spécifier un pseudonyme valide".
-Code de réponse 432 (ERR_ERRONEUSNICKNAME) : Il s'agit d'une réponse d'erreur indiquant que le pseudonyme fourni par le client dans la commande "NICK" est invalide selon les règles de syntaxe du protocole IRC. Le message peut ressembler à ceci : "432 : Erreur - pseudonyme invalide. Veuillez spécifier un pseudonyme valide".
-Code de réponse 433 (ERR_NICKNAMEINUSE) : Il s'agit d'une réponse d'erreur indiquant que le pseudonyme fourni par le client dans la commande "NICK" est déjà utilisé par un autre utilisateur sur le serveur IRC. Le message peut ressembler à ceci : "433 : Erreur - pseudonyme déjà utilisé. Veuillez choisir un autre pseudonyme".
-
-*/
