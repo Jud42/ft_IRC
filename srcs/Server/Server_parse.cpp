@@ -11,9 +11,10 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
     std::string user;
 
     std::string message = _buffer;
-    std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl; 
+    std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
+	print_all_caractere(message);
 
     std::string remains = "";
 
@@ -31,8 +32,8 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
         message = remains;
         remains = "";
 
-        std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl; 
-        
+        std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl;
+
         if (seg != 0)
         {
             // feed the client definition : to be added
@@ -47,13 +48,13 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
                 nickname = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] NICK[" << nickname << "] : " << newListener << "|" << NOC << std::endl;
             }
-            
+
             if (segment[seg].find("USER", 0) == 0)
             {
                 user = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
             }
-            
+
             if (segment[seg].find("JOIN", 0) == 0)
             {
                 user = segment[seg].substr(5, segment[seg].size());
@@ -65,7 +66,7 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
                 user = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << user << "] : " << newListener << "|" << NOC << std::endl;
             }
-            
+
 
         }
 
@@ -76,7 +77,7 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
 
     }
 
-    
+
 
     return segment[0];
 

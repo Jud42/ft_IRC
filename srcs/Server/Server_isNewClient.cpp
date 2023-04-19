@@ -14,7 +14,8 @@ bool Server::isNewClient(int &client_fd)
 	// }
 	if (_clientList.count(temp->getNickname()) > 0)
 	{
-		send(client_fd, "ERR_NICKNAMEINUSE", 18, 0);
+		std::string cap_response = "433 Nickname already exist, please choose another\r\n";
+		send(client_fd, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "Nickname already used" << std::endl;
 		delete temp;
 		return (false);
@@ -22,12 +23,14 @@ bool Server::isNewClient(int &client_fd)
 	this->_clientList.insert(std::pair<std::string, Client *>(temp->getNickname(), temp));
 	this->_fd_nick_list.insert(std::pair<int, std::string>(client_fd, temp->getNickname()));
 
-	std::cout << RED << "nouveau client: " <<  std::endl;
+	std::cout << YEL << "nouveau client: " <<  std::endl;
 	std::cout << "fd: " << (this->_clientList[_fd_nick_list[client_fd]])->getClientFd() << std::endl;
 	std::cout << "nick: " << (this->_clientList[_fd_nick_list[client_fd]])->getNickname() << std::endl;
 	std::cout << "password: " << (this->_clientList[_fd_nick_list[client_fd]])->getPassword() << std::endl;
-	std::cout << "modes: " << (this->_clientList[_fd_nick_list[client_fd]])->getModes() << NOC << std::endl;
-
+	std::cout << "modes: " << (this->_clientList[_fd_nick_list[client_fd]])->getModes() << std::endl;
+	std::cout << "user: " << (this->_clientList[_fd_nick_list[client_fd]])->get_user() << std::endl;
+	std::cout << "ip(temp): " << (this->_clientList[_fd_nick_list[client_fd]])->get_ip()  << std::endl;
+	std::cout << "realname: " << (this->_clientList[_fd_nick_list[client_fd]])->get_realname() << NOC << std::endl;
 	std::cout << "----------------------------- " <<  std::endl;
 	return(true);
 }

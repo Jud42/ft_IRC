@@ -83,6 +83,11 @@ class	Server
 	// cmd nick
 		void Cmds_nick(int const fd_client, std::string const command);
 
+	// cmd user
+		void Cmds_user(int const fd_client, std::string const command);
+	// cmd whois
+		void Cmds_whois(int const fd_client, std::string const command);
+
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
@@ -101,5 +106,8 @@ class	Server
 		std::map<std::string, Channel>	_channels;
 		std::map< int, struct sockaddr >	_addrclient;
 };
+
+void		print_all_caractere(std::string src);
+std::string	find_cmd_arg(std::string buffer, std::string command);
 
 #endif
