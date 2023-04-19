@@ -107,4 +107,7 @@ class	Server
 		std::map< int, struct sockaddr >	_addrclient;
 };
 
+void		print_all_caractere(std::string src);
+std::string	find_cmd_arg(std::string buffer, std::string command);
+
 #endif

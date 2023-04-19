@@ -3,7 +3,7 @@
 
 void print_all_caractere(std::string src)
 {
-	for (size_t i(0); i <= src.size() + 1; i++)
+	for (size_t i(0); i <= src.size(); i++)
 	{
 		if (src[i] == '\r')
 			std::cout << "\\r";

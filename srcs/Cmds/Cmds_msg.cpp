@@ -51,4 +51,15 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	}
 }
 
+/*
+[PARSE] message : PRIVMSG #salonblabla :salut
 
+\nIVMSG #salonblabla :salut\r
+\0
+
+[PARSE] message : PRIVMSG vrock :salut
+
+\nIVMSG vrock :salut\r
+\0\0\0
+
+*/
