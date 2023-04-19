@@ -1,16 +1,18 @@
 #include "Channel.hpp"
 
 
-Channel::Channel (std::string name) : _name(name)
+Channel::Channel (std::string name)
 {
-    if ("DEBUG" == _IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
-	{
-		// retrieve error code of getaddrinfo command 
-	 	std::cout << BLU;
-        std::cout << "[ Channel::channel ]" <<  std::endl;
-        std::cout << "_name :" << this->_name << std::endl;
-	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------
+    std::cout << "name :" << name << std::endl;
+    this->_name = name;
+    // if ("DEBUG" == _IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
+	// {
+	// 	// retrieve error code of getaddrinfo command 
+	//  	std::cout << BLU;
+    //     std::cout << "[ Channel::channel ]" <<  std::endl;
+    //     std::cout << "_name :" << this->_name << std::endl;
+	//  	std::cout << NOC;
+	// } // --------------------------------------------------------------------------------------
 }
         
        
@@ -62,14 +64,14 @@ void Channel::setConnectedUser (std::string NewUser)
     // Ensure the user is not already defined
 
     // Add the user and the default mode
-        if ("DEBUG" == _IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
-	{
-		// retrieve error code of getaddrinfo command 
-	 	std::cout << BLU;
-        std::cout << "[ Channel::setConnectedUser ]" <<  std::endl;
-        std::cout << "NewUser :" << NewUser << std::endl;
-	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------
+    //     if ("DEBUG" == _IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
+	// {
+	// 	// retrieve error code of getaddrinfo command 
+	//  	std::cout << BLU;
+    //     std::cout << "[ Channel::setConnectedUser ]" <<  std::endl;
+    //     std::cout << "NewUser :" << NewUser << std::endl;
+	//  	std::cout << NOC;
+	// } // --------------------------------------------------------------------------------------
 
     _channelClients.insert ( std::pair<std::string, char>(NewUser, 'O'));
 

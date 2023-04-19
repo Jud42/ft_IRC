@@ -30,6 +30,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		typeC[i] = "";
 	}
 
+	int i = 0;
 	// identify if manny chanels are transfered in one JOIN and separated by a comma
 	if (pchannel.find(",")==0)
 	{
@@ -37,9 +38,8 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	}
 	else
 	{
-		int i = 0;
 		typeC[i] = pchannel.substr(0, 1);
-		segment[i] = pchannel.substr(1, 6);
+		segment[i] = pchannel.substr(1, pchannel.find("\r") - 1);
 		std::cout << "*"<< segment[i] << "*" <<  std::endl;
 	}
 
@@ -52,19 +52,26 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 		// find if the channel is already defined
 		std::cout << RED  << segment[i] << NOC << std::endl;
-		std::map<std::string, Channel>::iterator it = _channels.find(segment[i]);
+		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
 		if (it == _channels.end())
 		{
 			//	Create a new set into the _channel map
-			
+			std::cout << RED  << "Channel creation" << NOC << std::endl;
+			std::cout << RED  << segment[i] << NOC << std::endl;
 			Channel *temp = new Channel(segment[i]);
+			
+			std::cout << RED  << temp->getChannelName() << NOC << std::endl;
 			this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
+			std::cout << RED  << "Channel created" << NOC << std::endl;
 		}
 
 		// re-find the current map segment
 		it = _channels.find(segment[i]);
 		if (it != _channels.end())
-			it->second.setConnectedUser(nickname);
+		{
+			std::cout << RED  << "Channel edited" << NOC << std::endl;
+			it->second->setConnectedUser(nickname);
+		}
 
 		std::cout << RED  << segment[i] << NOC << std::endl;
 		std::cout << RED << " " << NOC << std::endl;

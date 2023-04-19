@@ -25,7 +25,7 @@ private:
         std::string                     _name;
         char                            _mode;
         std::map <std::string, char>    _channelClients;
-        ConfigFile		*	_IRCconfig;
+        //ConfigFile		*	_IRCconfig;
      
 };
 
