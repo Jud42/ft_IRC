@@ -83,6 +83,9 @@ int Server::readFdClient(int &fd) {
 			// deconnecter le client
 			std::cout << "QUIT deconnection du fd : "
 				<< fd << std::endl;
+			std::string cap_response = "Goodbye\r\n";
+			std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+			send(fd, cap_response.c_str(), cap_response.length(), 0);
 			return LOGOUT;
 		}
 		else if (command.find("squit", 0) == 0) {

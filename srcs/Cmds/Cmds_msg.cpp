@@ -19,14 +19,16 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	if ( dest[0] == '#')
 	{
 		dest = args.substr(1);
-		std::map <std::string, char>    channelClients = this->_channels[dest]->getConnectedUsers();
+	
 		if (this->_channels.count(dest) == 0)
 		{
-			std::string cap_response = "403 the channel doesn't exist\r\n";
+			// std::string cap_response = "403 the channel doesn't exist\r\n";
+			std::string cap_response = "403\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			return ;
 		}
+		std::map <std::string, char>    channelClients = this->_channels[dest]->getConnectedUsers();
 		for(std::map <std::string, char>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
 		{
 			int fd_dest = this->_clientList[it->first]->getClientFd();
@@ -39,7 +41,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	{
 		if (this->_clientList.count(dest) == 0)
 		{
-			std::string cap_response = "401 the user doesn't exist\r\n";
+			std::string cap_response = "401\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			return ;

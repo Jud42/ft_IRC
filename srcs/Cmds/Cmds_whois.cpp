@@ -4,10 +4,7 @@
 
 void Server::Cmds_whois(int const fd_client, std::string const command)
 {
-	std::string nick = command.substr(6);
-	size_t position = nick.find_last_of("\r\n"); // find last occurency of "\r\n"
-	if (position != std::string::npos) // if found
-    	nick = nick.substr(0, position - 1); // extract the string until there
+	std::string nick = find_cmd_arg(command, "WHOIS");
 	if (nick.size() == 0)
 		nick = this->_fd_nick_list[fd_client];
 	if (_clientList.count(nick) == 0)
