@@ -103,7 +103,7 @@ class	Server
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel
-		std::map<std::string, Channel>	_channels;
+		std::map<std::string, Channel * >	_channels;
 		std::map< int, struct sockaddr >	_addrclient;
 };
 

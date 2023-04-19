@@ -2,35 +2,31 @@
 # define CHANNEL_HPP
 
 # include "define.hpp"
-# include "Server.hpp"
+# include "ConfigFile.hpp"
 
 class Channel
 {
 public:
 
-        Channel ();
         Channel (std::string name);
         ~Channel ();
 
         std::string getChannelName (void);
         char getChannelMode (void);
+        char getUserMode (void);
         int getNbConnection (void);
         std::string getConnectedUsers (void);
 
-        int setChannelMode (char);
-        int setConnectedUser (std::string);
-
-
-
-
+        void setChannelMode (char);
+        void setConnectedUser (std::string);
 
 private:
 
         std::string                     _name;
         char                            _mode;
-        std::map <std::string, char>    _usage;
-
-       
+        std::map <std::string, char>    _channelClients;
+        //ConfigFile		*	_IRCconfig;
+     
 };
 
 #endif

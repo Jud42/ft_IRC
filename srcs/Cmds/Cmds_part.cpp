@@ -30,7 +30,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		segment[0] = pchannel.substr(1);
 	}
 	std::string cap_response = "PART " + pchannel + "\r\n";
-	cap_response = nickname + "!" + nickname + '@' + hostname + " PART " + typeC[0] + segment[0] + "\r\n";
+	cap_response = ":" + nickname + "!" + nickname + '@' + hostname + " PART " + typeC[0] + segment[0] + "\r\n";
     //std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 	
 	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
