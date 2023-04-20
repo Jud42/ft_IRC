@@ -4,12 +4,12 @@
 
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
+    (void) _IRCconfig;
      if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
 	{
-		// retrieve error code of getaddrinfo command 
 	 	std::cout << BLU;
-        std::cout << "[ Channel::channel ]" <<  std::endl;
-        std::cout << "_name :" << this->_name << std::endl;
+        std::cout << "[ CHANNEL::channel ]" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 }
@@ -50,10 +50,34 @@ int Channel::getNbConnection (void)
 
 std::string Channel::getConnectedUsers (void)
 {
-    return ("vroch D1vroch");
+    std::string result = "@ ";
+    // pass thrugh all Users, the banned users are not listead
+	std::map<std::string, std::string>::iterator it = _channelClients.begin();
+    for ( ; it != _channelClients.end() ; it++)
+    {
+        // check mode, pos 0 #, pos 1 mode
+        std::string combo = it->second;
+        // avoid banned users
+        if (combo.substr(1,1) != "b")
+        {
+            if (combo.substr(0,1) == "#")
+                result += combo.substr(0,1);
+            result += it->first;
+            result += " ";
+        }
+    }
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::getConnectedUsers ]" <<  std::endl;
+        std::cout << " result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
+    return (result);
 }
 
-void Channel::setChannelMode (const std::string User, const char channelMode)
+void Channel::setChannelMode (const std::string User, const std::string channelMode)
 {
     (void) User;
     (void) channelMode;
@@ -61,18 +85,28 @@ void Channel::setChannelMode (const std::string User, const char channelMode)
 
 void Channel::setConnectedUser (const std::string NewUser) 
 {
+    (void) NewUser;
     // Ensure the user is not already defined
 
     // Add the user and the default mode
-        if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
-	    {
-		// retrieve error code of getaddrinfo command 
-	 	std::cout << BLU;
-        std::cout << "[ Channel::setConnectedUser ]" <<  std::endl;
-        std::cout << "NewUser :" << NewUser << std::endl;
-	 	std::cout << NOC;
-	    } // --------------------------------------------------------------------------------------
+        // if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // ------------------------------
+	    // {
+	 	// std::cout << BLU;
+        // std::cout << "[ CHANNEL::setConnectedUser ]" <<  std::endl;
+        // std::cout << "NewUser :" << NewUser << std::endl;
+	 	// std::cout << NOC;
+	    // } // --------------------------------------------------------------------------------------
 
-    _channelClients.insert ( std::pair<std::string, char>(NewUser, 'O'));
+        // // find if the newUser is already defined
+		// std::map<std::string, std::string>::iterator it = _channelClients.find(NewUser);
+		// // insert a new newUser
+		// if (it == _channelClients.end())
+		// {
+		// 	//	Create a new set into the _channelClients map
+		// 	this->_channelClients.insert(std::pair<std::string, std::string>(NewUser, ""));
+		// 	//  record the user and the ownership of the channel
+		// }
+
+    // _channelClients.insert (std::pair<std::string, std::string>(NewUser, ""));
 
 }
