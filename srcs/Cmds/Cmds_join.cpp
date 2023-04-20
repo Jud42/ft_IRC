@@ -58,8 +58,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			//	Create a new set into the _channel map
 			std::cout << RED  << "Channel creation" << NOC << std::endl;
 			std::cout << RED  << segment[i] << NOC << std::endl;
-			Channel *temp = new Channel(segment[i]);
-			
+			Channel *temp = new Channel(segment[i], this->_IRCconfig);
 			std::cout << RED  << temp->getChannelName() << NOC << std::endl;
 			this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
 			std::cout << RED  << "Channel created" << NOC << std::endl;
