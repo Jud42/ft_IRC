@@ -6,9 +6,9 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _data("to_be_filled"), _nickname("#"), _modes("i"), _clientFd(client_fd), _ip("0")
+: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0")
 {
-	// _channel.push_back("main");
+
     std::string message = client_data;
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
@@ -76,7 +76,9 @@ Client::Client(Client cpyClient, std::string newNickname)
 Client::~Client()
 {
 	std::cout << GRE << "destruction client" << NOC << std::endl;
-	send(this->_clientFd, "Goodbye", 8, 0);
+	std::string cap_response = "Goodbye\r\n";
+	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
+	send(_clientFd, cap_response.c_str(), cap_response.length(), 0);
 
     // Fermer la connexion avec le serveur IRC
     close(this->_clientFd);
@@ -93,9 +95,19 @@ std::string Client::getNickname()
 	return(this->_nickname);
 }
 
+void Client::setPassword(std::string pass)
+{
+	this->_password = pass;
+}
+
 std::string Client::getPassword()
 {
 	return(this->_password);
+}
+
+void Client::setModes(std::string mode)
+{
+	this->_modes = mode;
 }
 
 std::string Client::getModes()
