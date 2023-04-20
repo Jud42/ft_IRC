@@ -42,60 +42,61 @@ int Server::readFdClient(int &fd) {
 			else
 				return ERR_CLIENT_EXIST; //we remove this connexion
 		}
-		if (command.find("PING", 0) == 0)
-		{
-			std::cout << "je rentre dans ping" << std::endl;
-			this->Cmds_ping(fd);
+		else{
+			if (command.find("PING", 0) == 0)
+			{
+				std::cout << "je rentre dans ping" << std::endl;
+				this->Cmds_ping(fd);
+			}
+			if (command.find("JOIN", 0) == 0)
+			{
+				std::cout << "je rentre dans join" << std::endl;
+				this->Cmds_join(fd, this->_buffer, _fd_nick_list[fd]);
+			}
+			if (command.find("PART", 0) == 0)
+			{
+				std::cout << "je rentre dans part" << std::endl;
+				this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
+			}
+			/*---cmd envoye par l'utilisateur client---*/
+			if (command.find("NICK", 0) == 0)
+			{
+				std::cout << "je rentre dans nick" << std::endl;
+				this->Cmds_nick(fd, this->_buffer);
+			}
+			if (command.find("USER", 0) == 0)
+			{
+				std::cout << "je rentre dans user" << std::endl;
+				this->Cmds_user(fd, this->_buffer);
+			}
+			if (command.find("WHOIS", 0) == 0)
+			{
+				std::cout << "je rentre dans whois" << std::endl;
+				this->Cmds_whois(fd, this->_buffer);
+			}
+			if (command.find("PRIVMSG", 0) == 0)
+			{
+				std::cout << "je rentre dans msg" << std::endl;
+				this->Cmds_msg(fd, this->_buffer);
+			}
+			if (command.find("QUIT", 0) == 0)
+			{
+				// deconnecter le client
+				std::cout << "QUIT deconnection du fd : "
+					<< fd << std::endl;
+				std::string cap_response = "Goodbye\r\n";
+				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+				send(fd, cap_response.c_str(), cap_response.length(), 0);
+				return LOGOUT;
+			}
+			if (command.find("squit", 0) == 0)
+			{
+				std::cout << "[SERVER WILL DISCONNECT...]\n"
+					<< "List [socket] before logout_server: "
+					<< _fds.size() << std::endl;
+				return LOGOUT_SERVER;
+			}
 		}
-		if (command.find("JOIN", 0) == 0)
-		{
-			std::cout << "je rentre dans join" << std::endl;
-			this->Cmds_join(fd, this->_buffer, _fd_nick_list[fd]);
-		}
-		if (command.find("PART", 0) == 0)
-		{
-			std::cout << "je rentre dans part" << std::endl;
-			this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
-		}
-		/*---cmd envoye par l'utilisateur client---*/
-		if (command.find("NICK", 0) == 0)
-		{
-			std::cout << "je rentre dans nick" << std::endl;
-			this->Cmds_nick(fd, this->_buffer);
-		}
-		if (command.find("USER", 0) == 0)
-		{
-			std::cout << "je rentre dans user" << std::endl;
-			this->Cmds_user(fd, this->_buffer);
-		}
-		if (command.find("WHOIS", 0) == 0)
-		{
-			std::cout << "je rentre dans whois" << std::endl;
-			this->Cmds_whois(fd, this->_buffer);
-		}
-		if (command.find("PRIVMSG", 0) == 0)
-		{
-			std::cout << "je rentre dans msg" << std::endl;
-			this->Cmds_msg(fd, this->_buffer);
-		}
-		if (command.find("QUIT", 0) == 0)
-		{
-			// deconnecter le client
-			std::cout << "QUIT deconnection du fd : "
-				<< fd << std::endl;
-			std::string cap_response = "Goodbye\r\n";
-			std::cout << fd << " [Server->Client]" << cap_response << std::endl;
-			send(fd, cap_response.c_str(), cap_response.length(), 0);
-			return LOGOUT;
-		}
-		if (command.find("squit", 0) == 0)
-		{
-			std::cout << "[SERVER WILL DISCONNECT...]\n"
-				<< "List [socket] before logout_server: "
-				<< _fds.size() << std::endl;
-			return LOGOUT_SERVER;
-		}
-
 		std::cout << "------------------------------------- " <<  std::endl;
 		return SUCCESS_LOG;
 	}
