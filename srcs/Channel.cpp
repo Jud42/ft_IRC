@@ -20,50 +20,40 @@ Channel::~Channel ()
 
 }
 
-std::string Channel::getChannelName (void)
+const std::string Channel::getChannelName (void)
 {
     return(this->_name);
 }
 
-char Channel::getChannelMode (void)
+const std::string Channel::getChannelMode (void)
 {
     return(this->_mode);
 }
 
-char Channel::getUserMode (void)
+const std::map <std::string, std::string> Channel::getMapUsers (void)
 {
-    // find the pair in _channel_client and retireve the
-    return(this->_mode);
+    return (this->_channelClients); 
 }
 
-int Channel::getNbConnection (void)
+const std::string Channel::getConnectedUsers (void)
 {
-    int resultat = 0;
 
-
-
-    {
-        resultat += 1;
-    }
-    return(resultat);
-}
-
-std::string Channel::getConnectedUsers (void)
-{
-    std::string result = "@ ";
+    std::string result = "";
     // pass thrugh all Users, the banned users are not listead
-	std::map<std::string, std::string>::iterator it = _channelClients.begin();
-    for ( ; it != _channelClients.end() ; it++)
+	std::map<std::string, std::string>::iterator it(_channelClients.begin());
+    for ( ; it != this->_channelClients.end() ; it++)
     {
         // check mode, pos 0 #, pos 1 mode
         std::string combo = it->second;
         // avoid banned users
         if (combo.substr(1,1) != "b")
         {
-            if (combo.substr(0,1) == "#")
-                result += combo.substr(0,1);
+            if (combo.substr(0,1) == "O")
+                result += "@";
+            if (result != "")
+                result += " ";
             result += it->first;
-            result += " ";
+            
         }
     }
 
@@ -100,6 +90,7 @@ void Channel::setConnectedUser (const std::string NewUser)
 
         // find if the newUser is already defined
 		std::map<std::string, std::string>::iterator it = _channelClients.find(NewUser);
+
 		// insert a new newUser
 		if (it == _channelClients.end())
 		{
@@ -111,7 +102,4 @@ void Channel::setConnectedUser (const std::string NewUser)
 
 }
 
-const std::map <std::string, std::string> Channel::getMapUsers (void)
-{
-    return (this->_channelClients); 
-}
+

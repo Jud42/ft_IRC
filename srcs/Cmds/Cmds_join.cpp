@@ -1,54 +1,62 @@
 #include "Server.hpp"
 #include "Channel.hpp"
+#include "Client.hpp"
 
 
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
-	std::string pchannel = command.substr(5);
+	std::string pchannel = "";
+	// temporary code
+	if (command.find("JOIN") == 0)
+		pchannel = command.substr(5);
+	else
+		pchannel = command;
+	//end of temporary code
+
 	std::string hostname = this->_hostname;
 
-    if ("DEBUG" ==_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
-	{
-		// retrieve error code of getaddrinfo command
-		std::cout << BLU;
-		std::cout << "[ SERVER::Cmds_join ]" << std::endl;
-        std::cout << " fd_client :" << fd_client << std::endl;
-        std::cout << " channel :" << pchannel << std::endl;
-    	std::cout << " nickname :" << nickname << std::endl; // WARNING missing info
-		std::cout << NOC;
-	} // --------------------------------------------------------------------------------------
-
-	int max_segment = 10;
+	int max_segment = MAX_JOINS_PER_LINE;
 	std::string segment[max_segment];
 	std::string typeC[max_segment];
 	
 
-	// initialise the 10 potentitial new join
+	// initialise the MAX_JOINS_PER_LINE potentitial new join
 	for (int i = 0 ; i < max_segment ; i++)
 	{
 		segment[i] = "";
 		typeC[i] = "";
 	}
 
-	int i = 0;
-	// identify if manny chanels are transfered in one JOIN and separated by a comma
-	if (pchannel.find(",")==0)
+
+	// read each iteration of channels in one command
+	std::cout << YEL << " find " << NOC << std::endl;
+	for (int i = 0 ; i < max_segment ; i++)
 	{
-		// TBC_VROCH, parse les differents channels demandes
-	}
-	else
-	{
-		typeC[i] = pchannel.substr(0, 1);
-		segment[i] = pchannel.substr(1, pchannel.find("\r") - 1);
+		std::cout << YEL << i << " find p =" << pchannel.find(",", 0) << NOC << std::endl;
+		if (pchannel.find(",", 0) < pchannel.size())
+		{
+			typeC[i] = pchannel.substr(0, 1);
+			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
+			// reduce the size of the pchannel for the next cycle
+			pchannel = pchannel.substr(pchannel.find(",")+1);
+		}
+		else
+		{
+			typeC[i] = pchannel.substr(0, 1);
+			segment[i] = pchannel.substr(1, pchannel.find("\r"));
+			pchannel = "";
+			break;
+		}
 	}
 
-	// management of each channels objects (one object per channel)
 
-	for (int i = 0; i < max_segment; i++)
+	for (int i = 0 ; i < max_segment ; i++)
 	{
 		if (segment[i] == "")
-			continue;
+			break;
+
+		std::cout << YEL << i << "=" << segment[i] << NOC << std::endl;
 
 		// find if the channel is already defined
 		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
@@ -73,41 +81,45 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			it->second->setChannelMode(nickname, " i");
 		}
 
-
-		//std::string cap_response = "JOIN " + segment[i] + "\r\n";
-		//std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-		//send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-		// for the channel creator only
+		// send 3 messages
 
 		std::string cap_response = "";
+		
 
-	
-			cap_response = ":" + nickname + '@' + "10.11.6.4" + " JOIN " + typeC[i] + segment[i] + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		// Find IP address
+		std::string ip_client = this->_clientList[nickname]->get_ip();
 
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		// send first message e.g. : 12:36 -!- D1vroch [10.11.6.4] has joined #blabla
+		cap_response = ":" + segment[i] + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-			// retrieve the list of users attached to the channel
-			std::string channelUsers = it->second->getConnectedUsers();
-			
-			std::cout << "*" << channelUsers << "*";
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
-			// cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + nickname + "\r\n";
-			cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":" + channelUsers + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		// retrieve the list of users attached to the channel
+		std::string channelUsers = this->_channels[segment[i]]->getConnectedUsers();
 
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		// return the user name of the client
+		std::string userName = this->_clientList[nickname]->get_user();
+		
+		std::cout << YEL << "*" << channelUsers << NOC << "*";
+
+		// send second message with the list of users e.g : 
+		// :exo-debian 353 exo_a1681845229 = #blabla :@exo_a exo_a1681845229
+		//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
+		//cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
+		cap_response = ":" + segment[i] + " 353 " + userName + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
-			//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
-			// cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
-			cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		// send third message ending up the process of joining
+		//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
+		//cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
+		cap_response = ":" + segment[i] + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
 	}
