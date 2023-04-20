@@ -90,28 +90,24 @@ void Channel::setConnectedUser (const std::string NewUser)
 
     // Add the user and the default mode
 
-        // if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // ------------------------------
-	    // {
-	 	// std::cout << BLU;
-        // std::cout << "[ CHANNEL::setConnectedUser ]" <<  std::endl;
-        // std::cout << "NewUser :" << NewUser << std::endl;
-	 	// std::cout << NOC;
-	    // } // --------------------------------------------------------------------------------------
+        if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // ------------------------------
+	    {
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::setConnectedUser ]" <<  std::endl;
+        std::cout << "NewUser :" << NewUser << std::endl;
+	 	std::cout << NOC;
+	    } // --------------------------------------------------------------------------------------
 
-        // // find if the newUser is already defined
-		// std::map<std::string, std::string>::iterator it = _channelClients.find(NewUser);
-		// // insert a new newUser
-		// if (it == _channelClients.end())
-		// {
-		// 	//	Create a new set into the _channelClients map
-		// 	this->_channelClients.insert(std::pair<std::string, std::string>(NewUser, ""));
-		// 	//  record the user and the ownership of the channel
-		// }
+        // find if the newUser is already defined
+		std::map<std::string, std::string>::iterator it = _channelClients.find(NewUser);
+		// insert a new newUser
+		if (it == _channelClients.end())
+		{
+			//	Create a new set into the _channelClients map
+			this->_channelClients.insert(std::pair<std::string, std::string>(NewUser, "o"));
 
+		}
 
-    // _channelClients.insert (std::pair<std::string, std::string>(NewUser, ""));
-
- 
 
 }
 
