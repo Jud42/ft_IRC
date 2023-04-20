@@ -19,18 +19,21 @@ public:
         char getChannelMode (void);
         char getUserMode (void);
         int getNbConnection (void);
-        std::string getConnectedUsers (void);
+        std::map <std::string, char> getConnectedUsers (void);
 
         void setChannelMode (const std::string User, const std::string channelMode);
         void setConnectedUser (const std::string NewUser);
 
 private:
 
+
         std::string                             _name;
         char                                    _mode;
         std::map <std::string, std::string>    _channelClients;
         ConfigFile		               *_IRCconfig;
+
      
+
 };
 
 #endif
