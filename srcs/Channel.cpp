@@ -111,4 +111,11 @@ void Channel::setConnectedUser (const std::string NewUser)
 
     // _channelClients.insert (std::pair<std::string, std::string>(NewUser, ""));
 
+ 
+
+}
+
+const std::map <std::string, std::string> Channel::getMapUsers (void)
+{
+    return (this->_channelClients); 
 }

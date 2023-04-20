@@ -28,8 +28,8 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			return ;
 		}
-		std::map <std::string, char>    channelClients = this->_channels[dest]->getConnectedUsers();
-		for(std::map <std::string, char>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
+		std::map <std::string, std::string>    channelClients = this->_channels[dest]->getMapUsers();
+		for(std::map <std::string, std::string>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
 		{
 			int fd_dest = this->_clientList[it->first]->getClientFd();
 			std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
