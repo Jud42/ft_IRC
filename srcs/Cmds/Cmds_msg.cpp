@@ -11,7 +11,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 		// this must never exist because the client don't send if there is no enough parameter
 		return ;
 	}
-	std::string dest = args.substr(0, separation - 2);
+	std::string dest = args.substr(0, separation - 1);
 	std::string msg = args.substr(separation + 1);
 
 	std::cout << "destination : " << dest << " msg : " << msg <<std::endl;
@@ -19,7 +19,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	if ( dest[0] == '#')
 	{
 		dest = args.substr(1);
-	
+
 		if (this->_channels.count(dest) == 0)
 		{
 			// std::string cap_response = "403 the channel doesn't exist\r\n";
@@ -39,6 +39,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	}
 	else
 	{
+		std::cout << RED << dest << NOC << std::endl;
 		if (this->_clientList.count(dest) == 0)
 		{
 			std::string cap_response = "401\r\n";
@@ -47,7 +48,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			return ;
 		}
 		int fd_dest = this->_clientList[dest]->getClientFd();
-		std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
+		std::string cap_response = ":" + nick + " PRIVMSG " + dest + " " + msg + "\r\n";
 		std::cout << fd_dest<< " [Server->Client]" << cap_response << std::endl;
 		send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
 	}
