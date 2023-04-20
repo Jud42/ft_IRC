@@ -1,7 +1,7 @@
 #include "Channel.hpp"
 
 
-
+// **********************************************************************************************
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
     (void) _IRCconfig;
@@ -14,33 +14,37 @@ Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCcon
 	} // --------------------------------------------------------------------------------------
 }
 
-
+// **********************************************************************************************
 Channel::~Channel ()
 {
 
 }
 
+// **********************************************************************************************
 const std::string Channel::getChannelName (void)
 {
     return(this->_name);
 }
 
+// **********************************************************************************************
 const std::string Channel::getChannelMode (void)
 {
     return(this->_mode);
 }
 
+// **********************************************************************************************
 const std::map <std::string, std::string> Channel::getMapUsers (void)
 {
     return (this->_channelClients); 
 }
 
+// **********************************************************************************************
 const std::string Channel::getConnectedUsers (void)
 {
 
     std::string result = "";
     // pass thrugh all Users, the banned users are not listead
-	std::map<std::string, std::string>::iterator it(_channelClients.begin());
+	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
     for ( ; it != this->_channelClients.end() ; it++)
     {
         // check mode, pos 0 #, pos 1 mode
@@ -52,8 +56,7 @@ const std::string Channel::getConnectedUsers (void)
                 result += "@";
             if (result != "")
                 result += " ";
-            result += it->first;
-            
+            result += it->first;   
         }
     }
 
@@ -67,39 +70,73 @@ const std::string Channel::getConnectedUsers (void)
     return (result);
 }
 
+// **********************************************************************************************
+const std::string Channel::getConnectedUsersMode (std::string nickname)
+{
+    std::string result = "";
+    // pass thrugh all Users, the banned users are not listead
+    std::map<std::string, std::string>::iterator it(_channelClients.find(nickname));
+	//std::map<std::string, std::string>::iterator it=_channelClient->first.find(nickname);
+    if (it != _channelClients.end())
+    {
+        // check mode, pos 0 #, pos 1 mode
+        std::string combo = it->second;
+        // avoid banned users
+        result = combo.substr(1,1);      
+    }
+
+    return (result);
+}
+
+// **********************************************************************************************
+int Channel::getNbUsers (void)
+{
+    int result = 0;
+    // pass thrugh all Users, the banned users are not conted
+	std::map<std::string, std::string>::iterator it(_channelClients.begin());
+    for ( ; it != this->_channelClients.end() ; it++)
+    {
+        // check mode, pos 0 #, pos 1 mode
+        std::string combo = it->second;
+        // avoid banned users
+        if (combo.substr(1,1) != "b")
+        {
+            result += 1;
+        }
+    }
+    return (result);
+}
+
+// **********************************************************************************************
 void Channel::setChannelMode (const std::string User, const std::string channelMode)
 {
     (void) User;
     (void) channelMode;
 }
 
-void Channel::setConnectedUser (const std::string NewUser) 
+// **********************************************************************************************
+void Channel::setConnectedUser (const std::string newUser) 
 {
-    (void) NewUser;
-    // Ensure the user is not already defined
-
-    // Add the user and the default mode
-
-        if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // ------------------------------
-	    {
-	 	std::cout << BLU;
-        std::cout << "[ CHANNEL::setConnectedUser ]" <<  std::endl;
-        std::cout << "NewUser :" << NewUser << std::endl;
-	 	std::cout << NOC;
-	    } // --------------------------------------------------------------------------------------
-
         // find if the newUser is already defined
-		std::map<std::string, std::string>::iterator it = _channelClients.find(NewUser);
+		std::map<std::string, std::string>::iterator it = _channelClients.find(newUser);
 
 		// insert a new newUser
 		if (it == _channelClients.end())
 		{
 			//	Create a new set into the _channelClients map
-			this->_channelClients.insert(std::pair<std::string, std::string>(NewUser, "o"));
-
+			this->_channelClients.insert(std::pair<std::string, std::string>(newUser, "o"));
 		}
-
-
 }
+// **********************************************************************************************
+void Channel::resetConnectedUser (const std::string removedUser)
+{
+        // find if the newUser is already defined
+		std::map<std::string, std::string>::iterator it = _channelClients.find(removedUser);
 
-
+		// delete the User
+		if (it != _channelClients.end())
+		{
+			//	Delete the set into the _channelClients map
+			this->_channelClients.erase (it);
+		}
+}

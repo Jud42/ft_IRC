@@ -12,6 +12,8 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		pchannel = command.substr(5);
 	else
 		pchannel = command;
+
+	std::cout << YEL << pchannel << NOC << std::endl;		
 	//end of temporary code
 
 	std::string hostname = this->_hostname;
@@ -29,22 +31,24 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	}
 
 
-	// read each iteration of channels in one command
+	// detect and parse each iteration of channels in one command
 	std::cout << YEL << " find " << NOC << std::endl;
 	for (int i = 0 ; i < max_segment ; i++)
 	{
 		std::cout << YEL << i << " find p =" << pchannel.find(",", 0) << NOC << std::endl;
 		if (pchannel.find(",", 0) < pchannel.size())
 		{
+			std::cout << YEL << pchannel << NOC << std::endl;		
 			typeC[i] = pchannel.substr(0, 1);
 			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
+			std::cout << YEL << pchannel << NOC << std::endl;		
 		}
 		else
 		{
 			typeC[i] = pchannel.substr(0, 1);
-			segment[i] = pchannel.substr(1, pchannel.find("\r"));
+			segment[i] = pchannel.substr(1, pchannel.find("\r")-1);
 			pchannel = "";
 			break;
 		}
@@ -81,16 +85,17 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			it->second->setChannelMode(nickname, " i");
 		}
 
-		// send 3 messages
+		// send 4 messages
 
 		std::string cap_response = "";
 		
-
 		// Find IP address
 		std::string ip_client = this->_clientList[nickname]->get_ip();
-
-		// send first message e.g. : 12:36 -!- D1vroch [10.11.6.4] has joined #blabla
-		cap_response = ":" + segment[i] + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
+		// Find user
+		std::string user_client = this->_clientList[nickname]->get_user();
+		
+		// send first message e.g. : :Nickexo_a!User_exo_a@127.0.0.1 JOIN #blabla
+		cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
@@ -100,29 +105,34 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 		// return the user name of the client
 		std::string userName = this->_clientList[nickname]->get_user();
-		
-		std::cout << YEL << "*" << channelUsers << NOC << "*";
 
 		// send second message with the list of users e.g : 
-		// :exo-debian 353 exo_a1681845229 = #blabla :@exo_a exo_a1681845229
+		// :exo-debian 353 Nickexo_a = #blabla :@Nickexo_a
 		//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
 		//cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
-		cap_response = ":" + segment[i] + " 353 " + userName + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
+		cap_response = ":" + hostname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
-		// send third message ending up the process of joining
+		// send third message ending up the process of joining e.g. :
+		// :exo-debian 366 Nickexo_a #blabla :End of NAMES list
 		//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
 		//cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
-		cap_response = ":" + segment[i] + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
+		cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
+		// send fourth message informing about add user e.g. :
+		// :exo-debian 324 exo_b #blabla [+n]
+		// 324     RPL_CHANNELMODEIS "<channel> <mode> <mode params>"
+		cap_response = ":" + hostname + " 324 " + nickname + " " + typeC[i] + segment[i] + " [+n]\r\n";
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 	}
 
 
-	}
+}

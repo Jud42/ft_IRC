@@ -19,10 +19,13 @@ public:
         const std::string getChannelMode (void);
         const std::map <std::string, std::string> getMapUsers (void);
         const std::string getConnectedUsers (void);
+        const std::string getConnectedUsersMode (const std::string nickname);
+        int getNbUsers (void);
         
 
-        void setChannelMode (const std::string User, const std::string channelMode);
-        void setConnectedUser (const std::string NewUser);
+        void setChannelMode (const std::string user, const std::string channelMode);
+        void setConnectedUser (const std::string newUser);
+        void resetConnectedUser (const std::string removeUser);
 
 private:
 

@@ -42,7 +42,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 			else
 			{
 				typeC[i] = pchannel.substr(0, 1);
-				segment[i] = pchannel.substr(1, pchannel.find("\r"));
+				segment[i] = pchannel.substr(1, pchannel.find("\r")-1);
 				pchannel = "";
 				break;
 			}
@@ -54,10 +54,32 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		if (segment[i] == "")
 			break;
 
-		std::string cap_response = "PART " + pchannel + "\r\n";
-		cap_response = ":" + nickname + "!" + nickname + '@' + hostname + " PART " + typeC[i] + segment[i] + "\r\n";
-	
+		// Find IP address
+		std::string ip_client = this->_clientList[nickname]->get_ip();
+
+		// send first message informing about quit user e.g. :
+		// :exo_b!exo_b@127.0.0.1 PART #blabla
+		std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
+
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+
+		// **** delete channel's user and/or channel itself
+
+		// retieve the user Mode to ensure he's not banned
+		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
+		if (it != _channels.end() && it->second->getConnectedUsersMode(nickname) != "b")		{
+			// delete the user
+			it->second->resetConnectedUser(nickname);
+		}
+		// check if the user deleted whas the last one (exclude banned users)
+		if (it->second->getNbUsers() == 0)
+		{
+		// delete the channel
+		// ?? delete (it)
+
+
+		}
 	}
 
 }

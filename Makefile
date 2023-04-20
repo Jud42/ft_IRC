@@ -27,6 +27,9 @@ CFLAGS	+=	-Werror
 CFLAGS	+=	-g
 CFLAGS	+=	-std=c++98
 CFLAGS	+=	-lstdc++
+CFLAGS	+=	-lmpfit
+CFLAGS	+=	-lm
+
 endif
 
 #The Directories, Source, Includes, Objects, Binary and Resources

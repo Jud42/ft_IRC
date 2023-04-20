@@ -36,7 +36,9 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
 
 	//set 
-	memset(&_fds, 0, sizeof(_fds));
+	//std::memset(&_fds, 0, sizeof(_fds));
+	
+
 }
 
 Server::~Server( void ) { 
