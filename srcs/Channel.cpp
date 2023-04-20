@@ -13,11 +13,11 @@ Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCcon
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 }
-        
-       
+
+
 Channel::~Channel ()
 {
-    
+
 }
 
 std::string Channel::getChannelName (void)
@@ -32,15 +32,15 @@ char Channel::getChannelMode (void)
 
 char Channel::getUserMode (void)
 {
-    // find the pair in _channel_client and retireve the 
+    // find the pair in _channel_client and retireve the
     return(this->_mode);
 }
-        
+
 int Channel::getNbConnection (void)
 {
     int resultat = 0;
-    
-    
+
+
 
     {
         resultat += 1;
@@ -64,6 +64,7 @@ void Channel::setConnectedUser (const std::string NewUser)
     // Ensure the user is not already defined
 
     // Add the user and the default mode
+
         if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------------
 	    {
 		// retrieve error code of getaddrinfo command 
