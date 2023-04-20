@@ -6,7 +6,7 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _data("to_be_filled"), _nickname("#"), _modes("i"), _clientFd(client_fd), _ip("0"), _password("0")
+: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0")
 {
 
     std::string message = client_data;
