@@ -47,9 +47,18 @@ class	Server
 	// Server_monitoring.cpp
 		void monitoring (void);
 
+		class CmdException : public std::exception
+		{
+			public :
+				virtual const char * what() const throw()
+				{
+					return ("Cmd error");
+				}
+		};
+
     private:
+
 	// Server_getInfos.cpp
-			// Server_getInfos.cpp
 		void getInfos (void);
 	// Server_closeFD.cpp
 		void close_fd (int &fd, bool exception);

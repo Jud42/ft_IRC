@@ -2,7 +2,7 @@
 
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
-	std::string newNick = find_cmd_arg(command, "NICK");
+	std::string newNick = command;
 
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
@@ -49,7 +49,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		_clientList.insert(std::pair<std::string, Client *>(newNick, tempClient));
 		_fd_nick_list[fd_client] = newNick;
 		//001     RPL_WELCOME
-		std::string cap_response = "001 You succefully change your nickname. Your new nickname is: " + newNick + "\r\n";
+		std::string cap_response = "001 " + newNick + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
