@@ -71,20 +71,35 @@ const std::string Channel::getConnectedUsers (void)
 }
 
 // **********************************************************************************************
-const std::string Channel::getConnectedUsersMode (std::string nickname)
+const std::string Channel::getConnectedUsersMode (std::string const nickname)
 {
+    (void) nickname;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::getConnectedUsersMode ]" <<  std::endl;
+        std::cout << "  nickname :" << nickname << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------  
+
     std::string result = "";
-    // pass thrugh all Users, the banned users are not listead
-    std::map<std::string, std::string>::iterator it(_channelClients.find(nickname));
-	//std::map<std::string, std::string>::iterator it=_channelClient->first.find(nickname);
-    if (it != _channelClients.end())
+    // pass through all Users, the banned users are not listead
+    std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
+    for ( ; it != this->_channelClients.end() ; it++)
     {
-        // check mode, pos 0 #, pos 1 mode
-        std::string combo = it->second;
-        // avoid banned users
-        result = combo.substr(1,1);      
+        if (it->first == nickname)
+        {
+            result = it->second;
+            break;
+        }
     }
 
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "  result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     return (result);
 }
 
@@ -93,7 +108,7 @@ int Channel::getNbUsers (void)
 {
     int result = 0;
     // pass thrugh all Users, the banned users are not conted
-	std::map<std::string, std::string>::iterator it(_channelClients.begin());
+	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
     for ( ; it != this->_channelClients.end() ; it++)
     {
         // check mode, pos 0 mode, pos 1 #
