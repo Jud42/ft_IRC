@@ -126,6 +126,27 @@ void Channel::setChannelMode (const std::string User, const std::string channelM
 }
 
 // **********************************************************************************************
+int Channel::setChannelUserMode (const std::string User, const std::string channelMode)
+{
+        // Structure of channelMode
+        // pos 0 = mode = [O, o, i , b, ....]
+        // pos 1 = Owner of the channel = "#"
+
+        // find if the User that is already defined
+		std::map<std::string, std::string>::iterator it = _channelClients.find(User);
+
+		// insert a new newUser
+		if (it != _channelClients.end())
+		{
+			//	Update the set into the _channelClients map
+            it->second = channelMode;
+			return 1;
+		}
+		return 0;
+}
+
+
+// **********************************************************************************************
 void Channel::setConnectedUser (const std::string newUser) 
 {
         // find if the newUser is already defined
