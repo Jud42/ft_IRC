@@ -50,11 +50,11 @@ const std::string Channel::getConnectedUsers (void)
         // check mode, pos 0 #, pos 1 mode
         std::string combo = it->second;
         // avoid banned users
-        if (combo.substr(1,1) != "b")
+        if (combo.substr(0,1) != "b")
         {
-            if (combo.substr(0,1) == "O")
-                result += "@";
-            if (result != "")
+            if (combo.substr(0,2) == "O#")
+                result += " #";
+            else
                 result += " ";
             result += it->first;   
         }
@@ -96,10 +96,10 @@ int Channel::getNbUsers (void)
 	std::map<std::string, std::string>::iterator it(_channelClients.begin());
     for ( ; it != this->_channelClients.end() ; it++)
     {
-        // check mode, pos 0 #, pos 1 mode
+        // check mode, pos 0 mode, pos 1 #
         std::string combo = it->second;
         // avoid banned users
-        if (combo.substr(1,1) != "b")
+        if (combo.substr(0,1) != "b")
         {
             result += 1;
         }
@@ -110,8 +110,19 @@ int Channel::getNbUsers (void)
 // **********************************************************************************************
 void Channel::setChannelMode (const std::string User, const std::string channelMode)
 {
-    (void) User;
-    (void) channelMode;
+        // Structure of channelMode
+        // pos 0 = mode = [O, o, i , b, ....]
+        // pos 1 = Owner of the channel = "#"
+
+        // find if the User that is already defined
+		std::map<std::string, std::string>::iterator it = _channelClients.find(User);
+
+		// insert a new newUser
+		if (it != _channelClients.end())
+		{
+			//	Update the set into the _channelClients map
+            it->second = channelMode;
+		}
 }
 
 // **********************************************************************************************
