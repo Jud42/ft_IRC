@@ -3,12 +3,14 @@
 void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
 {
 	std::string pchannel = "";
+	std::cout << RED << pchannel << NOC << std::endl;
     // temporary code
 	if (command.find("PART") == 0)
 		pchannel = command.substr(5);
 	else
 		pchannel = command;
 	//end of temporary code
+	std::cout << RED << pchannel << NOC << std::endl;
 
 	std::string hostname = this->_hostname;
 
@@ -24,28 +26,25 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		typeC[i] = "";
 	}
 
-	// identify if manny chanels are transfered in one JOIN and separated by a comma, no spaces allowed
-	if (pchannel.find(",") < pchannel.size())
+
+	// read each iteration of channels in one command
+	std::cout << YEL << " find " << NOC << std::endl;
+	for (int i = 0 ; i < max_segment ; i++)
 	{
-		// read each iteration of channels in one command
-		std::cout << YEL << " find " << NOC << std::endl;
-		for (int i = 0 ; i < max_segment ; i++)
+		std::cout << YEL << i << " find p =" << pchannel.find(",", 0) << NOC << std::endl;
+		if (pchannel.find(",") < pchannel.size())
 		{
-			std::cout << YEL << i << " find p =" << pchannel.find(",", 0) << NOC << std::endl;
-			if (pchannel.find(",", 0) < pchannel.size())
-			{
-				typeC[i] = pchannel.substr(0, 1);
-				segment[i] = pchannel.substr(1, pchannel.find(",")-1);
-				// reduce the size of the pchannel for the next cycle
-				pchannel = pchannel.substr(pchannel.find(",")+1);
-			}
-			else
-			{
-				typeC[i] = pchannel.substr(0, 1);
-				segment[i] = pchannel.substr(1, pchannel.find("\r")-1);
-				pchannel = "";
-				break;
-			}
+			typeC[i] = pchannel.substr(0, 1);
+			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
+			// reduce the size of the pchannel for the next cycle
+			pchannel = pchannel.substr(pchannel.find(",")+1);
+		}
+		else
+		{
+			typeC[i] = pchannel.substr(0, 1);
+			segment[i] = pchannel.substr(1, pchannel.find("\r")-1);
+			pchannel = "";
+			break;
 		}
 	}
 		
@@ -59,7 +58,10 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 
 		// send first message informing about quit user e.g. :
 		// :exo_b!exo_b@127.0.0.1 PART #blabla
-		std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
+		//std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
+		//std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + segment[i] + "\r\n";
+		std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + segment[i] + "\r\n";
+		std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
@@ -68,18 +70,32 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 
 		// retieve the user Mode to ensure he's not banned
 		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
-		if (it != _channels.end() && it->second->getConnectedUsersMode(nickname) != "b")		{
-			// delete the user
+		if (it != _channels.end() && it->second->getConnectedUsersMode(nickname) != "b")		
+		{
+		// delete the user
 			it->second->resetConnectedUser(nickname);
 		}
-		// check if the user deleted whas the last one (exclude banned users)
+		// // check if the user deleted whas the last one (exclude banned users)
+		std::cout << RED << it->second->getNbUsers() << NOC << std::endl;
 		if (it->second->getNbUsers() == 0)
 		{
 		// delete the channel
-		// ?? delete (it)
-
-
+		it->second->~Channel();
+		_channels.erase(it);
 		}
+
+		if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+		{
+			std::cout << BLU;
+			it = this->_channels.begin();
+			std::cout << "[ SERVER::join ]" <<  std::endl;
+			for ( ; it != this->_channels.end() ; it++)
+			{
+				std::cout << " remaining open channels :" << it->first << std::endl;
+			}
+			std::cout << NOC;
+		} // --------------------------------------------------------------------------------------
+		
 	}
 
 }

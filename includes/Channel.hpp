@@ -31,7 +31,7 @@ private:
 
         std::string                            _name;
         std::string                            _mode;
-        std::map <std::string, std::string>    _channelClients; // Nick & mode
+        std::map <std::string, std::string>    _channelClients; // Nick & mode (mode[o, O, b, i] + owner=#)
         ConfigFile		               *_IRCconfig;
 
      

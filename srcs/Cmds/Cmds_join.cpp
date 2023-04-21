@@ -129,6 +129,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		// :exo-debian 324 exo_b #blabla [+n]
 		// 324     RPL_CHANNELMODEIS "<channel> <mode> <mode params>"
 		cap_response = ":" + hostname + " 324 " + nickname + " " + typeC[i] + segment[i] + " [+n]\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
