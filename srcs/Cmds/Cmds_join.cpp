@@ -13,8 +13,15 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	else
 		pchannel = command;
 
+
 	std::cout << YEL << pchannel << NOC << std::endl;		
 	//end of temporary code
+
+	// Find IP address
+	std::string ip_client = this->_clientList[nickname]->get_ip();
+	// Find user
+	std::string user_client = this->_clientList[nickname]->get_user();
+
 
 	std::string hostname = this->_hostname;
 
@@ -32,18 +39,14 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 
 	// detect and parse each iteration of channels in one command
-	std::cout << YEL << " find " << NOC << std::endl;
 	for (int i = 0 ; i < max_segment ; i++)
 	{
-		std::cout << YEL << i << " find p =" << pchannel.find(",", 0) << NOC << std::endl;
 		if (pchannel.find(",", 0) < pchannel.size())
-		{
-			std::cout << YEL << pchannel << NOC << std::endl;		
+		{		
 			typeC[i] = pchannel.substr(0, 1);
 			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
-			std::cout << YEL << pchannel << NOC << std::endl;		
 		}
 		else
 		{
@@ -75,24 +78,30 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
 			//  record the user and the ownership of the channel
 			it->second->setConnectedUser(nickname);
-			it->second->setChannelMode(nickname, "#O");
-
+			it->second->setChannelMode(nickname, "O#");
 		}
 		else
 		{
+			// retieve the user Mode to ensure he's not banned
+			std::map<std::string, Channel * >::iterator it=this->_channels.begin();
+			// block banned user to join the channel
+			if (it->second->getConnectedUsersMode(nickname) == "")	
+			{
+				// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
+				std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC[i] + segment[i] + "\r\n";
+				std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+				return;
+			}
 			// incase of new connection to the channel, add the new user
 			it->second->setConnectedUser(nickname);
-			it->second->setChannelMode(nickname, " i");
+			it->second->setChannelMode(nickname, "o");
 		}
 
 		// send 4 messages
 
 		std::string cap_response = "";
 		
-		// Find IP address
-		std::string ip_client = this->_clientList[nickname]->get_ip();
-		// Find user
-		std::string user_client = this->_clientList[nickname]->get_user();
 		
 		// send first message e.g. : :Nickexo_a!User_exo_a@127.0.0.1 JOIN #blabla
 		cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
