@@ -9,9 +9,9 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag) {
 	}
 	//close & delete fd & addr
 	//if ERR_CLIENT_EXIST
+	_addrclient.erase(it->fd);
 	close(it->fd);
 	_fds.erase(it);
-	_addrclient.erase(it->fd);
 }
 
 void Server::logoutServer( void ) {
