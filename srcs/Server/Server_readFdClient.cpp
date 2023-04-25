@@ -117,6 +117,12 @@ int Server::readFdClient(int &fd) {
 					this->Cmds_msg(fd, this->_buffer);
 				}
 
+				if (buffer.find("NOTICE") != std::string::npos)
+				{
+					std::cout << "je rentre dans msg" << std::endl;
+					this->Cmds_notice(fd, this->_buffer);
+				}
+
 				if (buffer.find("QUIT") != std::string::npos)
 				{
 					// deconnecter le client
@@ -138,12 +144,14 @@ int Server::readFdClient(int &fd) {
 			}
 			else
 			{
-					send(fd, "464 ERR_PASSWDMISMATCH", 19, 0);
-					std::cout << "Erreur d'authentification : mot de passe invalide " << this->_clientList[_fd_nick_list[fd]]->getPassword() << this->_pass << std::endl;
-					std::string cap_response = "BYE Goodbye\r\n";
+					std::string cap_response = "464 ERR_PASSWDMISMATCH\r\n";
 					std::cout << fd << " [Server->Client]" << cap_response << std::endl;
 					send(fd, cap_response.c_str(), cap_response.length(), 0);
-					// return LOGOUT;
+					std::cout << "Erreur d'authentification : mot de passe invalide " << this->_clientList[_fd_nick_list[fd]]->getPassword() << this->_pass << std::endl;
+					cap_response = "BYE Goodbye\r\n";
+					std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+					send(fd, cap_response.c_str(), cap_response.length(), 0);
+					return LOGOUT;
 			}
 		}
 		std::cout << "------------------------------------- " <<  std::endl;

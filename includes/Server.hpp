@@ -98,7 +98,10 @@ class	Server
 		void Cmds_whois(int const fd_client, std::string const command);
 	// cmd msg / privmsg
 		void Cmds_msg(int const fd_client, std::string const command);
-
+		
+	// cmd notice
+		void Cmds_notice(int const fd_client, std::string const command);
+		
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;

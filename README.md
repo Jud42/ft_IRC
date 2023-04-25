@@ -20,6 +20,9 @@ Installation sous MacOS
 brew install irssi
 ```
 
+# Un serveur irc de reference
+irc.oftc.net
+
 # Information sur les protocoles
   - https://datatracker.ietf.org/doc/html/rfc1459
   - https://datatracker.ietf.org/doc/html/rfc2810 (architecture)
