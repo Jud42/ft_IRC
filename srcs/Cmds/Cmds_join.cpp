@@ -42,6 +42,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
+
 		}
 		else
 		{
@@ -52,13 +53,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		}
 	}
 
-
+	// turn in secgment to perform the listed channels join
 	for (int i = 0 ; i < max_segment ; i++)
 	{
 		if (segment[i] == "")
 			break;
 
-		std::cout << YEL << i << "=" << segment[i] << NOC << std::endl;
 
 		// find if the channel is already defined
 		std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
@@ -120,7 +120,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
 		//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
 		cap_response = ":" + hostname + " 353 " + nickname + " @ " + typeC[i] + segment[i] + " :" + channelUsers + "\r\n";
-		std::cout << YEL << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
