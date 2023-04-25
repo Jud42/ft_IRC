@@ -39,7 +39,7 @@ const std::map <std::string, std::string> Channel::getMapUsers (void)
 }
 
 // **********************************************************************************************
-// provide a list of connected (mode != b) structured as "User1 User2"
+// provide a list of connected (mode != b) structured as "User1 @User2"
 const std::string Channel::getConnectedUsers (void)
 {
 
@@ -53,8 +53,8 @@ const std::string Channel::getConnectedUsers (void)
         // avoid banned users
         if (combo.substr(0,1) != "b")
         {
-            if (combo.substr(0,2) == "O#")
-                result += "#";
+            if (combo.substr(0,2) == "O@")
+                result += "@";
             else
                 result += " ";
             result += it->first;   
