@@ -24,6 +24,7 @@ public:
         
 
         void setChannelMode (const std::string user, const std::string channelMode);
+        int setChannelUserMode (const std::string user, const std::string channelMode);
         void setConnectedUser (const std::string newUser);
         void resetConnectedUser (const std::string removeUser);
 

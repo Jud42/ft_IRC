@@ -74,7 +74,6 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			//  record the user and the ownership of the channel
 			it->second->setConnectedUser(nickname);
 			it->second->setChannelMode(nickname, "O@");
-			
 		}
 		else
 		{
@@ -150,7 +149,5 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
 
 	}
-
-	
 
 }
