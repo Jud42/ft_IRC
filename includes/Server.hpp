@@ -72,7 +72,8 @@ class	Server
 
 	// cmd CAP - answer welcome
 		void Cmds_CAP(int const fd_client, std::string const nickname);
-
+	// Cmd inform_channel (except the user at the origin of the action triggering the message)
+		void Cmds_inform_Channel(std::string const message, std::string const channel, std::string const exceptUser);
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const fd_client);
 	// cmd Join - answer Pong
@@ -105,7 +106,7 @@ class	Server
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel
-		std::map<std::string, Channel * >	_channels;
+		std::map<std::string, Channel * >	_channels; //key channel name without #
 		std::map< int, struct sockaddr >	_addrclient;
 };
 

@@ -1,7 +1,4 @@
 #include "Server.hpp"
-#include "Channel.hpp"
-#include "Client.hpp"
-
 
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
@@ -14,14 +11,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		pchannel = command;
 
 
-	std::cout << YEL << pchannel << NOC << std::endl;		
 	//end of temporary code
 
 	// Find IP address
 	std::string ip_client = this->_clientList[nickname]->get_ip();
 	// Find user
 	std::string user_client = this->_clientList[nickname]->get_user();
-
 
 	std::string hostname = this->_hostname;
 
@@ -78,7 +73,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			std::map<std::string, Channel*>::iterator it = _channels.find(segment[i]);
 			//  record the user and the ownership of the channel
 			it->second->setConnectedUser(nickname);
-			it->second->setChannelMode(nickname, "O#");
+			it->second->setChannelMode(nickname, "O@");
 			
 		}
 		else
@@ -86,8 +81,9 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// retieve the user Mode to ensure he's not banned
 			std::map<std::string, Channel * >::iterator it=this->_channels.begin();
 			// block banned user to join the channel
-			if (it->second->getConnectedUsersMode(nickname) == "")	
+			if (it->second->getConnectedUsersMode(nickname) == "b")	
 			{
+				//-->TBC
 				// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
 				std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC[i] + segment[i] + "\r\n";
 				std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
@@ -99,13 +95,13 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			it->second->setChannelMode(nickname, "o");
 		}
 
-		// send 4 messages
+		// send 4 messages ---------------------------------------------------------------
 
 		std::string cap_response = "";
 		
-		
-		// send first message e.g. : :Nickexo_a!User_exo_a@127.0.0.1 JOIN #blabla
-		cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
+		// ------------------
+		// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
+		cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
@@ -116,25 +112,29 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		// return the user name of the client
 		std::string userName = this->_clientList[nickname]->get_user();
 
+
+		// :kinetic.oftc.net MODE #blabla +nt
+
+
+		// ------------------
 		// send second message with the list of users e.g : 
-		// :exo-debian 353 Nickexo_a = #blabla :@Nickexo_a
+		// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
 		//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
-		//cap_response = ":" + nickname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
-		cap_response = ":" + hostname + " 353 " + nickname + " = " + typeC[i] + segment[i] + ":@" + channelUsers + "\r\n";
-		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		cap_response = ":" + hostname + " 353 " + nickname + " @ " + typeC[i] + segment[i] + " :" + channelUsers + "\r\n";
+		std::cout << YEL << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-
+		// ------------------
 		// send third message ending up the process of joining e.g. :
-		// :exo-debian 366 Nickexo_a #blabla :End of NAMES list
+		// :kinetic.oftc.net 366 VRO_D1 #blabla :End of /NAMES list.
 		//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
-		//cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
 		cap_response = ":" + hostname + " 366 " + nickname + " " + typeC[i] + segment[i] + " :End of NAMES list\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
+		// ------------------
 		// send fourth message informing about add user e.g. :
 		// :exo-debian 324 exo_b #blabla [+n]
 		// 324     RPL_CHANNELMODEIS "<channel> <mode> <mode params>"
@@ -143,7 +143,14 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
+		// ------------------
+		// send complement message about new user e.g. :
+		cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC[i] + segment[i] + "\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
+
 	}
 
+	
 
 }

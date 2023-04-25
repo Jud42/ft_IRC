@@ -39,6 +39,7 @@ const std::map <std::string, std::string> Channel::getMapUsers (void)
 }
 
 // **********************************************************************************************
+// provide a list of connected (mode != b) structured as "User1 User2"
 const std::string Channel::getConnectedUsers (void)
 {
 
@@ -53,7 +54,7 @@ const std::string Channel::getConnectedUsers (void)
         if (combo.substr(0,1) != "b")
         {
             if (combo.substr(0,2) == "O#")
-                result += " #";
+                result += "#";
             else
                 result += " ";
             result += it->first;   
@@ -111,7 +112,7 @@ int Channel::getNbUsers (void)
 	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
     for ( ; it != this->_channelClients.end() ; it++)
     {
-        // check mode, pos 0 mode, pos 1 #
+        // check mode, pos 0 mode, pos 1 @
         std::string combo = it->second;
         // avoid banned users
         if (combo.substr(0,1) != "b")
@@ -127,7 +128,7 @@ void Channel::setChannelMode (const std::string User, const std::string channelM
 {
         // Structure of channelMode
         // pos 0 = mode = [O, o, i , b, ....]
-        // pos 1 = Owner of the channel = "#"
+        // pos 1 = Owner of the channel = "@"
 
         // find if the User that is already defined
 		std::map<std::string, std::string>::iterator it = _channelClients.find(User);

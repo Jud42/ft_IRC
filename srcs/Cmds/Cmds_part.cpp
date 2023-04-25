@@ -79,48 +79,61 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 
 		// Find IP address
 		std::string ip_client = this->_clientList[nickname]->get_ip();
+		// return the user name of the client
+		std::string userName = this->_clientList[nickname]->get_user();
 
+		// ------------------
 		// send first message informing about quit user e.g. :
-		// :exo_b!exo_b@127.0.0.1 PART #blabla
-		std::string cap_response = ":" + nickname + "!" + nickname + '@' + ip_client + " PART " + segment[i] + "\r\n";
+		// :VRO_D1!~VRoch_D1@185.25.195.181 PART #blabla
+		std::string cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
 		std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
 
-		// **** delete channel's user and/or channel itself
+		// ------------------
+		// send complement message about part user (same message as upper)
+		// :VRO!~VRoch@185.25.195.181 PART #blabla
+		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
+		//Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
+		std::cout << YEL << " Apres inform channel" << NOC << std::endl;
 
-		// retieve the user Mode to ensure he's not banned
-		std::map<std::string, Channel * >::iterator it=this->_channels.begin();
-
-		if (it->second->getConnectedUsersMode(nickname) != "b")		
-		{
-			// delete the user
-			std::cout << RED << "User " << nickname << " away from channel "<< it->first << NOC << std::endl;
-			it->second->resetConnectedUser(nickname);
-		}
-		// check if the user deleted whas the last one (exclude banned users)
-		
-		std::cout << RED << "Nb users still connected " << it->second->getNbUsers() << " to "<< segment[i] << NOC << std::endl;
-		if (it->second->getNbUsers() == 0)
-		{
-		// delete the channel
-		it->second->~Channel();
-		this->_channels.erase(it);
-		}
-
-		if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
-		{
-			std::cout << BLU;
-			it = this->_channels.begin();
-			std::cout << "[ SERVER::join ]" <<  std::endl;
-			for ( ; it != this->_channels.end() ; it++)
-			{
-				std::cout << " remaining open channels :" << it->first << std::endl;
-			}
-			std::cout << NOC;
-		} // --------------------------------------------------------------------------------------
-		
 	}
+
+	// **** delete channel's user and/or channel itself
+
+	// retieve the user Mode to ensure he's not banned
+	std::map<std::string, Channel * >::iterator it(this->_channels.begin());
+
+	if (it->second->getConnectedUsersMode(nickname) != "b")		
+	{
+		// delete the user
+		std::cout << RED << "User " << nickname << " away from channel "<< it->first << NOC << std::endl;
+		it->second->resetConnectedUser(nickname);
+	}
+	// check if the user deleted whas the last one (exclude banned users)
+	
+	//std::cout << RED << "Nb users still connected " << it->second->getNbUsers() << " to "<< segment[i] << NOC << std::endl;
+	if (it->second->getNbUsers() == 0)
+	{
+	// delete the channel
+	std::cout << RED << "Delete channel " << it->first << NOC << std::endl;
+	it->second->~Channel();
+	this->_channels.erase(it);
+	}
+
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+		std::cout << BLU;
+		it = this->_channels.begin();
+		std::cout << "[ SERVER::join ]" <<  std::endl;
+		for ( ; it != this->_channels.end() ; it++)
+		{
+			std::cout << " remaining open channels :" << it->first << std::endl;
+		}
+		std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
+
+	
 
 }
