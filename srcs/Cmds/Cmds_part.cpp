@@ -1,26 +1,45 @@
 #include "Server.hpp"
 
-void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
+std::string Server::PrepPchannel(std::string const command)
 {
+	// Will contain the list of all channels pass into parameters
 	std::string pchannel = "";
-	std::cout << RED << pchannel << NOC << std::endl;
-    // temporary code
+
+    // temporary code to remove the PART  in the command
 	if (command.find("PART") == 0)
 		pchannel = command.substr(5);
 	else
 		pchannel = command;
-	//end of temporary code
+
+	// cut the \r\n at the end of the string
+	pchannel = pchannel.substr(0, pchannel.length()-2);
 
 	// if the part is issued from a channel session, format is different 
 	// this is to keep only the information required after the :
 	if (pchannel.find(":") )
 	{
-		pchannel = pchannel.substr(pchannel.find(":")+1);
-		
+		pchannel = pchannel.substr(pchannel.find(":")+1);	
 	}
+	
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_part] PrepPchannel" <<  std::endl;
+        std::cout << "  command :" << ">" << command << "<" << std::endl;
+		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------	
+	return (pchannel);
+}
 
+
+
+void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
+{
+
+	// parse command into pchannel
+	std::string pchannel = PrepPchannel(command);
 	std::string hostname = this->_hostname;
-
 	int max_segment = MAX_JOINS_PER_LINE;
 	std::string segment[max_segment];
 	std::string typeC[max_segment];
@@ -39,43 +58,54 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 	{
 		if (pchannel.find(",") < pchannel.size())
 		{
+			std::cout << YEL << "pchannel 1.1 " << "|" << pchannel << "|" << NOC << std::endl;
 			typeC[i] = pchannel.substr(0, 1);
 			// treat the case where a # is set and might be separated from the name
 			if (typeC[i] == "#")
 			{
 			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
+			std::cout << YEL << "Case 1" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
 			}
 			else
 			{
 				typeC[i] = "";
-				segment[i] = pchannel.substr(0, pchannel.find(",")-1);
+			std::cout << YEL << "Case 2" << " pchannel " << pchannel << NOC << std::endl;				
+				segment[i] = pchannel.substr(0, pchannel.find(","));
+			std::cout << YEL << "Case 2" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
 			}
+			std::cout << YEL << typeC[i] << "|" << segment[i] << NOC << std::endl;
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
+			std::cout << YEL << "pchannel 1.2 " << "|" << pchannel << "|" << NOC << std::endl;
 		}
 		else
 		{
+			// end of line treatment
 			// treat the case where a # is set and might be separated from the name
+			std::cout << YEL << "pchannel 2.1 " << "|" << pchannel << "|" << NOC << std::endl;
 			typeC[i] = pchannel.substr(0, 1);
 			if (typeC[i] == "#")
 			{
-			segment[i] = pchannel.substr(1, pchannel.find("/r")-1);
+			segment[i] = pchannel.substr(1);
+			std::cout << YEL << "Case 3" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
 			}
 			else
 			{
 				typeC[i] = "";
-				segment[i] = pchannel.substr(0, pchannel.find("/r")-1);
+				segment[i] = pchannel.substr(0);
+			std::cout << YEL << "Case 4" << typeC[i] << "|" << segment[i]<< "|" << pchannel.find("/r") << NOC << std::endl;
 			}
+			std::cout << YEL << typeC[i] << "|" << segment[i] << NOC << std::endl;
 			pchannel = "";
 			break;
 		}
 	}
 	
-
+	// send the messages related to the part
 	for (int i = 0 ; i < max_segment ; i++ )
 	{
 		if (segment[i] == "")
-			break;
+			continue;
 
 		// Find IP address
 		std::string ip_client = this->_clientList[nickname]->get_ip();
@@ -86,7 +116,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// send first message informing about quit user e.g. :
 		// :VRO_D1!~VRoch_D1@185.25.195.181 PART #blabla
 		std::string cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
-		std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
@@ -95,7 +125,8 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// send complement message about part user (same message as upper)
 		// :VRO!~VRoch@185.25.195.181 PART #blabla
 		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
-		//Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
+		std::cout << YEL << "AV Cmds_inform_Channel" << segment[i] << "|" << nickname << NOC << std::endl;
+		Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
 		std::cout << YEL << " Apres inform channel" << NOC << std::endl;
 
 	}
@@ -117,7 +148,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 	if (it->second->getNbUsers() == 0)
 	{
 	// delete the channel
-	std::cout << RED << "Delete channel " << it->first << NOC << std::endl;
+	std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
 	it->second->~Channel();
 	this->_channels.erase(it);
 	}

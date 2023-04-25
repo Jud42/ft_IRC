@@ -76,9 +76,10 @@ class	Server
 		void Cmds_inform_Channel(std::string const message, std::string const channel, std::string const exceptUser);
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const fd_client);
-	// cmd Join - answer Pong
+	// cmd Join
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
-	// cmd Part - answer Pong
+	// cmd Part
+		std::string PrepPchannel(std::string const command);
 		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
 
 	// cmd nick
