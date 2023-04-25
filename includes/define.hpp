@@ -25,6 +25,7 @@
 #define ERR_CLIENT_EXIST 2
 #define LOGOUT 3
 #define LOGOUT_SERVER 4
+#define ERR_CLIENT_CONNEXION 5
 #define MAX_JOINS_PER_LINE 10
 
 #endif

@@ -2,7 +2,7 @@
 
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
-	std::string newNick = find_cmd_arg(command, "NICK");
+	std::string newNick = command;
 
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();

@@ -26,6 +26,9 @@ int main (int argc, char *argv[])
 	try 
 	{ 
 		srv = new Server(argv[1], argv[2], &IRCconfig);
+		srv->monitoring();
+	
+		srv->stop();
 	}
 	catch (std::exception &	e)
 	{
@@ -35,9 +38,7 @@ int main (int argc, char *argv[])
 	
 		
 //	srv->treatment();
-	srv->monitoring();
-	
-	srv->stop();
+
 	delete srv;
 	exit(EXIT_SUCCESS);
 	
