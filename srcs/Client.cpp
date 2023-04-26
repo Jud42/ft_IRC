@@ -117,31 +117,68 @@ std::string Client::getModes()
 
 bool	Client::findChannel(std::string channel_name)
 {
-	std::vector<Channel>::iterator it;
+	std::vector<std::string>::iterator it = _channel.begin();;
 
-	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	for( ; it !=_channel.end(); ++it)
 	{
-		if (it->getChannelName() == channel_name)
+		if (*it == channel_name)
 			return (true);
 	}
 	return (false);
 }
 
-std::vector<Channel>	Client::getChannel()
+std::vector<std::string>	Client::getChannel()
 {
-	std::vector<Channel>::iterator it;
+	std::vector<std::string>::iterator it = _channel.begin();
 
 	// print all channel but return the vector
-	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	for( ; it !=_channel.end(); ++it)
 	{
-		std::cout << it->getChannelName() << std::endl;
+		std::cout << *it << std::endl;
 	}
 	return (this->_channel);
 }
 
-void	Client::addChannel(Channel channel)
+void	Client::removeChannel(std::string channel)
+{
+	std::vector<std::string>::iterator it = _channel.begin();;
+
+	for( ; it !=_channel.end(); ++it)
+	{
+		if (*it == channel)
+			_channel.erase(it);
+	}
+}
+
+void	Client::addChannel(std::string channel)
 {
 	_channel.push_back(channel);
+}
+
+bool	Client::findContactFd(int contact_fd)
+{
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
+
+	for( ; it !=_privMsgContactsFd.end(); ++it)
+	{
+		if (*it == contact_fd)
+			return (true);
+	}
+	return (false);
+}
+void	Client::addContactFd(int contact_fd)
+{
+	_privMsgContactsFd.push_back(contact_fd);
+}
+void	Client::delContactFd(int contact_fd)
+{
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
+
+	for( ; it !=_privMsgContactsFd.end(); ++it)
+	{
+		if (*it == contact_fd)
+			_privMsgContactsFd.erase(it);
+	}
 }
 
 int Client::getClientFd()
