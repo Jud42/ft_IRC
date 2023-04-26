@@ -38,7 +38,7 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         // the user originating the message in not selected for the "rest of channel" message
         if (it->first != exceptUser)
         {
-            std::cout << RED << " User selected :" << it->first << NOC << std::endl;
+            //std::cout << RED << " User selected :" << it->first << NOC << std::endl;
             std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
             
             // look for channel
@@ -48,7 +48,7 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
                 {
                     // channel for information
                     int fd_dest = it_FD->first;
-                    std::cout << RED << " it_FD->first :" << it_FD->first << NOC << std::endl;
+                    //std::cout << RED << " it_FD->first :" << it_FD->first << NOC << std::endl;
 
                     send(fd_dest, message.c_str(), message.length(), 0);
                     std::cout << fd_dest << " [Server->Client]" << message << std::endl;

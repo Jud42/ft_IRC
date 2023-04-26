@@ -35,12 +35,12 @@ std::string Server::PrepPchannel(std::string const command)
 	return (pchannel);
 }
 
-std::map<std::string, std::string> Server::Cmd_pchannelPart (std::string pchannel)
+std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchannel)
 {
 	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
         std::cout << BLU;
-        std::cout << "[ SERVER::Cmds_part] Cmd_pchannelPart" <<  std::endl;
+        std::cout << "[ SERVER::Cmds_part] Cmd_channelparse" <<  std::endl;
 		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
         std::cout << NOC;
     } // --------------------------------------------------------------------------------------		
@@ -61,19 +61,14 @@ std::map<std::string, std::string> Server::Cmd_pchannelPart (std::string pchanne
 			if (typeC == "#")
 			{
 			segment = pchannel.substr(1, pchannel.find(",")-1);
-			std::cout << YEL << "Case 1" << typeC << "|" << segment<< "|" << NOC << std::endl;
 			}
 			else
 			{
-				typeC = "";
-			std::cout << YEL << "Case 2" << " pchannel " << pchannel << NOC << std::endl;				
+				typeC = "";	
 				segment = pchannel.substr(0, pchannel.find(","));
-			std::cout << YEL << "Case 2" << typeC << "|" << segment<< "|" << NOC << std::endl;
 			}
-			std::cout << YEL << typeC << "|" << segment << NOC << std::endl;
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
-			std::cout << YEL << "pchannel 1.2 " << "|" << pchannel << "|" << NOC << std::endl;
 		}
 
 		it = segment_typeC.find(segment);
@@ -104,7 +99,9 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 
 	// parse command into pchannel
 	std::string pchannel = PrepPchannel(command);
-	std::map<std::string, std::string> segment_typeC = Cmd_pchannelPart(pchannel);
+	// fullfil the (segment & typec) based on value in pchannel
+	std::map<std::string, std::string> segment_typeC = Cmd_channelParse(pchannel);
+	
 	std::string hostname = this->_hostname;
 	std::string segment = "";
 	std::string typeC = "";
@@ -134,10 +131,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// send complement message about part user (same message as upper)
 		// :VRO!~VRoch@185.25.195.181 PART #blabla
 		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC + segment + "\r\n";
-		std::cout << YEL << "AV Cmds_inform_Channel" << segment << "|" << nickname << NOC << std::endl;
 		Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-		std::cout << YEL << " Apres inform channel" << NOC << std::endl;
-
 	
 
 		// **** delete channel's user and/or channel itself
@@ -151,9 +145,13 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 			std::cout << RED << "User " << nickname << " away from channel "<< it_c->first << NOC << std::endl;
 			it_c->second->resetConnectedUser(nickname);
 		}
-		// check if the user deleted whas the last one (exclude banned users)
 
-		// Nb users still connected
+		//--> TBC
+		// suppress user from the list of users/channel -->Vanessa
+
+		std::cout << RED << "Remaining User " << it_c->second->getNbUsers() << " on channel "<< it_c->first << NOC << std::endl;
+
+		// check if the user deleted was the last one (exclude banned users) = Nb users still connected
 		if (it_c->second->getNbUsers() == 0)
 		{
 		// delete the channel
@@ -161,19 +159,21 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		it_c->second->~Channel();
 		this->_channels.erase(it_c);
 		}
+	}
 
-		if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+		std::cout << BLU;
+		std::map<std::string, Channel * >::iterator it_c = this->_channels.begin();
+		std::cout << "[ SERVER::join ]" <<  std::endl;
+		for ( ; it_c != this->_channels.end() ; it_c++)
 		{
-			std::cout << BLU;
-			it_c = this->_channels.begin();
-			std::cout << "[ SERVER::join ]" <<  std::endl;
-			for ( ; it_c != this->_channels.end() ; it_c++)
-			{
-				std::cout << " remaining open channels :" << it->first << std::endl;
-			}
-			std::cout << NOC;
+			std::cout << " remaining open channels :" << it_c->first << std::endl;
 		}
-	} // --------------------------------------------------------------------------------------
+		std::cout << NOC;
+	}
+	// --------------------------------------------------------------------------------------
 
 	
 

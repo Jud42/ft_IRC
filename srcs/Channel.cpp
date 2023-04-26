@@ -2,10 +2,11 @@
 
 
 // **********************************************************************************************
+// constructor of the channel
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
-    (void) _IRCconfig;
-     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+
+     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ]" <<  std::endl;
@@ -15,24 +16,28 @@ Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCcon
 }
 
 // **********************************************************************************************
+// destructor of the channel
 Channel::~Channel ()
 {
 
 }
 
 // **********************************************************************************************
+// return the name of the channel hold by the channel object
 const std::string Channel::getChannelName (void)
 {
     return(this->_name);
 }
 
 // **********************************************************************************************
+// return the channel mode of the channel
 const std::string Channel::getChannelMode (void)
 {
     return(this->_mode);
 }
 
 // **********************************************************************************************
+// return the map including all users and their respective mode/ownership
 const std::map <std::string, std::string> Channel::getMapUsers (void)
 {
     return (this->_channelClients); 
@@ -107,6 +112,13 @@ const std::string Channel::getConnectedUsersMode (std::string const nickname)
 // **********************************************************************************************
 int Channel::getNbUsers (void)
 {
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::getNbUsers ]" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     int result = 0;
     // pass thrugh all Users, the banned users are not conted
 	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
@@ -118,8 +130,21 @@ int Channel::getNbUsers (void)
         if (combo.substr(0,1) != "b")
         {
             result += 1;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << " _channelClients :" << it->first << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------            
         }
     }
+     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ]" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------    
     return (result);
 }
 
