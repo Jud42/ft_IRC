@@ -35,9 +35,12 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			std::cout << "dest" << dest << std::endl;
 			int fd_dest = this->_clientList[it->first]->getClientFd();
 			std::cout << "fd_dest" << fd_dest << std::endl;
-			std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
-			std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
-			send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
+			if (fd_dest != fd_client)
+			{
+				std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
+				std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
+				send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
+			}
 		}
 	}
 	else
