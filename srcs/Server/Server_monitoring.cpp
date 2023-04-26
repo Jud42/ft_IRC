@@ -18,7 +18,7 @@ void Server::monitoring( void )
 		/**TEST PRINT FD**/
 		std::vector< struct pollfd >::iterator it;
 		for (it = _fds.begin(); it != _fds.end(); it++)
-			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << std::endl;
+			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 		/*-----*/
 
 		for (it = _fds.begin(); it != _fds.end(); it++) {

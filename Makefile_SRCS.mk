@@ -16,6 +16,7 @@ srcs/Cmds/Cmds_nick.cpp \
 srcs/Cmds/Cmds_user.cpp \
 srcs/Cmds/Cmds_whois.cpp \
 srcs/Cmds/Cmds_msg.cpp \
+srcs/Cmds/Cmds_notice.cpp \
 srcs/Cmds/Cmds_inform_Channel.cpp \
 srcs/Server/Server_createConnexion.cpp \
 srcs/Server/Server_readFdClient.cpp \

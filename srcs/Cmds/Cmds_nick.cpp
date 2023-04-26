@@ -2,7 +2,7 @@
 
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
-	std::string newNick = find_cmd_arg(command, "NICK");
+	std::string newNick = command;
 
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
@@ -35,7 +35,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 	}
 	else if (newNick.length() > 20)
 	{
-		std::string cap_response = "432 Nickname " + newNick + " does not respond to standard \r\n";
+		std::string cap_response = "432 " + newNick + "Nickname " + newNick + " does not respond to standard \r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "*" << newNick << "*" << "Nickname does not respond to standard length: " << + newNick.length() << std::endl;
@@ -51,9 +51,9 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		//001     RPL_WELCOME
 		std::string cap_response;
 		if (oldNickname == "#")
-			cap_response = "001 Your nickname is: " + newNick + "\r\n";
+			cap_response = "001 " + newNick + " Your nickname is: " + newNick + "\r\n";
 		else
-			cap_response = "001 You succefully change your nickname. Your new nickname is: " + newNick + "\r\n";
+			cap_response = ": " + oldNickname + " NICK " + newNick + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
