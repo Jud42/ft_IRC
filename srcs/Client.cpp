@@ -15,6 +15,9 @@ Client::Client(int client_fd, char *client_data)
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
 
+	_channel.push_back("0");
+	_privMsgContactsFd.push_back(1000);
+
     std::string remains = "";
 
     int seg = 0;

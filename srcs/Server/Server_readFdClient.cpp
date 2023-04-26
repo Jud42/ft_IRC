@@ -28,7 +28,7 @@ int Server::readFdClient(int &fd) {
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
 	std::cout << "read : " << read << std::endl;
 
-	if (read > 0) 
+	if (read > 0)
 	{
 		_buffer[read] = '\0';
 		std::cout << "fd: " << fd << " => [readFdClient]: "
@@ -132,6 +132,8 @@ int Server::readFdClient(int &fd) {
 					std::cout << fd << " [Server->Client]" << cap_response << std::endl;
 					send(fd, cap_response.c_str(), cap_response.length(), 0);
 					return LOGOUT;
+
+					// p.ex. vhaefeli a recu lorsque vanilou a quitte: :vanilou!~vanilouH@185.25.195.181 QUIT :
 				}
 
 				if (buffer.find("squit", 0) == 0)
