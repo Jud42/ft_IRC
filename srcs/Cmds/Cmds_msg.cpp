@@ -18,8 +18,8 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 
 	if ( dest[0] == '#')
 	{
-		dest = args.substr(1);
-	
+		dest = dest.substr(1);
+		std::cout << "dest" << dest << std::endl;
 		if (this->_channels.count(dest) == 0)
 		{
 			// std::string cap_response = "403 the channel doesn't exist\r\n";
@@ -29,9 +29,12 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			return ;
 		}
 		std::map <std::string, std::string>    channelClients = this->_channels[dest]->getMapUsers();
-		for(std::map <std::string, std::string>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
+		std::map <std::string, std::string>::iterator it = channelClients.begin();
+		for( ; it != channelClients.end(); ++it)
 		{
+			std::cout << "dest" << dest << std::endl;
 			int fd_dest = this->_clientList[it->first]->getClientFd();
+			std::cout << "fd_dest" << fd_dest << std::endl;
 			std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";
 			std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
 			send(fd_dest, cap_response.c_str(), cap_response.length(), 0);

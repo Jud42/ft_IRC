@@ -18,8 +18,8 @@ void Server::Cmds_notice(int const fd_client, std::string const command)
 
 	if ( dest[0] == '#')
 	{
-		dest = args.substr(1);
-	
+		dest = dest.substr(1);
+
 		if (this->_channels.count(dest) == 0)
 		{
 			// std::string cap_response = "403 the channel doesn't exist\r\n";
