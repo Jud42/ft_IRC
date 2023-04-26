@@ -76,7 +76,7 @@ Client::Client(Client cpyClient, std::string newNickname)
 Client::~Client()
 {
 	std::cout << GRE << "destruction client" << NOC << std::endl;
-	std::string cap_response = "Goodbye\r\n";
+	std::string cap_response = "BYE\r\n";
 	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
 	send(_clientFd, cap_response.c_str(), cap_response.length(), 0);
 
@@ -184,6 +184,10 @@ void Client::set_data(std::string data)
 	_data = data;
 }
 
+std::string Client::get_data()
+{
+	return(_data);
+}
 /*
 
 client_data exemple:
