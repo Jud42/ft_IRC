@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <map>
 
 std::string Server::PrepPchannel(std::string const command)
 {
@@ -20,6 +21,8 @@ std::string Server::PrepPchannel(std::string const command)
 	{
 		pchannel = pchannel.substr(pchannel.find(":")+1);	
 	}
+	// include a , to help in the next step
+	pchannel = pchannel + ",";
 	
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
@@ -32,6 +35,68 @@ std::string Server::PrepPchannel(std::string const command)
 	return (pchannel);
 }
 
+std::map<std::string, std::string> Server::Cmd_pchannelPart (std::string pchannel)
+{
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_part] Cmd_pchannelPart" <<  std::endl;
+		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------		
+
+	std::map<std::string, std::string> segment_typeC;
+	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
+
+	std::string typeC;
+	std::string segment;
+
+	while (pchannel != "")
+	{
+		// the pchannel alway end by a , as this has been forced in previous function
+		if (pchannel.find(",") < pchannel.size())
+		{
+			typeC = pchannel.substr(0, 1);
+			// treat the case where a # is set and might be separated from the name
+			if (typeC == "#")
+			{
+			segment = pchannel.substr(1, pchannel.find(",")-1);
+			std::cout << YEL << "Case 1" << typeC << "|" << segment<< "|" << NOC << std::endl;
+			}
+			else
+			{
+				typeC = "";
+			std::cout << YEL << "Case 2" << " pchannel " << pchannel << NOC << std::endl;				
+				segment = pchannel.substr(0, pchannel.find(","));
+			std::cout << YEL << "Case 2" << typeC << "|" << segment<< "|" << NOC << std::endl;
+			}
+			std::cout << YEL << typeC << "|" << segment << NOC << std::endl;
+			// reduce the size of the pchannel for the next cycle
+			pchannel = pchannel.substr(pchannel.find(",")+1);
+			std::cout << YEL << "pchannel 1.2 " << "|" << pchannel << "|" << NOC << std::endl;
+		}
+
+		it = segment_typeC.find(segment);
+		if (it == segment_typeC.end())
+			segment_typeC.insert(std::pair<std::string, std::string>(segment, typeC));
+
+
+	}
+	    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+		it = segment_typeC.begin();
+		for ( ; it != segment_typeC.end() ; it++)
+		{
+        	std::cout << "  segment & typeC :" << ">" << it->first << "<>" << it->second << "<" << std::endl;
+		}
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------	
+
+
+	return (segment_typeC);
+}
+
 
 
 void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
@@ -39,73 +104,18 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 
 	// parse command into pchannel
 	std::string pchannel = PrepPchannel(command);
+	std::map<std::string, std::string> segment_typeC = Cmd_pchannelPart(pchannel);
 	std::string hostname = this->_hostname;
-	int max_segment = MAX_JOINS_PER_LINE;
-	std::string segment[max_segment];
-	std::string typeC[max_segment];
-	
+	std::string segment = "";
+	std::string typeC = "";
 
-	// initialise the MAX_JOINS_PER_LINE potentitial new join
-	for (int i = 0 ; i < max_segment ; i++)
-	{
-		segment[i] = "";
-		typeC[i] = "";
-	}
+	// send the messages related to the part & act on channel users & channel existence
+	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
 
-
-	// read each iteration of channels in one command line
-	for (int i = 0 ; i < max_segment ; i++)
+	for ( ; it != segment_typeC.end() ; it++ )
 	{
-		if (pchannel.find(",") < pchannel.size())
-		{
-			std::cout << YEL << "pchannel 1.1 " << "|" << pchannel << "|" << NOC << std::endl;
-			typeC[i] = pchannel.substr(0, 1);
-			// treat the case where a # is set and might be separated from the name
-			if (typeC[i] == "#")
-			{
-			segment[i] = pchannel.substr(1, pchannel.find(",")-1);
-			std::cout << YEL << "Case 1" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
-			}
-			else
-			{
-				typeC[i] = "";
-			std::cout << YEL << "Case 2" << " pchannel " << pchannel << NOC << std::endl;				
-				segment[i] = pchannel.substr(0, pchannel.find(","));
-			std::cout << YEL << "Case 2" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
-			}
-			std::cout << YEL << typeC[i] << "|" << segment[i] << NOC << std::endl;
-			// reduce the size of the pchannel for the next cycle
-			pchannel = pchannel.substr(pchannel.find(",")+1);
-			std::cout << YEL << "pchannel 1.2 " << "|" << pchannel << "|" << NOC << std::endl;
-		}
-		else
-		{
-			// end of line treatment
-			// treat the case where a # is set and might be separated from the name
-			std::cout << YEL << "pchannel 2.1 " << "|" << pchannel << "|" << NOC << std::endl;
-			typeC[i] = pchannel.substr(0, 1);
-			if (typeC[i] == "#")
-			{
-			segment[i] = pchannel.substr(1);
-			std::cout << YEL << "Case 3" << typeC[i] << "|" << segment[i]<< "|" << NOC << std::endl;
-			}
-			else
-			{
-				typeC[i] = "";
-				segment[i] = pchannel.substr(0);
-			std::cout << YEL << "Case 4" << typeC[i] << "|" << segment[i]<< "|" << pchannel.find("/r") << NOC << std::endl;
-			}
-			std::cout << YEL << typeC[i] << "|" << segment[i] << NOC << std::endl;
-			pchannel = "";
-			break;
-		}
-	}
-	
-	// send the messages related to the part
-	for (int i = 0 ; i < max_segment ; i++ )
-	{
-		if (segment[i] == "")
-			continue;
+		segment = it->first;
+		typeC = it->second;
 
 		// Find IP address
 		std::string ip_client = this->_clientList[nickname]->get_ip();
@@ -115,54 +125,54 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// ------------------
 		// send first message informing about quit user e.g. :
 		// :VRO_D1!~VRoch_D1@185.25.195.181 PART #blabla
-		std::string cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
+		std::string cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC + segment + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-
 		// ------------------
 		// send complement message about part user (same message as upper)
 		// :VRO!~VRoch@185.25.195.181 PART #blabla
-		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC[i] + segment[i] + "\r\n";
-		std::cout << YEL << "AV Cmds_inform_Channel" << segment[i] << "|" << nickname << NOC << std::endl;
-		Cmds_inform_Channel(cap_response.c_str(), segment[i], nickname);
+		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC + segment + "\r\n";
+		std::cout << YEL << "AV Cmds_inform_Channel" << segment << "|" << nickname << NOC << std::endl;
+		Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
 		std::cout << YEL << " Apres inform channel" << NOC << std::endl;
 
-	}
-
-	// **** delete channel's user and/or channel itself
-
-	// retieve the user Mode to ensure he's not banned
-	std::map<std::string, Channel * >::iterator it(this->_channels.begin());
-
-	if (it->second->getConnectedUsersMode(nickname) != "b")		
-	{
-		// delete the user
-		std::cout << RED << "User " << nickname << " away from channel "<< it->first << NOC << std::endl;
-		it->second->resetConnectedUser(nickname);
-	}
-	// check if the user deleted whas the last one (exclude banned users)
 	
-	//std::cout << RED << "Nb users still connected " << it->second->getNbUsers() << " to "<< segment[i] << NOC << std::endl;
-	if (it->second->getNbUsers() == 0)
-	{
-	// delete the channel
-	std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
-	it->second->~Channel();
-	this->_channels.erase(it);
-	}
 
-	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
-	{
-		std::cout << BLU;
-		it = this->_channels.begin();
-		std::cout << "[ SERVER::join ]" <<  std::endl;
-		for ( ; it != this->_channels.end() ; it++)
+		// **** delete channel's user and/or channel itself
+
+		// retieve the user Mode to ensure he's not banned
+		std::map<std::string, Channel * >::iterator it_c(this->_channels.find(segment));
+
+		if (it_c->second->getConnectedUsersMode(nickname) != "b")		
 		{
-			std::cout << " remaining open channels :" << it->first << std::endl;
+			// delete the user
+			std::cout << RED << "User " << nickname << " away from channel "<< it_c->first << NOC << std::endl;
+			it_c->second->resetConnectedUser(nickname);
 		}
-		std::cout << NOC;
+		// check if the user deleted whas the last one (exclude banned users)
+
+		// Nb users still connected
+		if (it_c->second->getNbUsers() == 0)
+		{
+		// delete the channel
+		std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
+		it_c->second->~Channel();
+		this->_channels.erase(it_c);
+		}
+
+		if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+		{
+			std::cout << BLU;
+			it_c = this->_channels.begin();
+			std::cout << "[ SERVER::join ]" <<  std::endl;
+			for ( ; it_c != this->_channels.end() ; it_c++)
+			{
+				std::cout << " remaining open channels :" << it->first << std::endl;
+			}
+			std::cout << NOC;
+		}
 	} // --------------------------------------------------------------------------------------
 
 	

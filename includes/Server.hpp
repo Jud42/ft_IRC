@@ -80,6 +80,7 @@ class	Server
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
 	// cmd Part
 		std::string PrepPchannel(std::string const command);
+		std::map<std::string, std::string> Cmd_pchannelPart (std::string pchannel);
 		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
 
 	// cmd nick
