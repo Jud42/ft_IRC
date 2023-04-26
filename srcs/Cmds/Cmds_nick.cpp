@@ -53,7 +53,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		if (oldNickname == "#")
 			cap_response = "001 " + newNick + " Your nickname is: " + newNick + "\r\n";
 		else
-			cap_response = ": " + oldNickname + " NICK " + newNick + "\r\n";
+			cap_response = newNick + " You are now known as: " + newNick + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
