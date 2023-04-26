@@ -1,6 +1,8 @@
 #include "Server.hpp"
 
 
+
+
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
 	std::string pchannel = "";
@@ -9,8 +11,6 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		pchannel = command.substr(5);
 	else
 		pchannel = command;
-
-
 	//end of temporary code
 
 	// Find IP address
