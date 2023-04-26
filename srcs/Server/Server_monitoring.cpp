@@ -37,7 +37,7 @@ void Server::monitoring( void )
 						break ;
 					}
 					std::cout << "********CONNEXION******" << std::endl;
-					// this->printAddressIp(it->fd);
+					this->printAddressIp(it->fd);
 					std::cout << "***********************" << std::endl;
 					continue ;
 				}

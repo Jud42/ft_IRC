@@ -21,7 +21,7 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		std::cout << "password: " << this->_clientList[nick]->getPassword() << std::endl;
 		std::cout << "modes: " << this->_clientList[nick]->getModes() << std::endl;
 		std::cout << "user: " << this->_clientList[nick]->get_user() << std::endl;
-		std::cout << "ip(temp): " << this->_clientList[nick]->get_ip()  << std::endl;
+		std::cout << "ip: " << this->_clientList[nick]->get_ip()  << std::endl;
 		std::cout << "realname: " << this->_clientList[nick]->get_realname() << NOC << std::endl;
 		std::cout << "----------------------------- " <<  std::endl;
 
@@ -30,7 +30,7 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		cap_response += "nick: " + this->_clientList[nick]->getNickname();
 		cap_response += "\nuser: " + this->_clientList[nick]->get_user();
 		cap_response += "\nrealname: " + this->_clientList[nick]->get_realname();
-		cap_response += "\nip(temp): " + this->_clientList[nick]->get_ip() + "\r\n";
+		cap_response += "\nip: " + this->_clientList[nick]->get_ip() + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	}

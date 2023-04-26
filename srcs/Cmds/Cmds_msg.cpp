@@ -11,7 +11,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 		// this must never exist because the client don't send if there is no enough parameter
 		return ;
 	}
-	std::string dest = args.substr(0, separation - 2); // ATTENTION DEPEND DE L'HOTE DU SERVEUR
+	std::string dest = args.substr(0, separation - 1); // ATTENTION DEPEND DE L'HOTE DU SERVEUR
 	std::string msg = args.substr(separation + 1);
 
 	std::cout << "destination : " << dest << " msg : " << msg <<std::endl;
