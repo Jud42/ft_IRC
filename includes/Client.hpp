@@ -13,45 +13,51 @@ class Client
 {
 	private:
 
-		std::string				_data;
-		std::string				_nickname;
-		std::string				_username;
-		std::string				_realname;
-		std::string				_password;
-		std::string				_modes;
-		std::vector<Channel>	_channel;
-		int						_clientFd;
-		std::string				_ip;
-		//struct sockaddr		_addrClient;
+		std::string					_data;
+		std::string					_nickname;
+		std::string					_username;
+		std::string					_realname;
+		std::string					_password;
+		std::string					_modes;
+		std::vector<std::string>	_channel;
+		std::vector<int>			_privMsgContactsFd;
+		int							_clientFd;
+		std::string					_ip;
+		//struct sockaddr			_addrClient;
 
 	public:
 
-		void 					setNickname(std::string newNick);
-		std::string				getNickname();
+		void 						setNickname(std::string newNick);
+		std::string					getNickname();
 
-		void					setPassword(std::string pass);
-		std::string				getPassword();
+		void						setPassword(std::string pass);
+		std::string					getPassword();
 
-		void					setModes(std::string mode);
-		std::string				getModes();
+		void						setModes(std::string mode);
+		std::string					getModes();
 
-		bool					findChannel(std::string channel_name);
-		std::vector<Channel>	getChannel();
-		void					addChannel(Channel channel);
+		bool						findChannel(std::string channel_name);
+		std::vector<std::string>	getChannel();
+		void						addChannel(std::string channel);
+		void						removeChannel(std::string channel);
 
-		void					set_ip(std::string ip);
-		std::string				get_ip();
+		bool						findContactFd(int contact_fd);
+		void						addContactFd(int contact_fd);
+		void						delContactFd(int contact_fd);
 
-		void					set_user(std::string user);
-		std::string				get_user();
+		void						set_ip(std::string ip);
+		std::string					get_ip();
 
-		void					set_realname(std::string realname);
-		std::string				get_realname();
+		void						set_user(std::string user);
+		std::string					get_user();
 
-		int						getClientFd();
+		void						set_realname(std::string realname);
+		std::string					get_realname();
 
-		void					set_data(std::string data);
-		std::string				get_data();
+		int							getClientFd();
+
+		void						set_data(std::string data);
+		std::string					get_data();
 
 		Client();
 		Client(int client_fd, char *client_data);
