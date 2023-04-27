@@ -52,7 +52,8 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		std::string cap_response;
 		if (oldNickname == "#")
 			cap_response = "001 " + newNick + " Your nickname is: " + newNick + "\r\n";
-		else {
+		else
+		{
 			cap_response = ":" + oldNickname + "!~" + this->_clientList[_fd_nick_list[fd_client]]->get_user() + "@";
 			cap_response += this->_clientList[_fd_nick_list[fd_client]]->get_ip() + " NICK :" + newNick + "\r\n";
 		}

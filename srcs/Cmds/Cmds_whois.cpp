@@ -18,31 +18,31 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
     }
 	else
 	{
-		std::cout << YEL << "client: " <<  std::endl;
-		std::cout << "fd: " << this->_clientList[nick]->getClientFd() << std::endl;
-		std::cout << "nick: " << this->_clientList[nick]->getNickname() << std::endl;
-		std::cout << "password: " << this->_clientList[nick]->getPassword() << std::endl;
-		std::cout << "modes: " << this->_clientList[nick]->getModes() << std::endl;
-		std::cout << "user: " << this->_clientList[nick]->get_user() << std::endl;
-		std::cout << "ip: " << this->_clientList[nick]->get_ip()  << std::endl;
-		std::cout << "realname: " << this->_clientList[nick]->get_realname() << NOC << std::endl;
-		std::cout << "----------------------------- " <<  std::endl;
-
-		//001     RPL_WELCOME
-		std::string cap_response = "001\n";
-		cap_response += "nick: " + this->_clientList[nick]->getNickname();
-		cap_response += "\nuser: " + this->_clientList[nick]->get_user();
-		cap_response += "\nrealname: " + this->_clientList[nick]->get_realname();
-		cap_response += "\nip: " + this->_clientList[nick]->get_ip() + "\r\n";
+		// :kinetic.oftc.net 311 vanilou vhaefeli ~vhaefeli 185.25.195.181 * :Vanessa Haefeli
+		std::string cap_response =  ":" + hostname + " 311 " + this->_clientList[_fd_nick_list[fd_client]]->getNickname() + " " + nick;
+		cap_response += " ~" + this->_clientList[nick]->get_user() + " " + this->_clientList[nick]->get_ip() + " * :" + this->_clientList[nick]->get_realname() + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		// :kinetic.oftc.net 312 vanilou vhaefeli coulomb.oftc.net :London, United Kingdom
+		cap_response =  ":" + hostname + " 312 " + this->_clientList[_fd_nick_list[fd_client]]->getNickname() + " " + nick;
+		cap_response += " " + hostname + ":Renens, Switzerland\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		// :kinetic.oftc.net 338 vanilou vhaefeli 185.25.195.181 :actually using host
+		cap_response =  ":" + hostname + " 338 " + this->_clientList[_fd_nick_list[fd_client]]->getNickname() + " " + nick;
+		cap_response += " " + this->_clientList[nick]->get_ip() + " :actually using host\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		if (this->_clientList[_fd_nick_list[fd_client]]->getNickname() == nick)
+		{
+			// :kinetic.oftc.net 275 vanilou vanilou :is connected via SSL (secure link)
 
-
-		// reponse à "WHOIS vhaefeli" demande par vanilou :kinetic.oftc.net 318 vanilou vhaefeli :End of /WHOIS list.
+			// :kinetic.oftc.net 317 vanilou vanilou 63 1682519612 :seconds idle, signon time
+		}
+		// :kinetic.oftc.net 318 vanilou vanilou :End of /WHOIS list.
 		cap_response = ":" + hostname + " 318 " + this->_clientList[_fd_nick_list[fd_client]]->getNickname() + " ";
 		cap_response +=  nick + " :End of /WHOIS list.\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	}
 }
@@ -63,4 +63,28 @@ Numéro d'erreur : 406
 Code d'erreur : ERR_WASNOSUCHNICK
 Signification : Le nickname spécifié dans la commande WHOIS n'a pas été trouvé sur le serveur ou sur le réseau IRC précédemment. Cela peut se produire si le nickname a été renommé, déconnecté ou n'a jamais existé sur le réseau.
 
+
+reponse:  a vanilou:
+
+<< WHOIS vhaefeli
+>> :kinetic.oftc.net 311 vanilou vhaefeli ~vhaefeli 185.25.195.181 * :Vanessa Haefeli
+--> whois event
+>> :kinetic.oftc.net 312 vanilou vhaefeli coulomb.oftc.net :London, United Kingdom
+--> whois default event
+>> :kinetic.oftc.net 338 vanilou vhaefeli 185.25.195.181 :actually using host
+--> whois default event
+>> :kinetic.oftc.net 318 vanilou vhaefeli :End of /WHOIS list.
+--> whois end
+<< WHOIS vanilou
+>> :kinetic.oftc.net 311 vanilou vanilou ~vanilouH 185.25.195.181 * :Vanilou Haefeli
+--> whois event
+>> :kinetic.oftc.net 312 vanilou vanilou kinetic.oftc.net :London, United Kingdom
+--> whois default event
+>> :kinetic.oftc.net 338 vanilou vanilou 185.25.195.181 :actually using host
+--> whois default event
+>> :kinetic.oftc.net 275 vanilou vanilou :is connected via SSL (secure link)
+--> whois default event
+>> :kinetic.oftc.net 317 vanilou vanilou 63 1682519612 :seconds idle, signon time
+--> whois default event
+>> :kinetic.oftc.net 318 vanilou vanilou :End of /WHOIS list.
 */
