@@ -22,7 +22,7 @@ static int parseError(int &read, int &client_fd) {
 	return LOGOUT;
 }
 
-int Server::readFdClient(int &fd) 
+int Server::readFdClient(int &fd)
 {
 	memset(&_buffer,0,256);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
@@ -91,7 +91,12 @@ int Server::readFdClient(int &fd)
 				}
 			}
 			if (_fdStatus[fd] != 2 && this->_clientList[_fd_nick_list[fd]]->get_clientInfo() == 3)
+			{
 				_fdStatus[fd] = 1;
+				std::string cap_response = "Connexion established: Enjoy!\r\n";
+				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+				send(fd, cap_response.c_str(), cap_response.length(), 0);
+			}
 			else
 			{
 				std::string cap_response = "Still processing information\r\n";
@@ -99,11 +104,11 @@ int Server::readFdClient(int &fd)
 				send(fd, cap_response.c_str(), cap_response.length(), 0);
 				if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "0")
 					this->_clientList[_fd_nick_list[fd]]->setPassword("1");
-				if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "1")
+				else if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "1")
 					this->_clientList[_fd_nick_list[fd]]->setPassword("2");
-				if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "2")
+				else if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "2")
 					this->_clientList[_fd_nick_list[fd]]->setPassword("3");
-				if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "3")
+				else if (this->_clientList[_fd_nick_list[fd]]->getPassword() == "3")
 				{
 					std::string cap_response = "Can't read the password, please reconnect\r\n";
 					std::cout << fd << " [Server->Client]" << cap_response << std::endl;
@@ -111,7 +116,6 @@ int Server::readFdClient(int &fd)
 					_fdStatus[fd] = 2;
 				}
 			}
-
 		}
 		/*---client validated---*/
 		else if (_fdStatus[fd] == 1)
