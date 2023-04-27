@@ -23,6 +23,7 @@ class Client
 		std::vector<int>			_privMsgContactsFd;
 		int							_clientFd;
 		std::string					_ip;
+		int							_clientInfo; // info = nick pass and user => 0 to 3
 		//struct sockaddr			_addrClient;
 
 	public:
@@ -58,6 +59,9 @@ class Client
 
 		void						set_data(std::string data);
 		std::string					get_data();
+
+		void						set_clientInfo(int i);
+		int							get_clientInfo();
 
 		Client();
 		Client(int client_fd, char *client_data);

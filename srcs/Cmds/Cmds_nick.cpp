@@ -61,13 +61,15 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		std::vector<std::string>::iterator it = channels.begin();
 		for ( ; it != channels.end() ; ++it)
 		{
-			Cmds_inform_Channel(cap_response.c_str(), *it, newNick);
+			if ( *it != "0")
+				Cmds_inform_Channel(cap_response.c_str(), *it, newNick);
 		}
 		std::vector<int>::iterator it_fd = contactsFd.begin();
 		it_fd = contactsFd.begin();
 		for ( ; it_fd != contactsFd.end() ; ++it_fd)
 		{
-			send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
+			if ( *it_fd != 1000)
+				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
 		}
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
 	}

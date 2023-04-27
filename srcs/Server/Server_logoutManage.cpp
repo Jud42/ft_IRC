@@ -18,6 +18,7 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag)
 	close(it->fd);
 	std::cout << "fd closed" << std::endl;
 	_fds.erase(it);
+	_fdStatus.erase(fdDel);
 	std::cout << "it from _fds deleted" << std::endl;
 	std::cout << "everything from " << fdDel << "deleted" << std::endl;
 }

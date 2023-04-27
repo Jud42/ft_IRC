@@ -118,6 +118,7 @@ class	Server
 		std::vector< struct pollfd >	_fds;
 		std::map<std::string, Client *>	_clientList; //key nickname
 		std::map<int, std::string>		_fd_nick_list; //key client_fd
+		std::map<int, int>				_fdStatus; //key client_fd, Status: 0>waiting connexion information 1> everzthing ok 2>error-to be erase
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel
