@@ -5,6 +5,7 @@ bool Server::isNewClient(int &client_fd)
 	std::cout << "fd: " << client_fd << " => [isNewClient] "
 		<< this->_buffer << std::endl;
 	Client *temp = new Client(client_fd, _buffer);
+
 	if (temp->getPassword() != this->_pass && temp->getPassword() != "0")
 	{
 		std::string cap_response = "464 ERR_PASSWDMISMATCH Wrong password\r\n";
@@ -26,7 +27,7 @@ bool Server::isNewClient(int &client_fd)
 	}
 	this->_clientList.insert(std::pair<std::string, Client *>(temp->getNickname(), temp));
 	this->_fd_nick_list.insert(std::pair<int, std::string>(client_fd, temp->getNickname()));
-
+	this->printAddressIp(client_fd);
 	std::cout << YEL << "nouveau client: " <<  std::endl;
 	std::cout << "fd: " << (this->_clientList[_fd_nick_list[client_fd]])->getClientFd() << std::endl;
 	std::cout << "nick: " << (this->_clientList[_fd_nick_list[client_fd]])->getNickname() << std::endl;
