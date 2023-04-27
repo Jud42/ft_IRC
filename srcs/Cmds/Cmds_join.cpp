@@ -1,6 +1,42 @@
 #include "Server.hpp"
 
 
+const std::string Server::ListConnectedUsers(std::string const Channel)
+{
+	
+	// find the channel and retrieve the map of connected fd
+	std::map<int, std::string> channelFDsMode = this->_channels[Channel]->getChannelFDsModeMap();
+	std::map<int, std::string>::iterator it(channelFDsMode.begin());
+
+	// will contain the list of user connected (without the banned users)
+	std::string result;
+	for ( ; it != channelFDsMode.end() ; it++)
+	{   
+		// check mode, pos 0 mode, pos 1 @
+		std::string combo = it->second;
+		if (combo.substr(1,1) == "@")
+		{
+			result += "@";
+		}
+		else
+		{
+			result += " ";
+		}
+		// get the nick name
+		std::map<int, std::string>::iterator it_FD(_fd_nick_list.find(it->first));
+		if (it_FD != _fd_nick_list.end())
+		{
+			result += it_FD->second;
+		}
+		else
+		{
+			result += "MISSING";
+		} 
+	}
+	return (result);
+
+}
+
 std::string Server::PrepJchannel(std::string const command)
 {
 	// Will contain the list of all channels pass into parameters
@@ -47,10 +83,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 	std::string segment;
 	std::string typeC;
-	
+
 	// send the messages related to the join & act on channel users & channel existence
 	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
 
+	// loop over the channel's
 	for ( ; it != segment_typeC.end() ; it++ )
 	{
 		segment = it->first;
@@ -58,26 +95,27 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 		{
 			// find if the channel is already defined
-			std::map<std::string, Channel*>::iterator it = _channels.find(segment);
+			std::map<std::string, Channel*>::iterator it = this->_channels.find(segment);
 
 			// insert a new channel or update the channel
-			if (it == _channels.end())
+			if (it == this->_channels.end())
 			{
 				//create a new set into the _channel map
 				Channel *temp = new Channel(segment, this->_IRCconfig);
 				this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
+	
 				// find the newly created record
 				std::map<std::string, Channel*>::iterator it = _channels.find(segment);
 				//  record the user and the ownership of the channel
-				it->second->setConnectedUser(nickname);
-				it->second->setChannelMode(nickname, "O@");
+				it->second->setChannelConnectedFD(fd_client);
+				it->second->setChannelFDMode(fd_client, "O@");
 			}
-			else
+			else // update an existing channel
 			{
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
 				// block banned user to join the channel
-				if (it->second->getConnectedUsersMode(nickname) == "b")	
+				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					//-->TBC
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
@@ -87,9 +125,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					continue;
 				}
 				// incase of new connection to the channel, add the new user
-				it->second->setConnectedUser(nickname);
-				it->second->setChannelMode(nickname, "o");
+				it->second->setChannelConnectedFD(fd_client);
+				it->second->setChannelFDMode(fd_client, "o");
 			}
+
+			// retrieve the channel's users
+			std::string channelUsers = ListConnectedUsers(segment);
 
 			// send 4 messages ---------------------------------------------------------------
 
@@ -97,21 +138,17 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
-			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+			//cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
+			//std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			//send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			// retrieve the list of FD attached to the channel
-			std::string channelUsers = this->_channels[segment]->getChannelFDModeMap();
-
-			// return the user name of the client
-			std::string userName = this->_clientList[nickname]->get_user();
 
 			// ------------------
 			// send second message with the list of users e.g : 
 			// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
 			//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
+
 			cap_response = ":" + hostname + " 353 " + nickname + " @ " + typeC + segment + " :" + channelUsers + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
@@ -139,6 +176,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
 
 		}

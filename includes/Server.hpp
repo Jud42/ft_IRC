@@ -22,6 +22,7 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <map>
 
 
 #include "to_str.hpp"
@@ -87,6 +88,7 @@ class	Server
 		void Cmds_ping(int const fd_client);
 	// cmd Join
 		std::string PrepJchannel(std::string const command);
+		const std::string ListConnectedUsers(std::string const Channel);
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
 	// cmd Part
 		std::string PrepPchannel(std::string const command);
@@ -122,7 +124,7 @@ class	Server
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel
-		std::map<std::string, Channel * >	_channels; //key channel name without #
+		std::map<std::string, Channel * >	_channels; //key channel's name without #
 		std::map< int, struct sockaddr >	_addrclient;
 };
 

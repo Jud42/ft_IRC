@@ -139,11 +139,11 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// retieve the user Mode to ensure he's not banned
 		std::map<std::string, Channel * >::iterator it_c(this->_channels.find(segment));
 
-		if (it_c->second->getConnectedUsersMode(nickname) != "b")		
+		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")		
 		{
 			// delete the user
 			std::cout << RED << "User " << nickname << " away from channel "<< it_c->first << NOC << std::endl;
-			it_c->second->resetConnectedUser(nickname);
+			it_c->second->resetChannelConnectedFD(fd_client);
 		}
 
 		//--> TBC

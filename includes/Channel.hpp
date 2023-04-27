@@ -3,7 +3,6 @@
 
 # include "define.hpp"
 # include <iostream>
-# include <map>
 # include "ConfigFile.hpp"
 
 class Channel
@@ -19,27 +18,28 @@ public:
         // will be discarded
         // const std::map <std::string, std::string> getMapUsers (void);
         // const std::string getConnectedUsers (void);
-        const std::string getConnectedUsersMode (const std::string nickname);
+        // const std::string getConnectedUsersMode (const std::string nickname);
 
         // and replaced by
-        const std::map <int, std::string> getChannelFDsModeMap (void);
-        //const int getChannelConnectedFD (void);
-        //const std::string getChannelConnectedFDMode (const int fd);
+        const std::map <int, std::string>       getChannelFDsModeMap (void);
+        int                                     getChannelConnectedFD (const int fd); // confirm FD is linked to the channel
+        const std::string                       getChannelConnectedFDMode (const int fd);
 
 
         int getNbUsers (void);
         
         // will be discarded
-        void setChannelMode (const std::string user, const std::string channelMode);
-        int setChannelUserMode (const std::string user, const std::string channelMode);
-        void setConnectedUser (const std::string newUser);
-        void resetConnectedUser (const std::string removeUser);
+        //void setChannelMode (const std::string user, const std::string channelMode);
+        //int setChannelUserMode (const std::string user, const std::string channelMode);
+        //void setConnectedUser (const std::string newUser);
+        //void resetConnectedUser (const std::string removeUser);
 
         // and replace by
-        //void setChannelFDMode (const std::string fd, const std::string channelMode);
-        // ?? int setChannelUserMode (const std::string user, const std::string channelMode);
-        //void setChannelConnectedFD (const int newFD);
-        //void resetChannelConnectedFD (const int removeFD);
+        void    setChannelFDMode (const int fd, const std::string channelMode);
+        int     setChannelUserMode (const int fd, const std::string channelMode);
+        void    setChannelConnectedFD (const int newFD);
+
+        void    resetChannelConnectedFD (const int removeFD);
 
 private:
 
