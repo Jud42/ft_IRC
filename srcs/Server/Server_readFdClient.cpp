@@ -24,7 +24,8 @@ static int parseError(int &read, int &client_fd) {
 
 int Server::readFdClient(int &fd) {
 
-	memset(&_buffer,0,256);
+	memset(&_buffer,0, BUFFER_SIZE);
+	sleep(10);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
 	std::cout << "read : " << read << std::endl;
 
@@ -33,8 +34,9 @@ int Server::readFdClient(int &fd) {
 		_buffer[read] = '\0';
 		std::cout << "fd: " << fd << " => [readFdClient]: "
 			<< this->_buffer << std::endl;
-			std::string buffer = _buffer;
-			std::string command = buffer;
+		std::cout << "**lecture**buffer**" << std::endl;
+		std::string buffer = _buffer;
+		std::string command = buffer;
 		// std::string command = this->parse(this->_buffer, fd);
 		/*---cmd envoyer par defaut par le sys client---*/
 		if (buffer.find("CAP ",0) != std::string::npos)
@@ -52,7 +54,7 @@ int Server::readFdClient(int &fd) {
 				std::cout << "je rentre dans ping" << std::endl;
 				this->Cmds_ping(fd);
 			}
-			if (buffer.find("PASS") != std::string::npos)
+			else if (buffer.find("PASS") != std::string::npos)
 			{
 				std::cout << "je rentre dans pass" << std::endl;
 				try
