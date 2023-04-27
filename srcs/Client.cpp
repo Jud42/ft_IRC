@@ -6,14 +6,16 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0")
+: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0"), _clientInfo(0)
 {
-
     std::string message = client_data;
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
+
+	_channel.push_back("0");
+	_privMsgContactsFd.push_back(1000);
 
     std::string remains = "";
 
@@ -40,18 +42,21 @@ Client::Client(int client_fd, char *client_data)
             // feed the client definition : to be added
             if (segment[seg].find("PASS", 0) == 0)
             {
+				_clientInfo++;
                 this->_password = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] PASS[" << this->_password << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("NICK", 0) == 0)
             {
+				_clientInfo++;
                 this->_nickname = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("USER", 0) == 0)
             {
+				_clientInfo++;
                 this->_data = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << this->_data << "] : " << client_fd << "|" << NOC << std::endl;
             }
@@ -65,6 +70,7 @@ Client::Client(int client_fd, char *client_data)
 	_username = _data.substr(_data.find(" ") + 1);
 	_username = _username.substr(0, _username.find(" "));
 	_realname = _data.substr(_data.find(":") + 1);
+
 }
 
 Client::Client(Client cpyClient, std::string newNickname)
@@ -225,6 +231,18 @@ std::string Client::get_data()
 {
 	return(_data);
 }
+
+void	Client::set_clientInfo(int i)
+{
+	_clientInfo += i;
+}
+
+int	Client::get_clientInfo()
+{
+	return (_clientInfo);
+}
+
+
 /*
 
 client_data exemple:

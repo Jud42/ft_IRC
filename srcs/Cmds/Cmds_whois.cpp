@@ -1,9 +1,12 @@
 #include "Server.hpp"
 
+
 // PRIVMSG dest_nickname :message
 
 void Server::Cmds_whois(int const fd_client, std::string const command)
 {
+	std::string hostname = this->_hostname;
+
 	std::string nick = find_cmd_arg(command, "WHOIS");
 	if (nick.size() == 0)
 		nick = this->_fd_nick_list[fd_client];
@@ -32,6 +35,14 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		cap_response += "\nrealname: " + this->_clientList[nick]->get_realname();
 		cap_response += "\nip: " + this->_clientList[nick]->get_ip() + "\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+
+		// reponse à "WHOIS vhaefeli" demande par vanilou :kinetic.oftc.net 318 vanilou vhaefeli :End of /WHOIS list.
+		cap_response = ":" + hostname + " 318 " + this->_clientList[_fd_nick_list[fd_client]]->getNickname() + " ";
+		cap_response +=  nick + " :End of /WHOIS list.\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	}
 }
