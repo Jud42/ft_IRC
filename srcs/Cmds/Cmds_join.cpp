@@ -29,6 +29,8 @@ std::string Server::PrepJchannel(std::string const command)
 	return (jchannel);
 }
 
+
+
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
 	// parse command into jchannel
@@ -100,15 +102,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			// retrieve the list of users attached to the channel
-			std::string channelUsers = this->_channels[segment]->getConnectedUsers();
+			// retrieve the list of FD attached to the channel
+			std::string channelUsers = this->_channels[segment]->getChannelFDModeMap();
 
 			// return the user name of the client
 			std::string userName = this->_clientList[nickname]->get_user();
-
-
-			// :kinetic.oftc.net MODE #blabla +nt
-
 
 			// ------------------
 			// send second message with the list of users e.g : 

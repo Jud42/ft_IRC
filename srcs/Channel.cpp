@@ -37,13 +37,22 @@ const std::string Channel::getChannelMode (void)
 }
 
 // **********************************************************************************************
+// return the map including all user's FD and their respective mode/ownership
+const std::map <int, std::string> Channel::getChannelFDsModeMap (void)
+{
+    return (this->_channel_FD_Mode);
+}
+
+
+// ********** DISCARDED **************************************************************************
 // return the map including all users and their respective mode/ownership
 const std::map <std::string, std::string> Channel::getMapUsers (void)
 {
     return (this->_channelClients); 
 }
 
-// **********************************************************************************************
+
+// ********** DISCARDED **************************************************************************
 // provide a list of connected (mode != b) structured as "User1 @User2"
 const std::string Channel::getConnectedUsers (void)
 {
@@ -76,7 +85,7 @@ const std::string Channel::getConnectedUsers (void)
     return (result);
 }
 
-// **********************************************************************************************
+// ********** DISCARDED **************************************************************************
 const std::string Channel::getConnectedUsersMode (std::string const nickname)
 {
     (void) nickname;
@@ -148,7 +157,7 @@ int Channel::getNbUsers (void)
     return (result);
 }
 
-// **********************************************************************************************
+// ********** DISCARDED **************************************************************************
 void Channel::setChannelMode (const std::string User, const std::string channelMode)
 {
         // Structure of channelMode
@@ -166,7 +175,7 @@ void Channel::setChannelMode (const std::string User, const std::string channelM
 		}
 }
 
-// **********************************************************************************************
+// ********** DISCARDED **************************************************************************
 int Channel::setChannelUserMode (const std::string User, const std::string channelMode)
 {
         // Structure of channelMode
@@ -187,7 +196,7 @@ int Channel::setChannelUserMode (const std::string User, const std::string chann
 }
 
 
-// **********************************************************************************************
+// ********** DISCARDED **************************************************************************
 void Channel::setConnectedUser (const std::string newUser) 
 {
         // find if the newUser is already defined
@@ -200,7 +209,7 @@ void Channel::setConnectedUser (const std::string newUser)
 			this->_channelClients.insert(std::pair<std::string, std::string>(newUser, "o"));
 		}
 }
-// **********************************************************************************************
+// ********** DISCARDED **************************************************************************
 void Channel::resetConnectedUser (const std::string removedUser)
 {
         // find if the newUser is already defined
