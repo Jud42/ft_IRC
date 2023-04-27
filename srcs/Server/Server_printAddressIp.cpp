@@ -2,12 +2,12 @@
 
 void Server::printAddressIp(int &fd) {
 
-	if (!_addrclient.count(fd)) {
-		std::cout << "==ADDRESS IP: "
-			<< " DOESN'T EXIST" << "== FD: "
-			<< fd << std::endl;
-		return ;
-	}
+	// if (!_addrclient.count(fd)) {
+	// 	std::cout << "==ADDRESS IP: "
+	// 		<< " DOESN'T EXIST" << "== FD: "
+	// 		<< fd << std::endl;
+	// 	return ;
+	// }
 	struct sockaddr addr = _addrclient.at(fd);
 	struct sockaddr_in *addrin = (struct sockaddr_in *)(&addr);
 	char ip_str[INET_ADDRSTRLEN];
