@@ -15,12 +15,14 @@ bool Server::isNewClient(int &client_fd)
 		delete temp;
 		return (false);
 	}
-	if (nick.length() > 20 || nick.length() < 3)
+	if (nick.length() > 20 || (nick.length() < 3 && nick != "#" ))
 	{
 		std::string cap_response = "432 " + nick + "Nickname " + nick + " does not respond to standard \r\n";
 		std::cout << client_fd << " [Server->Client]" << cap_response << std::endl;
 		send(client_fd, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "*" << nick << "*" << "Nickname does not respond to standard length: " << + nick.length() << std::endl;
+		delete temp;
+		return (false);
 	}
 	if (_clientList.count(nick) > 0)
 	{
