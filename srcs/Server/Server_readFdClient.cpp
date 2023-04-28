@@ -24,7 +24,7 @@ static int parseError(int &read, int &client_fd) {
 
 int Server::readFdClient(int &fd)
 {
-	memset(&_buffer,0,256);
+	memset(&_buffer, 0, BUFFER_SIZE);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
 	std::cout << "read : " << read << std::endl;
 
