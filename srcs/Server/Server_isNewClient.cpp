@@ -5,6 +5,7 @@ bool Server::isNewClient(int &client_fd)
 	std::cout << "fd: " << client_fd << " => [isNewClient] "
 		<< this->_buffer << std::endl;
 	Client *temp = new Client(client_fd, _buffer);
+	std::string nick = temp->getNickname();
 
 	if (temp->getPassword() != this->_pass && temp->getPassword() != "0")
 	{
@@ -14,7 +15,14 @@ bool Server::isNewClient(int &client_fd)
 		delete temp;
 		return (false);
 	}
-	if (_clientList.count(temp->getNickname()) > 0)
+	if (nick.length() > 20 || nick.length() < 3)
+	{
+		std::string cap_response = "432 " + nick + "Nickname " + nick + " does not respond to standard \r\n";
+		std::cout << client_fd << " [Server->Client]" << cap_response << std::endl;
+		send(client_fd, cap_response.c_str(), cap_response.length(), 0);
+		std::cout << "*" << nick << "*" << "Nickname does not respond to standard length: " << + nick.length() << std::endl;
+	}
+	if (_clientList.count(nick) > 0)
 	{
 		if (temp->get_ip() != _clientList[temp->getNickname()]->get_ip() || temp->get_data() != _clientList[temp->getNickname()]->get_data())
 		{
