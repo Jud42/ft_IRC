@@ -25,7 +25,6 @@ static int parseError(int &read, int &client_fd) {
 int Server::readFdClient(int &fd)
 {
 	memset(&_buffer,0,256);
-	sleep(5);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
 	std::cout << "read : " << read << std::endl;
 
@@ -204,6 +203,7 @@ int Server::readFdClient(int &fd)
 			}
 		}
 		/*---client error password---*/
+		/*
 		if (_fdStatus[fd] == 2)
 		{
 			std::string cap_response = "464 ERR_PASSWDMISMATCH\r\n";
@@ -216,7 +216,7 @@ int Server::readFdClient(int &fd)
 			return LOGOUT;
 		}
 		std::cout << "------------------------------------- " <<  std::endl;
-		return SUCCESS_LOG;
+		*/return SUCCESS_LOG;
 	}
 	return (parseError(read, fd));
 }
