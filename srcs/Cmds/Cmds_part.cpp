@@ -194,6 +194,16 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// return the user name of the client
 		std::string userName = this->_clientList[nickname]->get_user();
 
+		// ensure the channel is exisitng otherwise error message
+		if (this->_channels.count(segment) == 0)
+		{
+			// std::string cap_response = "403 the channel doesn't exist\r\n";
+			std::string cap_response = "403\r\n";
+			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			continue ;
+		}
+
 		// ------------------
 		// send first message informing about quit user e.g. :
 		// :VRO_D1!~VRoch_D1@185.25.195.181 PART #blabla
@@ -220,7 +230,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 			it_c->second->~Channel();
 			this->_channels.erase(it_c);
 		}
-		}
+	}
 
 
 	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
