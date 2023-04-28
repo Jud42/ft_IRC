@@ -7,6 +7,7 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         std::cout << BLU;
         std::cout << "[ SERVER::Cmds_inform_Channel ]" <<  std::endl;
         std::cout << "  ExceptUser :" << exceptUser << std::endl;
+        std::cout << "  Channel : " << channel <<  std::endl;
         std::cout << NOC;
     } // --------------------------------------------------------------------------------------
 
@@ -14,10 +15,10 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
     // - the user that is at the origin of message propagation request
     // - all the users banned are already excluded from the list
     
-    std::cout << "[ SERVER::Cmds_inform_Channel ] " << channel <<  std::endl;
+    
 
-    // will contain an abstract from the channel 
-    std::map<std::string, std::string>channelClients;
+    // will contain an abstract from the channel - FD & Mode
+    std::map<int, std::string>channelClients;
 
 
     // find the channel
@@ -25,35 +26,44 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
 
     if (it_c->first == channel)
     {
-        // retrive the list of all users attached to the channel
-        channelClients = it_c->second->getMapUsers();        
+        // retrive the list of all FD attached to the channel
+        channelClients = it_c->second->getChannelFDsModeMap();        
+    }
+    else
+    {
+        return;
     }
 
-    std::map <std::string, std::string>::iterator it = channelClients.begin();
-    std::cout << " it :" << it->first  << std::endl;
+    std::map <int, std::string>::iterator it = channelClients.begin();
+    
 
     // turn to send message
     for( ; it != channelClients.end() ; ++it)
     {
-        // the user originating the message in not selected for the "rest of channel" message
-        if (it->first != exceptUser)
+        // find the Users name attached to the FD
+        std::map<int, std::string>::const_iterator it_nick(this->_fd_nick_list.find(it->first));
+
+
+        // the user originating the message in not selected for the message
+        //std::cout << RED << "|" << it_nick->second << "| |" << exceptUser << "| as exceptUser" << NOC << std::endl;
+        if (it_nick->second != exceptUser)
         {
-            std::cout << RED << " User selected :" << it->first << NOC << std::endl;
+           // std::cout << RED << " User selected :" << it_nick->second << NOC << std::endl;
             std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
             
             // look for channel
-            for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
-            {
-                if (it_FD->second == it->first)
-                {
+            //for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
+            //{
+                //if (it_FD->second == it->first)
+                //{
                     // channel for information
                     int fd_dest = it_FD->first;
-                    std::cout << RED << " it_FD->first :" << it_FD->first << NOC << std::endl;
+                    //std::cout << RED << " it_FD->first :" << it_FD->first << NOC << std::endl;
 
                     send(fd_dest, message.c_str(), message.length(), 0);
                     std::cout << fd_dest << " [Server->Client]" << message << std::endl;
-                }
-            }
+                //}
+            //}
         }
 
     }   

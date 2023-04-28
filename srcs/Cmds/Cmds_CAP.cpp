@@ -31,8 +31,9 @@ void Server::Cmds_CAP(int const fd_client, std::string const nickname)
 	send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
     // mode par defaut avant connection a un channel
-    // cap_response = nickname + "!" + nickname + "@" + "127.0.0.1 " + "MODE " + nickname + " +i\r\n";
-    cap_response = ":" + nickname + " MODE " + nickname + " +i\r\n";
+    // :vanilou!~vanilouH@185.25.195.181 MODE vanilou :+i
+
+    cap_response = ":" + nickname + "!~" + this->_clientList[nickname]->get_user() + "@" +  " MODE " + nickname + " +i\r\n";
 
     std::cout << fd_client << "[Server->Client]" << cap_response << std::endl;
 

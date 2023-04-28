@@ -34,7 +34,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "No new nickname given" << std::endl;
 	}
-	else if (newNick.length() > 20)
+	else if (newNick.length() > 20 || newNick.length() < 3)
 	{
 		std::string cap_response = "432 " + newNick + "Nickname " + newNick + " does not respond to standard \r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
@@ -59,7 +59,7 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		}
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
+	// inform the other users in contact:
 		std::vector<std::string>::iterator it = channels.begin();
 		for ( ; it != channels.end() ; ++it)
 		{
