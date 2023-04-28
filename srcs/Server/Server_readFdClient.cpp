@@ -50,12 +50,15 @@ int Server::readFdClient(int &fd)
 			{
 				if (buffer.find("NICK") != std::string::npos)
 				{
-					std::cout << "je rentre dans nick" << std::endl;
+					std::cout << "je rentre dans nick config" << std::endl;
 					try
 					{
 						command = find_cmd_arg(buffer, "NICK");
+						if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
+							this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
 						this->Cmds_nick(fd, command);
-						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+						if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
+							return LOGOUT;
 					}
 					catch(const CmdException& e)
 					{

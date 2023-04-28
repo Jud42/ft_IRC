@@ -8,7 +8,7 @@
 # define MAX_CLIENTS 10 //BACKLOG
 
 //Buffer size
-# define BUFFER_SIZE 256
+# define BUFFER_SIZE 1024
 
 //poll timeout
 #define TIMEOUT -1
