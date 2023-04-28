@@ -5,10 +5,11 @@
 
 Client::Client(){}
 
-Client::Client(int client_fd, char *client_data)
+Client::Client(int client_fd, std::string client_data)
 : _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0"), _clientInfo(0)
 {
     std::string message = client_data;
+	print_all_caractere(client_data);
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;

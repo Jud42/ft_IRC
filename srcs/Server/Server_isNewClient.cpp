@@ -1,10 +1,10 @@
 #include "Server.hpp"
 
-bool Server::isNewClient(int &client_fd)
+bool Server::isNewClient(int &client_fd, std::string buffer)
 {
 	std::cout << "fd: " << client_fd << " => [isNewClient] "
-		<< this->_buffer << std::endl;
-	Client *temp = new Client(client_fd, _buffer);
+		<< buffer << std::endl;
+	Client *temp = new Client(client_fd, buffer);
 	std::string nick = temp->getNickname();
 
 	if (temp->getPassword() != this->_pass && temp->getPassword() != "0")

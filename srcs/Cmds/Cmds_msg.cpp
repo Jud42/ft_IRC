@@ -20,7 +20,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 	if ( dest[0] == '#')
 	{
 		dest = dest.substr(1);
-		std::cout << "dest" << dest << std::endl;
+		std::cout << "dest " << dest << std::endl;
 		if (this->_channels.count(dest) == 0)
 		{
 			// std::string cap_response = "403 the channel doesn't exist\r\n";
@@ -40,7 +40,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 		//{
 		//	std::cout << "dest" << dest << std::endl;
 	    //	int fd_dest = this->_clientList[it->first]->getClientFd();
-			std::cout << "fd_dest" << fd_dest << std::endl;
+			std::cout << "fd_dest " << fd_dest << std::endl;
 			if (fd_dest != fd_client)
 			{
 				std::string cap_response = ":" + nick + " PRIVMSG #" + dest + " " + msg + "\r\n";

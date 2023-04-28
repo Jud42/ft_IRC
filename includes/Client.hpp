@@ -64,7 +64,7 @@ class Client
 		int							get_clientInfo();
 
 		Client();
-		Client(int client_fd, char *client_data);
+		Client(int client_fd, std::string client_data);
 		Client(Client cpyClient, std::string newNickname);
 		~Client();
 };
