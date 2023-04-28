@@ -3,6 +3,7 @@
 
 void Server::Cmds_msg(int const fd_client, std::string const command)
 {
+
 	std::string args = find_cmd_arg(command, "PRIVMSG");
 	size_t separation = args.find(":");
 	std::string nick = this->_fd_nick_list[fd_client];
@@ -28,12 +29,17 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			return ;
 		}
-		std::map <std::string, std::string>    channelClients = this->_channels[dest]->getMapUsers();
-		std::map <std::string, std::string>::iterator it = channelClients.begin();
-		for( ; it != channelClients.end(); ++it)
+		//std::map <std::string, std::string>    channelClients = this->_channels[dest]->getMapUsers();
+		std::map <int, std::string>    channelClients = this->_channels[dest]->getChannelFDsModeMap();
+		for(std::map <int, std::string>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
 		{
-			std::cout << "dest" << dest << std::endl;
-			int fd_dest = this->_clientList[it->first]->getClientFd();
+			int fd_dest = it->first;
+			if (fd_dest != fd_client)
+		//std::map <std::string, std::string>::iterator it = channelClients.begin();
+		//for( ; it != channelClients.end(); ++it)
+		//{
+		//	std::cout << "dest" << dest << std::endl;
+	    //	int fd_dest = this->_clientList[it->first]->getClientFd();
 			std::cout << "fd_dest" << fd_dest << std::endl;
 			if (fd_dest != fd_client)
 			{
