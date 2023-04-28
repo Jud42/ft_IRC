@@ -29,6 +29,10 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         // retrive the list of all FD attached to the channel
         channelClients = it_c->second->getChannelFDsModeMap();        
     }
+    else
+    {
+        return;
+    }
 
     std::map <int, std::string>::iterator it = channelClients.begin();
     
