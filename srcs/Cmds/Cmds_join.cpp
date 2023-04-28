@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 
+
 const std::string Server::ListConnectedUsers(std::string const Channel)
 {
 	
@@ -65,6 +66,15 @@ std::string Server::PrepJchannel(std::string const command)
 	return (jchannel);
 }
 
+void sleepcp (int millisecond)
+{
+	clock_t end_time;
+	end_time = clock() + millisecond * CLOCKS_PER_SEC/1000;
+	while (clock() < end_time)
+	{
+		// loop for waiting
+	}
+}
 
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
@@ -138,11 +148,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
-			//cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
-			//std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
+			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
-			//send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
+			//sleepcp (100); // 10 milliseconds
 
 			// ------------------
 			// send second message with the list of users e.g : 
@@ -175,7 +186,6 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// ------------------
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
 

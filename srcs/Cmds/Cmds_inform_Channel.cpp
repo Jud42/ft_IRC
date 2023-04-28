@@ -40,11 +40,11 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         std::map<int, std::string>::const_iterator it_nick(this->_fd_nick_list.find(it->first));
 
 
-        // the user originating the message in not selected for the "rest of channel" message
-        std::cout << RED << "|" << it_nick->second << "| |" << exceptUser << "| as exceptUser" << NOC << std::endl;
+        // the user originating the message in not selected for the message
+        //std::cout << RED << "|" << it_nick->second << "| |" << exceptUser << "| as exceptUser" << NOC << std::endl;
         if (it_nick->second != exceptUser)
         {
-            std::cout << RED << " User selected :" << it_nick->second << NOC << std::endl;
+           // std::cout << RED << " User selected :" << it_nick->second << NOC << std::endl;
             std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
             
             // look for channel

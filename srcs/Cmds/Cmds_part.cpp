@@ -1,6 +1,9 @@
 #include "Server.hpp"
 #include <map>
 
+
+// **********************************************************************************************
+// pre-parse the commande line in order to be ready for the Cmd_channelParse
 std::string Server::PrepPchannel(std::string const command)
 {
 	// Will contain the list of all channels pass into parameters
@@ -35,6 +38,8 @@ std::string Server::PrepPchannel(std::string const command)
 	return (pchannel);
 }
 
+// **********************************************************************************************
+// parse the pchannel to get std::map<std::string, std::string> segment_typeC
 std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchannel)
 {
 	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
@@ -92,8 +97,78 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
 	return (segment_typeC);
 }
 
+// **********************************************************************************************
+// Drive the delete of the fd into all channels
+void Server::delete_channelFD(const int fd_client)
+{
+	// find all channels, 
+	std::map<std::string, Channel*>::iterator it = this->_channels.begin();
+
+	if (it == this->_channels.end())
+		return;
+
+	for ( ; it != this->_channels.end() ; it++)
+	{
+		if (it->second->getChannelConnectedFD(fd_client) == fd_client)
+		{
+			part_channelUpdate(it->first, fd_client);
+
+			// check if the user deleted was the last one (exclude banned users) = Nb users still connected
+			if (it->second->getNbUsers() == 0)
+			{
+				// delete the channel
+				it->second->~Channel();
+				std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
+				this->_channels.erase(it);
+			}
+		}
+	}
 
 
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_part] delete_channelFD" <<  std::endl;
+		std::cout << "  fd_client :" << ">" << fd_client << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------	
+
+}
+
+
+// **********************************************************************************************
+// Perform the delete of the fd into the channel
+void Server::part_channelUpdate(const std::string channel, const int fd_client)
+{
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_part] part_channelUpdate" <<  std::endl;
+        std::cout << "  channel :" << ">" << channel << "<" << std::endl;
+		std::cout << "  fd_client :" << ">" << fd_client << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------	
+
+	std::map<std::string, Channel * >::const_iterator it_c(this->_channels.find(channel));
+	//std::cout << RED << "FD " << fd_client << " to be treated "<< it_c->first << NOC << std::endl;
+
+	if (it_c != this->_channels.end())
+	{
+		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")		
+		{
+			// delete the user
+			//std::cout << RED << "FD " << fd_client << " away from channel "<< it_c->first << NOC << std::endl;
+			it_c->second->resetChannelConnectedFD(fd_client);
+		}
+
+		//std::cout << RED << "Remaining FD " << it_c->second->getNbUsers() << " on channel "<< it_c->first << NOC << std::endl;
+
+	}
+}
+
+// **********************************************************************************************
+// treat the part
 void Server::Cmds_part(int const fd_client, std::string const command, std::string const nickname)
 {
 
@@ -135,31 +210,17 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 	
 
 		// **** delete channel's user and/or channel itself
-
-		// retieve the user Mode to ensure he's not banned
-		std::map<std::string, Channel * >::iterator it_c(this->_channels.find(segment));
-
-		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")		
-		{
-			// delete the user
-			std::cout << RED << "User " << nickname << " away from channel "<< it_c->first << NOC << std::endl;
-			it_c->second->resetChannelConnectedFD(fd_client);
-		}
-
-		//--> TBC
-		// suppress user from the list of users/channel -->Vanessa
-
-		std::cout << RED << "Remaining User " << it_c->second->getNbUsers() << " on channel "<< it_c->first << NOC << std::endl;
-
+		part_channelUpdate(segment, fd_client);
 		// check if the user deleted was the last one (exclude banned users) = Nb users still connected
+		std::map<std::string, Channel * >::const_iterator it_c(this->_channels.find(segment));
 		if (it_c->second->getNbUsers() == 0)
 		{
-		// delete the channel
-		std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
-		it_c->second->~Channel();
-		this->_channels.erase(it_c);
+			// delete the channel
+			//std::cout << RED << "Deleted channel " << it_c->first << NOC << std::endl;
+			it_c->second->~Channel();
+			this->_channels.erase(it_c);
 		}
-	}
+		}
 
 
 	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
