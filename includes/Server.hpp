@@ -110,6 +110,8 @@ class	Server
 		
 	// cmd notice
 		void Cmds_notice(int const fd_client, std::string const command);
+	//cmd kick
+		void Cmds_kick(const int fd_client);
 		
 		int								_port;
 		std::string						_pass;
