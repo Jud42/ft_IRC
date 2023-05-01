@@ -8,7 +8,7 @@
 # define MAX_CLIENTS 10 //BACKLOG
 
 //Buffer size
-# define BUFFER_SIZE 256
+# define BUFFER_SIZE 1024
 
 //poll timeout
 #define TIMEOUT -1
@@ -25,6 +25,7 @@
 #define ERR_CLIENT_EXIST 2
 #define LOGOUT 3
 #define LOGOUT_SERVER 4
-#define MAX_JOINS_PER_LINE 10
+#define ERR_CLIENT_CONNEXION 5
+
 
 #endif

@@ -2,8 +2,9 @@
 
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
-	std::string newNick = find_cmd_arg(command, "NICK");
-
+	std::string newNick = command;
+	std::vector<std::string>	channels = this->_clientList[_fd_nick_list[fd_client]]->getChannel();
+	std::vector<int>			contactsFd;
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
 
@@ -33,9 +34,9 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "No new nickname given" << std::endl;
 	}
-	else if (newNick.length() > 20)
+	else if (newNick.length() > 20 || newNick.length() < 3)
 	{
-		std::string cap_response = "432 Nickname " + newNick + " does not respond to standard \r\n";
+		std::string cap_response = "432 " + newNick + "Nickname " + newNick + " does not respond to standard \r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 		std::cout << "*" << newNick << "*" << "Nickname does not respond to standard length: " << + newNick.length() << std::endl;
@@ -48,14 +49,30 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		_clientList.erase(oldNickname); //delete the actualclient
 		_clientList.insert(std::pair<std::string, Client *>(newNick, tempClient));
 		_fd_nick_list[fd_client] = newNick;
-		//001     RPL_WELCOME
 		std::string cap_response;
 		if (oldNickname == "#")
-			cap_response = "001 Your nickname is: " + newNick + "\r\n";
+			cap_response = "001 " + newNick + " Your nickname is: " + newNick + "\r\n";
 		else
-			cap_response = "001 You succefully change your nickname. Your new nickname is: " + newNick + "\r\n";
+		{
+			cap_response = ":" + oldNickname + "!~" + this->_clientList[_fd_nick_list[fd_client]]->get_user() + "@";
+			cap_response += this->_clientList[_fd_nick_list[fd_client]]->get_ip() + " NICK :" + newNick + "\r\n";
+		}
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+	// inform the other users in contact:
+		std::vector<std::string>::iterator it = channels.begin();
+		for ( ; it != channels.end() ; ++it)
+		{
+			if ( *it != "0")
+				Cmds_inform_Channel(cap_response.c_str(), *it, newNick);
+		}
+		std::vector<int>::iterator it_fd = contactsFd.begin();
+		it_fd = contactsFd.begin();
+		for ( ; it_fd != contactsFd.end() ; ++it_fd)
+		{
+			if ( *it_fd != 1000)
+				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
+		}
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
 	}
 }

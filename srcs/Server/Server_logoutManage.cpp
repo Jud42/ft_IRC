@@ -1,17 +1,26 @@
 #include "Server.hpp"
 
-void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag) {
-
+void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag) 
+{
+	int fdDel = it->fd;
+	std::cout << "fd " << fdDel << "deleting:" << std::endl;
 	if (flag == LOGOUT || flag == LOGOUT_SERVER) {
-
+		
 		_clientList.erase(_fd_nick_list.at(it->fd));
+		std::cout << "client deleted" << std::endl;
 		_fd_nick_list.erase(it->fd);
+		std::cout << "nickname  from fd_nick_list deleted" << std::endl;
 	}
 	//close & delete fd & addr
 	//if ERR_CLIENT_EXIST
 	_addrclient.erase(it->fd);
+	std::cout << "addrclient deleted" << std::endl;
 	close(it->fd);
+	std::cout << "fd closed" << std::endl;
 	_fds.erase(it);
+	_fdStatus.erase(fdDel);
+	std::cout << "it from _fds deleted" << std::endl;
+	std::cout << "everything from " << fdDel << "deleted" << std::endl;
 }
 
 void Server::logoutServer( void ) {

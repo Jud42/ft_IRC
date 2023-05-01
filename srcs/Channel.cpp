@@ -2,115 +2,140 @@
 
 
 // **********************************************************************************************
+// constructor of the channel
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
-    (void) _IRCconfig;
-     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+
+     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
-        std::cout << "[ CHANNEL::channel ]" <<  std::endl;
+        std::cout << "[ CHANNEL::channel ] Constructor" <<  std::endl;
         std::cout << " _name :" << this->_name << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 }
 
 // **********************************************************************************************
+// destructor of the channel
 Channel::~Channel ()
 {
-
+     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] Destructor" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
 }
 
 // **********************************************************************************************
+// return the name of the channel hold by this channel object
 const std::string Channel::getChannelName (void)
 {
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelName" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     return(this->_name);
 }
 
 // **********************************************************************************************
+// return the channel's mode
 const std::string Channel::getChannelMode (void)
 {
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelMode" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+        std::cout << " _mode :" << this->_mode << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     return(this->_mode);
 }
 
 // **********************************************************************************************
-const std::map <std::string, std::string> Channel::getMapUsers (void)
+// return the map including all user's FD and their respective mode/ownership (when not banned!)
+const std::map <int, std::string> Channel::getChannelFDsModeMap (void)
 {
-    return (this->_channelClients); 
-}
-
-// **********************************************************************************************
-// provide a list of connected (mode != b) structured as "User1 @User2"
-const std::string Channel::getConnectedUsers (void)
-{
-
-    std::string result = "";
-    // pass thrugh all Users, the banned users are not listead
-	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
-    for ( ; it != this->_channelClients.end() ; it++)
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelFDsModeMap" <<  std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
+    std::map<int, std::string> result;
+    std::map<int, std::string>::iterator it(this->_channel_FD_Mode.begin());
+    for ( ; it != this->_channel_FD_Mode.end() ; it++)
     {
         // check mode, pos 0 #, pos 1 mode
         std::string combo = it->second;
         // avoid banned users
         if (combo.substr(0,1) != "b")
         {
-            if (combo.substr(0,2) == "O@")
-                result += "@";
-            else
-                result += " ";
-            result += it->first;   
+			result.insert(std::pair<int, std::string>(it->first, it->second));
+            if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+            {
+                std::cout << BLU;
+                std::cout << " FD & Mode :" << it->first << " " << it->second << std::endl;
+                std::cout << NOC;
+            } // --------------------------------------------------------------------------------------            
         }
     }
-
-    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
-	{
-	 	std::cout << BLU;
-        std::cout << "[ CHANNEL::getConnectedUsers ]" <<  std::endl;
-        std::cout << " result :" << result << std::endl;
-	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------
     return (result);
 }
 
-// **********************************************************************************************
-const std::string Channel::getConnectedUsersMode (std::string const nickname)
+int Channel::getChannelConnectedFD (const int fd)
 {
-    (void) nickname;
-    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
-        std::cout << "[ CHANNEL::getConnectedUsersMode ]" <<  std::endl;
-        std::cout << "  nickname :" << nickname << std::endl;
-	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------  
-
-    std::string result = "";
-    // pass through all Users, the banned users are not listead
-    std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
-    for ( ; it != this->_channelClients.end() ; it++)
-    {
-        if (it->first == nickname)
-        {
-            result = it->second;
-            break;
-        }
-    }
-
-    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
-	{
-	 	std::cout << BLU;
-        std::cout << "  result :" << result << std::endl;
+        std::cout << "[ CHANNEL::channel ] getChannelConnectedFD" <<  std::endl;
+        std::cout << " FD found :" << it->first << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
+
+    return (it->first);
+}
+
+const std::string Channel::getChannelConnectedFDMode (const int fd)
+{
+    std::string result = "";
+    std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
+
+    if (it != this->_channel_FD_Mode.end())
+        result = it->second;
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelConnectedFDMode" <<  std::endl;
+        std::cout << " mode found :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------    
+
     return (result);
 }
 
 // **********************************************************************************************
 int Channel::getNbUsers (void)
 {
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getNbUsers" <<  std::endl;
+        std::cout << " _name :" << this->_name << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     int result = 0;
     // pass thrugh all Users, the banned users are not conted
-	std::map<std::string, std::string>::iterator it(this->_channelClients.begin());
-    for ( ; it != this->_channelClients.end() ; it++)
+	std::map<int, std::string>::iterator it(this->_channel_FD_Mode.begin());
+    for ( ; it != this->_channel_FD_Mode.end() ; it++)
     {
         // check mode, pos 0 mode, pos 1 @
         std::string combo = it->second;
@@ -118,73 +143,117 @@ int Channel::getNbUsers (void)
         if (combo.substr(0,1) != "b")
         {
             result += 1;
+            if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+            {
+                std::cout << BLU;
+                std::cout << " FD :" << it->first << std::endl;
+                std::cout << NOC;
+            } // --------------------------------------------------------------------------------------            
         }
     }
+         if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << " result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
     return (result);
 }
 
-// **********************************************************************************************
-void Channel::setChannelMode (const std::string User, const std::string channelMode)
+// ***********************************************************************************************
+void Channel::setChannelFDMode (const int fd, const std::string channelMode)
 {
-        // Structure of channelMode
-        // pos 0 = mode = [O, o, i , b, ....]
-        // pos 1 = Owner of the channel = "@"
-
-        // find if the User that is already defined
-		std::map<std::string, std::string>::iterator it = _channelClients.find(User);
-
-		// insert a new newUser
-		if (it != _channelClients.end())
-		{
-			//	Update the set into the _channelClients map
-            it->second = channelMode;
-		}
+    std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
+    if (it != this->_channel_FD_Mode.end())
+        this->_channel_FD_Mode.at(fd) = channelMode;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelFDMode" <<  std::endl;
+        std::cout << " mode set :" << it->second << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
 }
 
-// **********************************************************************************************
-int Channel::setChannelUserMode (const std::string User, const std::string channelMode)
+
+// ***********************************************************************************************
+// Update the user mode with a return of status
+int Channel::setChannelUserMode (const int FD, const std::string channelMode)
 {
+        int result = 0;
         // Structure of channelMode
         // pos 0 = mode = [O, o, i , b, ....]
         // pos 1 = Owner of the channel = "#"
 
         // find if the User that is already defined
-		std::map<std::string, std::string>::iterator it = _channelClients.find(User);
+		std::map<int, std::string>::iterator it = this->_channel_FD_Mode.find(FD);
 
 		// insert a new newUser
-		if (it != _channelClients.end())
+		if (it != this->_channel_FD_Mode.end())
 		{
 			//	Update the set into the _channelClients map
             it->second = channelMode;
-			return 1;
+			result = 1;
 		}
-		return 0;
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelUserMode" <<  std::endl;
+        std::cout << " mode set :" << it->second << std::endl;
+        std::cout << " return value :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------    
+    return (result);     
+}
+
+// ***********************************************************************************************
+// insert the user (through the FD identification) to the given channel
+void Channel::setChannelConnectedFD (const int newFD) 
+{
+        // find if the newFD is already defined
+		std::map<int, std::string>::const_iterator it = this->_channel_FD_Mode.find(newFD);
+
+		if (it == this->_channel_FD_Mode.end())
+		{
+			//	Create a new set into the _channelClients map, with default mode
+			this->_channel_FD_Mode.insert(std::pair<int, std::string>(newFD, "o"));
+		}
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelConnectedFD" <<  std::endl;
+        std::map<int, std::string>::const_iterator it = this->_channel_FD_Mode.find(newFD);
+        std::cout << " FD set :" << it->first << std::endl;
+        std::cout << " Mode set :" << it->second << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
 }
 
 
-// **********************************************************************************************
-void Channel::setConnectedUser (const std::string newUser) 
+// ***********************************************************************************************
+// Erase the user (through the FD identification) to the given channel
+void Channel::resetChannelConnectedFD (const int removedFD)
 {
-        // find if the newUser is already defined
-		std::map<std::string, std::string>::iterator it = _channelClients.find(newUser);
+        // check if the removedFD is already defined
+		std::map<int, std::string>::iterator it = this->_channel_FD_Mode.find(removedFD);
 
-		// insert a new newUser
-		if (it == _channelClients.end())
-		{
-			//	Create a new set into the _channelClients map
-			this->_channelClients.insert(std::pair<std::string, std::string>(newUser, "o"));
+		
+		if (it != this->_channel_FD_Mode.end())
+		{ 
+			//	delete the set into the _channel_FD_Mode map
+			this->_channel_FD_Mode.erase(removedFD);
 		}
-}
-// **********************************************************************************************
-void Channel::resetConnectedUser (const std::string removedUser)
-{
-        // find if the newUser is already defined
-		std::map<std::string, std::string>::iterator it = _channelClients.find(removedUser);
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] resetChannelConnectedFD" <<  std::endl;
+        std::cout << " FD removed :" << removedFD << std::endl;
+        it = this->_channel_FD_Mode.begin();
+        for ( ; it != this->_channel_FD_Mode.end() ; it++)
+            std::cout << " FD still alive :" << it->first << std::endl; 
 
-		// delete the User
-		if (it != _channelClients.end())
-		{
-			//	Delete the set into the _channelClients map
-			this->_channelClients.erase (it);
-		}
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------         
 }

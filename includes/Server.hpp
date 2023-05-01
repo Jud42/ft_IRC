@@ -22,6 +22,8 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <map>
+#include <time.h>
 
 
 #include "to_str.hpp"
@@ -46,6 +48,15 @@ class	Server
 
 	// Server_monitoring.cpp
 		void monitoring (void);
+
+		class CmdException : public std::exception
+		{
+			public :
+				virtual const char * what() const throw()
+				{
+					return ("Cmd error");
+				}
+		};
 
     private:
 	// Server_getInfos.cpp
@@ -76,9 +87,15 @@ class	Server
 		void Cmds_inform_Channel(std::string const message, std::string const channel, std::string const exceptUser);
 	// cmd Ping - answer Pong
 		void Cmds_ping(int const fd_client);
-	// cmd Join - answer Pong
+	// cmd Join
+		std::string PrepJchannel(std::string const command);
+		const std::string ListConnectedUsers(std::string const Channel);
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
-	// cmd Part - answer Pong
+	// cmd Part
+		std::string PrepPchannel(std::string const command);
+		std::map<std::string, std::string> Cmd_channelParse (std::string pchannel);
+		void part_channelUpdate(const std::string channel, const int fd_client);
+		void delete_channelFD(const int fd_client);
 		void Cmds_part(int const fd_client, std::string const  channel, std::string const nickname);
 
 	// cmd nick
@@ -90,7 +107,10 @@ class	Server
 		void Cmds_whois(int const fd_client, std::string const command);
 	// cmd msg / privmsg
 		void Cmds_msg(int const fd_client, std::string const command);
-
+		
+	// cmd notice
+		void Cmds_notice(int const fd_client, std::string const command);
+		
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
@@ -103,10 +123,11 @@ class	Server
 		std::vector< struct pollfd >	_fds;
 		std::map<std::string, Client *>	_clientList; //key nickname
 		std::map<int, std::string>		_fd_nick_list; //key client_fd
+		std::map<int, int>				_fdStatus; //key client_fd, Status: 0>waiting connexion information 1> everzthing ok 2>error-to be erase
 		char 							_ipstr[INET6_ADDRSTRLEN];
 
 		//data channel
-		std::map<std::string, Channel * >	_channels; //key channel name without #
+		std::map<std::string, Channel * >	_channels; //key channel's name without #
 		std::map< int, struct sockaddr >	_addrclient;
 };
 

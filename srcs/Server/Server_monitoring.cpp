@@ -18,7 +18,7 @@ void Server::monitoring( void )
 		/**TEST PRINT FD**/
 		std::vector< struct pollfd >::iterator it;
 		for (it = _fds.begin(); it != _fds.end(); it++)
-			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << std::endl;
+			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 		/*-----*/
 
 		for (it = _fds.begin(); it != _fds.end(); it++) {
@@ -31,22 +31,22 @@ void Server::monitoring( void )
 				}
 				//data available on fd_clients
 				else if (it->fd != _listener) {
-					activity = this->readFdClient(it->fd); 
+					activity = this->readFdClient(it->fd);
 					if (activity != SUCCESS_LOG) {//recv()
 						this->logoutClient(it, activity);
 						break ;
 					}
 					std::cout << "********CONNEXION******" << std::endl;
-					this->printAddressIp(it->fd);
+					// this->printAddressIp(it->fd);
 					std::cout << "***********************" << std::endl;
 					continue ;
 				}
 
 			}
 			//else if (it->revents & POLLOUT) //le fd est pret pour l'ecriture
-			else if (it->revents == POLLHUP || 
+			else if (it->revents == POLLHUP ||
 					it->revents == POLLIN + POLLHUP) {//logout client
-																 
+
 				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
 				break ;

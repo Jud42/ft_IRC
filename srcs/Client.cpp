@@ -6,14 +6,16 @@
 Client::Client(){}
 
 Client::Client(int client_fd, char *client_data)
-: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0")
+: _data("to_be_filled"), _nickname("#"),  _password("0"), _modes("i"), _clientFd(client_fd), _ip("0"), _clientInfo(0)
 {
-
     std::string message = client_data;
 	std::cout << RED << "START PARSE" << std::endl;
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
+
+	_channel.push_back("0");
+	_privMsgContactsFd.push_back(1000);
 
     std::string remains = "";
 
@@ -40,18 +42,21 @@ Client::Client(int client_fd, char *client_data)
             // feed the client definition : to be added
             if (segment[seg].find("PASS", 0) == 0)
             {
+				_clientInfo++;
                 this->_password = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] PASS[" << this->_password << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("NICK", 0) == 0)
             {
+				_clientInfo++;
                 this->_nickname = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
             }
 
             if (segment[seg].find("USER", 0) == 0)
             {
+				_clientInfo++;
                 this->_data = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << this->_data << "] : " << client_fd << "|" << NOC << std::endl;
             }
@@ -65,6 +70,7 @@ Client::Client(int client_fd, char *client_data)
 	_username = _data.substr(_data.find(" ") + 1);
 	_username = _username.substr(0, _username.find(" "));
 	_realname = _data.substr(_data.find(":") + 1);
+
 }
 
 Client::Client(Client cpyClient, std::string newNickname)
@@ -76,7 +82,7 @@ Client::Client(Client cpyClient, std::string newNickname)
 Client::~Client()
 {
 	std::cout << GRE << "destruction client" << NOC << std::endl;
-	std::string cap_response = "Goodbye\r\n";
+	std::string cap_response = "*\r\n";
 	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
 	send(_clientFd, cap_response.c_str(), cap_response.length(), 0);
 
@@ -117,31 +123,68 @@ std::string Client::getModes()
 
 bool	Client::findChannel(std::string channel_name)
 {
-	std::vector<Channel>::iterator it;
+	std::vector<std::string>::iterator it = _channel.begin();;
 
-	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	for( ; it !=_channel.end(); ++it)
 	{
-		if (it->getChannelName() == channel_name)
+		if (*it == channel_name)
 			return (true);
 	}
 	return (false);
 }
 
-std::vector<Channel>	Client::getChannel()
+std::vector<std::string>	Client::getChannel()
 {
-	std::vector<Channel>::iterator it;
+	std::vector<std::string>::iterator it = _channel.begin();
 
 	// print all channel but return the vector
-	for(it = _channel.begin(); it !=_channel.end(); ++it)
+	for( ; it !=_channel.end(); ++it)
 	{
-		std::cout << it->getChannelName() << std::endl;
+		std::cout << *it << std::endl;
 	}
 	return (this->_channel);
 }
 
-void	Client::addChannel(Channel channel)
+void	Client::removeChannel(std::string channel)
+{
+	std::vector<std::string>::iterator it = _channel.begin();;
+
+	for( ; it !=_channel.end(); ++it)
+	{
+		if (*it == channel)
+			_channel.erase(it);
+	}
+}
+
+void	Client::addChannel(std::string channel)
 {
 	_channel.push_back(channel);
+}
+
+bool	Client::findContactFd(int contact_fd)
+{
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
+
+	for( ; it !=_privMsgContactsFd.end(); ++it)
+	{
+		if (*it == contact_fd)
+			return (true);
+	}
+	return (false);
+}
+void	Client::addContactFd(int contact_fd)
+{
+	_privMsgContactsFd.push_back(contact_fd);
+}
+void	Client::delContactFd(int contact_fd)
+{
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
+
+	for( ; it !=_privMsgContactsFd.end(); ++it)
+	{
+		if (*it == contact_fd)
+			_privMsgContactsFd.erase(it);
+	}
 }
 
 int Client::getClientFd()
@@ -183,6 +226,22 @@ void Client::set_data(std::string data)
 {
 	_data = data;
 }
+
+std::string Client::get_data()
+{
+	return(_data);
+}
+
+void	Client::set_clientInfo(int i)
+{
+	_clientInfo += i;
+}
+
+int	Client::get_clientInfo()
+{
+	return (_clientInfo);
+}
+
 
 /*
 
