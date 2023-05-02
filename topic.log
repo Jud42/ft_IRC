@@ -1,0 +1,355 @@
+<< CAP END
+>> :liquid.oftc.net NOTICE rmamison :*** Connected securely via TLSv1.3 TLS_AES_256_GCM_SHA384-256
+>> :liquid.oftc.net 001 rmamison :Welcome to the OFTC Internet Relay Chat Network rmamison
+<< MODE rmamison +i
+>> :liquid.oftc.net 002 rmamison :Your host is liquid.oftc.net[188.240.145.40/6697], running version hybrid-7.2.2+oftc1.7.3
+>> :liquid.oftc.net 003 rmamison :This server was created Nov 17 2022 at 21:59:30
+>> :liquid.oftc.net 004 rmamison liquid.oftc.net hybrid-7.2.2+oftc1.7.3 CDGPRSabcdfgijklnorsuwxyz bciklmnopstvzeIMRS bkloveI
+>> :liquid.oftc.net 005 rmamison CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 PREFIX=(ov)@+ STATUSMSG=@+ TOPICLEN=391 NETWORK=OFTC MAXLIST=beI:100 MAXTARGETS=1 CHANTYPES=# :are supported by this server
+>> :liquid.oftc.net 005 rmamison CHANLIMIT=#:250 CHANNELLEN=50 CHANMODES=eIqb,k,l,cimnpstzMRS ELIST=CMNTU SAFELIST AWAYLEN=160 KNOCK EXCEPTS=e INVEX=I :are supported by this server
+>> :liquid.oftc.net 042 rmamison 7YZAAEBTB :your unique ID
+>> :liquid.oftc.net 251 rmamison :There are 37 users and 30991 invisible on 19 servers
+>> :liquid.oftc.net 252 rmamison 19 :IRC Operators online
+>> :liquid.oftc.net 254 rmamison 3934 :channels formed
+>> :liquid.oftc.net 255 rmamison :I have 6873 clients and 1 servers
+>> :liquid.oftc.net 265 rmamison :Current local users: 6873  Max: 8716
+>> :liquid.oftc.net 266 rmamison :Current global users: 31028  Max: 32206
+>> :liquid.oftc.net 250 rmamison :Highest connection count: 8717 (8716 clients) (188606 connections received)
+>> :liquid.oftc.net 375 rmamison :- liquid.oftc.net Message of the Day - 
+>> :liquid.oftc.net 372 rmamison :-   O
+>> :liquid.oftc.net 372 rmamison :-    \   The Open and Free
+>> :liquid.oftc.net 372 rmamison :-     O  Technology Community
+>> :liquid.oftc.net 372 rmamison :-    /|  https://www.oftc.net
+>> :liquid.oftc.net 372 rmamison :- O-O O
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- Welcome to the OFTC IRC Network.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- The Open and Free Technology Community was founded at the
+>> :liquid.oftc.net 372 rmamison :- end of 2001 by a group of experienced members of the Open
+>> :liquid.oftc.net 372 rmamison :- Source and Free Software communities; it is aimed at
+>> :liquid.oftc.net 372 rmamison :- providing these communities with better communication,
+>> :liquid.oftc.net 372 rmamison :- development, and support infrastructure. Our goal is to
+>> :liquid.oftc.net 372 rmamison :- provide stable services to members of the community in any
+>> :liquid.oftc.net 372 rmamison :- part of the world, while listening closely to their needs
+>> :liquid.oftc.net 372 rmamison :- and desires.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- We are not a general purpose chat platform, but a topical
+>> :liquid.oftc.net 372 rmamison :- network intent on providing the open source and free
+>> :liquid.oftc.net 372 rmamison :- software communities a means to cooperate and communicate.
+>> :liquid.oftc.net 372 rmamison :- As such, illegal and off-topic activity, such as warez
+>> :liquid.oftc.net 372 rmamison :- trading, will result in being barred from access.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- OFTC honors your privacy. To operate the network, we store
+>> :liquid.oftc.net 372 rmamison :- and process information about IRC connections, nicknames,
+>> :liquid.oftc.net 372 rmamison :- and channels. Our Privacy Policy explains what we do with
+>> :liquid.oftc.net 372 rmamison :- that data, and what your rights are. By connecting, you
+>> :liquid.oftc.net 372 rmamison :- accept these terms: https://www.oftc.net/Privacy_Policy/
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- If you require assistance with using the OFTC IRC network,
+>> :liquid.oftc.net 372 rmamison :- stop by in channel #oftc, or email support@oftc.net with
+>> :liquid.oftc.net 372 rmamison :- details. For help with non-IRC questions please refer to
+>> :liquid.oftc.net 372 rmamison :- the respective channels and project homepages.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- Thanks and enjoy your stay! The OFTC team.
+>> :liquid.oftc.net 376 rmamison :End of /MOTD command.
+>> :rmamison!~rmamison@185.25.195.181 MODE rmamison :+i
+>> :CTCPServ!services@services.oftc.net PRIVMSG rmamison :VERSION
+<< NOTICE CTCPServ :VERSION irssi v1.2.3 - running on Darwin x86_64
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< JOIN #baalita
+>> :rmamison!~rmamison@185.25.195.181 JOIN :#baalita
+>> :liquid.oftc.net MODE #baalita +nt
+>> :liquid.oftc.net 353 rmamison = #baalita :@rmamison
+>> :liquid.oftc.net 366 rmamison #baalita :End of /NAMES list.
+<< MODE #baalita
+>> :liquid.oftc.net 324 rmamison #baalita +nt 
+--> chanquery mode
+<< WHO #baalita
+>> :liquid.oftc.net 329 rmamison #baalita 1683044243
+--> event 329
+>> :liquid.oftc.net 352 rmamison #baalita ~rmamison 185.25.195.181 liquid.oftc.net rmamison H@ :0 Raphael Mamison
+--> silent event who
+>> :liquid.oftc.net 315 rmamison #baalita :End of /WHO list.
+--> chanquery who end
+<< MODE #baalita b
+>> :liquid.oftc.net 368 rmamison #baalita :End of Channel Ban List
+--> chanquery ban end
+>> :Test_nick!~Test_name@185.25.195.181 JOIN :#baalita
+<< TOPIC #baalita :baalita aiaiaiaiai
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :baalita aiaiaiaiai
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< TOPIC #baalita :baalita info
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :baalita info
+<< TOPIC #baalita :miaou
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :miaou
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< TOPIC baalita :bebe
+>> :liquid.oftc.net 403 rmamison baalita :No such channel
+<< TOPIC #baalita :bebe
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :bebe
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< TOPIC #baalita :waaaaaaa
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :waaaaaaa
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< TOPIC #baalita :waaaaaaa
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :waaaaaaa
+<< TOPIC #baalita :waaaaaaa
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #baalita :waaaaaaa
+<< TOPIC #waaaaa
+>> :liquid.oftc.net 403 rmamison #waaaaa :No such channel
+<< TOPIC #waaaaa
+>> :liquid.oftc.net 403 rmamison #waaaaa :No such channel
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< KICK #ba Test_nick :
+>> :liquid.oftc.net 403 rmamison #ba :No such channel
+<< KICK #ba Test_nick :
+>> :liquid.oftc.net 403 rmamison #ba :No such channel
+<< QUIT :leaving
+<< CAP LS
+<< NICK rmamison
+<< USER rmamison rmamison irc.oftc.net :Raphael Mamison
+>> :liquid.oftc.net NOTICE AUTH :*** Looking up your hostname...
+>> :liquid.oftc.net NOTICE AUTH :*** Checking Ident
+>> :liquid.oftc.net NOTICE AUTH :*** Couldn't look up your hostname
+>> :liquid.oftc.net NOTICE AUTH :*** No Ident response
+>> :liquid.oftc.net CAP * LS :multi-prefix
+<< CAP REQ :multi-prefix
+>> :liquid.oftc.net CAP rmamison ACK :multi-prefix
+<< CAP END
+>> :liquid.oftc.net NOTICE rmamison :*** Connected securely via TLSv1.3 TLS_AES_256_GCM_SHA384-256
+>> :liquid.oftc.net 001 rmamison :Welcome to the OFTC Internet Relay Chat Network rmamison
+<< MODE rmamison +i
+>> :liquid.oftc.net 002 rmamison :Your host is liquid.oftc.net[188.240.145.40/6697], running version hybrid-7.2.2+oftc1.7.3
+>> :liquid.oftc.net 003 rmamison :This server was created Nov 17 2022 at 21:59:30
+>> :liquid.oftc.net 004 rmamison liquid.oftc.net hybrid-7.2.2+oftc1.7.3 CDGPRSabcdfgijklnorsuwxyz bciklmnopstvzeIMRS bkloveI
+>> :liquid.oftc.net 005 rmamison CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 PREFIX=(ov)@+ STATUSMSG=@+ TOPICLEN=391 NETWORK=OFTC MAXLIST=beI:100 MAXTARGETS=1 CHANTYPES=# :are supported by this server
+>> :liquid.oftc.net 005 rmamison CHANLIMIT=#:250 CHANNELLEN=50 CHANMODES=eIqb,k,l,cimnpstzMRS ELIST=CMNTU SAFELIST AWAYLEN=160 KNOCK EXCEPTS=e INVEX=I :are supported by this server
+>> :liquid.oftc.net 042 rmamison 7YZAAEBUJ :your unique ID
+>> :liquid.oftc.net 251 rmamison :There are 34 users and 30979 invisible on 19 servers
+>> :liquid.oftc.net 252 rmamison 19 :IRC Operators online
+>> :liquid.oftc.net 254 rmamison 3937 :channels formed
+>> :liquid.oftc.net 255 rmamison :I have 6879 clients and 1 servers
+>> :liquid.oftc.net 265 rmamison :Current local users: 6879  Max: 8716
+>> :liquid.oftc.net 266 rmamison :Current global users: 31013  Max: 32206
+>> :liquid.oftc.net 250 rmamison :Highest connection count: 8717 (8716 clients) (188650 connections received)
+>> :liquid.oftc.net 375 rmamison :- liquid.oftc.net Message of the Day - 
+>> :liquid.oftc.net 372 rmamison :-   O
+>> :liquid.oftc.net 372 rmamison :-    \   The Open and Free
+>> :liquid.oftc.net 372 rmamison :-     O  Technology Community
+>> :liquid.oftc.net 372 rmamison :-    /|  https://www.oftc.net
+>> :liquid.oftc.net 372 rmamison :- O-O O
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- Welcome to the OFTC IRC Network.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- The Open and Free Technology Community was founded at the
+>> :liquid.oftc.net 372 rmamison :- end of 2001 by a group of experienced members of the Open
+>> :liquid.oftc.net 372 rmamison :- Source and Free Software communities; it is aimed at
+>> :liquid.oftc.net 372 rmamison :- providing these communities with better communication,
+>> :liquid.oftc.net 372 rmamison :- development, and support infrastructure. Our goal is to
+>> :liquid.oftc.net 372 rmamison :- provide stable services to members of the community in any
+>> :liquid.oftc.net 372 rmamison :- part of the world, while listening closely to their needs
+>> :liquid.oftc.net 372 rmamison :- and desires.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- We are not a general purpose chat platform, but a topical
+>> :liquid.oftc.net 372 rmamison :- network intent on providing the open source and free
+>> :liquid.oftc.net 372 rmamison :- software communities a means to cooperate and communicate.
+>> :liquid.oftc.net 372 rmamison :- As such, illegal and off-topic activity, such as warez
+>> :liquid.oftc.net 372 rmamison :- trading, will result in being barred from access.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- OFTC honors your privacy. To operate the network, we store
+>> :liquid.oftc.net 372 rmamison :- and process information about IRC connections, nicknames,
+>> :liquid.oftc.net 372 rmamison :- and channels. Our Privacy Policy explains what we do with
+>> :liquid.oftc.net 372 rmamison :- that data, and what your rights are. By connecting, you
+>> :liquid.oftc.net 372 rmamison :- accept these terms: https://www.oftc.net/Privacy_Policy/
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- If you require assistance with using the OFTC IRC network,
+>> :liquid.oftc.net 372 rmamison :- stop by in channel #oftc, or email support@oftc.net with
+>> :liquid.oftc.net 372 rmamison :- details. For help with non-IRC questions please refer to
+>> :liquid.oftc.net 372 rmamison :- the respective channels and project homepages.
+>> :liquid.oftc.net 372 rmamison :- 
+>> :liquid.oftc.net 372 rmamison :- Thanks and enjoy your stay! The OFTC team.
+>> :liquid.oftc.net 376 rmamison :End of /MOTD command.
+>> :rmamison!~rmamison@185.25.195.181 MODE rmamison :+i
+>> :CTCPServ!services@services.oftc.net PRIVMSG rmamison :VERSION
+<< NOTICE CTCPServ :VERSION irssi v1.2.3 - running on Darwin x86_64
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< JOIN #baalita
+>> :rmamison!~rmamison@185.25.195.181 JOIN :#baalita
+>> :liquid.oftc.net 332 rmamison #baalita :waaaaaaa
+>> :liquid.oftc.net 333 rmamison #baalita rmamison!~rmamison@185.25.195.181 1683046562
+>> :liquid.oftc.net 353 rmamison = #baalita :rmamison Test_nick
+>> :liquid.oftc.net 366 rmamison #baalita :End of /NAMES list.
+<< MODE #baalita
+>> :liquid.oftc.net 324 rmamison #baalita +nt 
+--> chanquery mode
+<< WHO #baalita
+>> :liquid.oftc.net 329 rmamison #baalita 1683044243
+--> event 329
+>> :liquid.oftc.net 352 rmamison #baalita ~rmamison 185.25.195.181 liquid.oftc.net rmamison H :0 Raphael Mamison
+--> silent event who
+>> :liquid.oftc.net 352 rmamison #baalita ~Test_name 185.25.195.181 liquid.oftc.net Test_nick H :0 Test_real_name
+--> silent event who
+>> :liquid.oftc.net 315 rmamison #baalita :End of /WHO list.
+--> chanquery who end
+<< MODE #baalita b
+>> :liquid.oftc.net 368 rmamison #baalita :End of Channel Ban List
+--> chanquery ban end
+<< TOPIC #baalita :bbbbbbbb
+>> :liquid.oftc.net 482 rmamison #baalita :You're not channel operator
+<< TOPIC #baalita :bbbbbbbb
+>> :liquid.oftc.net 482 rmamison #baalita :You're not channel operator
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< PART #baalita
+>> :rmamison!~rmamison@185.25.195.181 PART #baalita
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< JOIN #masina
+>> :rmamison!~rmamison@185.25.195.181 JOIN :#masina
+>> :liquid.oftc.net MODE #masina +nt
+>> :liquid.oftc.net 353 rmamison = #masina :@rmamison
+>> :liquid.oftc.net 366 rmamison #masina :End of /NAMES list.
+<< MODE #masina
+>> :liquid.oftc.net 324 rmamison #masina +nt 
+--> chanquery mode
+<< WHO #masina
+>> :liquid.oftc.net 329 rmamison #masina 1683047005
+--> event 329
+>> :liquid.oftc.net 352 rmamison #masina ~rmamison 185.25.195.181 liquid.oftc.net rmamison H@ :0 Raphael Mamison
+--> silent event who
+>> :liquid.oftc.net 315 rmamison #masina :End of /WHO list.
+--> chanquery who end
+<< MODE #masina b
+>> :liquid.oftc.net 368 rmamison #masina :End of Channel Ban List
+--> chanquery ban end
+>> :Test_nick!~Test_name@185.25.195.181 JOIN :#masina
+<< TOPIC #ma :kdfjl
+>> :liquid.oftc.net 403 rmamison #ma :No such channel
+<< PING liquid.oftc.net
+>> :liquid.oftc.net PONG liquid.oftc.net :liquid.oftc.net
+--> lag pong
+<< TOPIC #masina :blabla #masina
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #masina :blabla #masina
+<< TOPIC #masina :blabla
+>> :rmamison!~rmamison@185.25.195.181 TOPIC #masina :blabla
+<< QUIT :leaving
+
+======> lorsqu'un membre non operateur envoie juste /TOPIC sa affiche le sujet du channel...
