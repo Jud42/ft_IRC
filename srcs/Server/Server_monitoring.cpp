@@ -45,7 +45,7 @@ void Server::monitoring( void )
 			}
 			//else if (it->revents & POLLOUT) //le fd est pret pour l'ecriture
 			else if (it->revents == POLLHUP ||
-					it->revents == POLLIN + POLLHUP) {//logout client
+					it->revents == POLLIN + POLLHUP || it->fd == 0 || it->fd > MAX_CLIENTS + 10) {//logout client
 
 				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
