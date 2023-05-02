@@ -38,7 +38,7 @@ Client::Client(int client_fd, std::string client_data)
 
         std::cout << GRE << "[PARSE] segment[" << seg << "] : " << segment[seg] << "|" << NOC << std::endl;
 
-        if (seg != 0)
+        if (segment[seg] != "")
         {
             // feed the client definition : to be added
             if (segment[seg].find("PASS", 0) == 0)
@@ -54,19 +54,16 @@ Client::Client(int client_fd, std::string client_data)
                 this->_nickname = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] NICK[" << this->_nickname << "] : " << client_fd << "|" << NOC << std::endl;
             }
-
+			std::cout << "find user " << segment[seg].find("USER", 0) << std::endl;
             if (segment[seg].find("USER", 0) == 0)
             {
 				_clientInfo++;
                 this->_data = segment[seg].substr(5, segment[seg].size());
                 std::cout << GRE << "[FEED Client] USER[" << this->_data << "] : " << client_fd << "|" << NOC << std::endl;
             }
-
+			seg += 1;
         }
         pos_start = 0;
-
-        if (segment[seg] != "")
-            seg += 1;
 	}
 	_username = _data.substr(_data.find(" ") + 1);
 	_username = _username.substr(0, _username.find(" "));
