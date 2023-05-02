@@ -5,7 +5,7 @@ void Server::createConnexion( void ) {
 	struct sockaddr addrclient;
 	socklen_t addrlen = sizeof(addrclient);
 	int client_fd = accept(_listener, &addrclient, &addrlen);
-	if (client_fd == -1)
+	if (client_fd < 3)
 		throw std::runtime_error("[SERVER_MONITORING] - Error: accept()");
 
 	//if (this->isNewClient(client_fd) == true) {
