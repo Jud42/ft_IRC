@@ -31,8 +31,10 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
     }
     else
     {
-        return;
+        
     }
+    
+
 
     std::map <int, std::string>::iterator it = channelClients.begin();
     
