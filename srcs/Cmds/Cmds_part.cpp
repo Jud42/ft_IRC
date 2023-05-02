@@ -223,7 +223,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// **** delete channel's user and/or channel itself
 		part_channelUpdate(segment, fd_client);
 		// check if the user deleted was the last one (exclude banned users) = Nb users still connected
-		std::map<std::string, Channel * >::const_iterator it_c(this->_channels.find(segment));
+		std::map<std::string, Channel * >::iterator it_c(this->_channels.find(segment));
 		if (it_c->second->getNbUsers() == 0)
 		{
 			// delete the channel

@@ -114,6 +114,9 @@ class	Server
 	// cmd quit
 		void quit_channelUpdate(const std::string channel, const int fd_client);
 		void Cmds_quit (const int fd_client);
+
+	//cmd kick
+		void Cmds_kick(const int fd_client);
 		
 		int								_port;
 		std::string						_pass;
