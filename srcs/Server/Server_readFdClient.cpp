@@ -85,7 +85,6 @@ int Server::readFdClient(int &fd)
 		}
 		if (_fdStatus[fd] == 0)
 		{
-			std::cout <<"salut" << std::endl;
 			if (buffer.find("NICK") != std::string::npos && this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
 			{
 				std::cout << "je rentre dans nick config" << std::endl;
@@ -106,15 +105,15 @@ int Server::readFdClient(int &fd)
 					std::cerr << e.what() << '\n';
 				}
 			}
-
-			if (buffer.find("USER")!= std::string::npos && this->_clientList[_fd_nick_list[fd]]->get_user() != "")
+			if (buffer.find("USER")!= std::string::npos && this->_clientList[_fd_nick_list[fd]]->get_user() == "")
 			{
 				std::cout << "je rentre dans user" << std::endl;
 				this->Cmds_user(fd, this->_buffer);
 				this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
 				std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
 			}
-			if (buffer.find("PASS") != std::string::npos && (this->_clientList[_fd_nick_list[fd]]->getPassword() == "0" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "1" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "2" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "3"))
+			std::string pass = this->_clientList[_fd_nick_list[fd]]->getPassword();
+			if (buffer.find("PASS") != std::string::npos && ( pass == "0" || pass == "1" || pass == "2" || pass == "3"))
 			{
 				std::cout << "je rentre dans pass" << std::endl;
 				try
