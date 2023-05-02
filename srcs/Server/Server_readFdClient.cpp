@@ -71,7 +71,7 @@ int Server::readFdClient(int &fd)
 					return SUCCESS_LOG;
 			}
 		}
-
+		std::cout << "status " << buffer << _fdStatus[fd] << std::endl;
 	/*---client data analyse et filling---*/
 		if (_fdStatus[fd] == 9)
 		{
@@ -85,6 +85,7 @@ int Server::readFdClient(int &fd)
 		}
 		if (_fdStatus[fd] == 0)
 		{
+			std::cout <<"salut" << std::endl;
 			if (buffer.find("NICK") != std::string::npos && this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
 			{
 				std::cout << "je rentre dans nick config" << std::endl;
@@ -92,7 +93,10 @@ int Server::readFdClient(int &fd)
 				{
 					command = find_cmd_arg(buffer, "NICK");
 					if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
+					{
 						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+						std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
+					}
 					this->Cmds_nick(fd, command);
 					if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
 						return LOGOUT;
@@ -108,8 +112,9 @@ int Server::readFdClient(int &fd)
 				std::cout << "je rentre dans user" << std::endl;
 				this->Cmds_user(fd, this->_buffer);
 				this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+				std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
 			}
-			if (buffer.find("PASS") != std::string::npos && this->_clientList[_fd_nick_list[fd]]->getPassword() == "0")
+			if (buffer.find("PASS") != std::string::npos && (this->_clientList[_fd_nick_list[fd]]->getPassword() == "0" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "1" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "2" || this->_clientList[_fd_nick_list[fd]]->getPassword() == "3"))
 			{
 				std::cout << "je rentre dans pass" << std::endl;
 				try
@@ -121,6 +126,7 @@ int Server::readFdClient(int &fd)
 					{
 						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
 						this->_clientList[_fd_nick_list[fd]]->setPassword(command);
+						std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
 					}
 				}
 				catch(const CmdException& e)
