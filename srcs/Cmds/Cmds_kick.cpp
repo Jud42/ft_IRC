@@ -27,36 +27,71 @@ void	Server::Cmds_kick(const int fd_client) {
 	std::vector<std::string> seg;
 	if (!isCorrectInput(_buffer, seg))	
 		return ;
-	std::string channel_name = seg[1].erase(0, 1); //remove #
-	std::string target = seg[2];
-	Channel *ch = _channels[channel_name];	
-	//search nickname target a partir du fd dans channlclient;
-	std::cout << "list: " << (clients.begin())->first << std::endl;
-	if (clients.find(target) != clients.end()) {
-		//client pas dans le channel
 
+	//info the commander
 	std::string nick_op = _fd_nick_list[fd_client];
 	std::string ip_op = this->_clientList[nick_op]->get_ip();
 	std::string user_name_op = this->_clientList[nick_op]->get_user();
-	std::string mode_op = ch->getChannelConnectedFDMode(fd_client);
-	//std::string hostname = this->_hostname;
+	//hostname server
+	std::string hostname = _hostname;
 
-	if (!mode_op.compare("O@") || !mode_op.compare("o")) {
-		std::string resp = ":" + nick_op +
-		"!" + user_name_op + "@" + ip_op + " " + 
-		seg[0] + " " + seg[1] + " " + seg[2] + " " + seg[3];
-		std::cout << "***ohatra*** " << resp << std::endl;
-		std::map<std::string, std::string>::iterator it;
-		for(clients.begin() = it; it != clients.end(); it++) {
+	std::string resp;
+
+	//take #channel_name
+	std::string channel_name = seg[1].substr();
+	channel_name.erase(0, 1); //remove # 	
+	//take instance channel
+	Channel *ch = _channels[channel_name];
+	//verify if the commander is operator
+	std::string mode_op = ch->getChannelConnectedFDMode(fd_client);
+	if (mode_op == "O@") {
+
+		std::cout << "is an operator" << std::endl;
+		//take list fd clients connected on channel
+		std::map<int, std::string> fds_channel;
+   		fds_channel	= ch->getChannelFDsModeMap();
+
+		//verify if the target exist in channel
+		//search instance Client from nickname
+		std::string target = seg[2];
+		if (_clientList.find(target) != _clientList.end()) {
+			int fd_target = (_clientList[target])->getClientFd();
+			if (fds_channel.find(fd_target) == fds_channel.end()) {
+				//client pas dans le channel ou ete deja banni
+				resp = ":" + hostname + " " + "401" + nick_op +
+				" " + target + " " + ":No such nick/channel\r\n";
+				send(fd_client, resp.c_str(), resp.size(), 0);
+				return ;
+			}
+			else {
 			
-			int fd = (_clientList[it->first])->getClientFd();
-			if (it->second != "b")
-				send(fd, resp.c_str(), resp.size(), 0);
+				resp = ":" + nick_op + "!" + 
+				user_name_op + "@" + ip_op + " " + 
+				seg[0] + " " + seg[1] + " " + seg[2] + " " + seg[3];
+			
+				//std::cout << "***ohatra*** " << resp << std::endl;
+				std::map<int, std::string>::iterator it;
+				for(it = fds_channel.begin(); 
+						it != fds_channel.end(); it++) {
+			
+					std::cout << "fd list: " 
+						<< it->first << std::endl;
+					send(it->first, resp.c_str(), resp.size(), 0);
+				}
+				ch->setChannelUserMode(fd_target, "b");
+				std::cout << "[" << target << "]\t=> BANI =>\t" <<
+					ch->getChannelConnectedFDMode(fd_target) 
+						<< std::endl;
+			}
 		}
+		else
+			std::cout << "nick client n'existe pas dans [_clientList]" << std::endl;
 	}
-	else {
-		//send client not operator
-	} 
+	else { //if commander is not operator
+
+		std::cout << "is not operator" << std::endl;
+		resp = ":" + hostname +  " " + "482" + " " + nick_op +
+			" " + seg[1] + " " + ":You're not channel operator\r\n";
+		send(fd_client, resp.c_str(), resp.size(), 0);
 	}
-	return ;
-}
+}	
