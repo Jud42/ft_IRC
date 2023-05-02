@@ -136,7 +136,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				}
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
-				it->second->setChannelFDMode(fd_client, "o");
+				it->second->setChannelFDMode(fd_client, "");
 			}
 
 			// retrieve the channel's users

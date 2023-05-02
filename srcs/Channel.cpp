@@ -90,17 +90,23 @@ const std::map <int, std::string> Channel::getChannelFDsModeMap (void)
 
 int Channel::getChannelConnectedFD (const int fd)
 {
+
+
+    int result = 0;
     std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
+
+    if (it != this->_channel_FD_Mode.end())
+        result = it->first;
 
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] getChannelConnectedFD" <<  std::endl;
-        std::cout << " FD found :" << it->first << std::endl;
+        std::cout << " result :" << result << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------
 
-    return (it->first);
+    return (result);
 }
 
 const std::string Channel::getChannelConnectedFDMode (const int fd)

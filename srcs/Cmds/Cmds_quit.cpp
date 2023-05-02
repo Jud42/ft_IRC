@@ -21,8 +21,8 @@ void Server::Cmds_quit(const int fd_client)
 			{
 				// delete the channel
 				it->second->~Channel();
-				std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
-				this->_channels.erase(it);
+				//std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
+				//this->_channels.erase(it);
 			}
 		}
 	}
