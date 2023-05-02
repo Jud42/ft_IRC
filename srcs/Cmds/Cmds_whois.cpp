@@ -12,7 +12,7 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		nick = this->_fd_nick_list[fd_client];
 	if (_clientList.count(nick) == 0)
 	{
-		std::string cap_response = "401 \r\n";
+		std::string cap_response = "401 user does not exist\r\n";
         std::cout << "user does not exist: *" << nick << "*" << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
     }

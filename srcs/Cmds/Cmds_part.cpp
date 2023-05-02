@@ -194,11 +194,12 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// return the user name of the client
 		std::string userName = this->_clientList[nickname]->get_user();
 
-		// ensure the channel is exisitng otherwise error message
+		// ensure the channel is existing otherwise error message
 		if (this->_channels.count(segment) == 0)
 		{
 			// std::string cap_response = "403 the channel doesn't exist\r\n";
-			std::string cap_response = "403\r\n";
+			// :helix.oftc.net 403 VRO blabla :No such channel
+			std::string cap_response = "403 " + nickname + " " + segment + " : \r\n";
 			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 			continue ;
@@ -228,7 +229,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 			// delete the channel
 			//std::cout << RED << "Deleted channel " << it_c->first << NOC << std::endl;
 			it_c->second->~Channel();
-			this->_channels.erase(it_c);
+			//this->_channels.erase(it_c);
 		}
 	}
 
