@@ -118,6 +118,9 @@ class	Server
 	//cmd kick
 		void Cmds_kick(const int fd_client);
 		
+//cmd invite 
+		void Cmds_invite(int fd_client);
+		
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;

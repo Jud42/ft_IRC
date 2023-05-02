@@ -188,6 +188,13 @@ int Server::readFdClient(int &fd)
 				std::cout << "je rentre dans kick" << std::endl;
 				this->Cmds_kick(fd);
 			}
+			if (buffer.find("INVITE") != std::string::npos)
+			{
+				std::cout << "je rentre dans invite" << std::endl;
+				this->Cmds_invite(fd);
+			}
+
+
 
 
 			if (buffer.find("QUIT") != std::string::npos)
