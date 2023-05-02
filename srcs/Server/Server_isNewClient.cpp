@@ -32,12 +32,6 @@ bool Server::isNewClient(int &client_fd, std::string buffer)
 			send(client_fd, cap_response.c_str(), cap_response.length(), 0);
 			std::cout << "Nickname already used" << std::endl;
 		}
-		else
-		{
-			std::string cap_response = "Connexion restored \r\n";
-			std::cout << _clientList[nick]->getClientFd() << " [Server->Client]" << cap_response << std::endl;
-			send((_clientList[nick])->getClientFd(), cap_response.c_str(), cap_response.length(), 0);
-		}
 		delete temp;
 		return (false);
 	}
