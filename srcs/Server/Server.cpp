@@ -7,6 +7,7 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	_oper_pass(_IRCconfig->getConfigValue("OPER_PASSWORD")),
 	_addrs(NULL),
 	_listener(-1),
+	_fds(),
 	_channels(),
 	_addrclient()
 {
@@ -37,7 +38,7 @@ Server::Server(const char *port, const char *pass, ConfigFile *IRCconfig) :
 	std::cout << std::left << std::setw(15) <<"port : " << _port << std::endl;
 
 	//set 
-	memset(&_fds, 0, sizeof(_fds));
+	//memset(&_fds, 0, sizeof(_fds));
 	
 
 }

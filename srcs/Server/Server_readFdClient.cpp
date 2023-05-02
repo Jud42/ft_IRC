@@ -231,6 +231,12 @@ int Server::readFdClient(int &fd)
 				this->Cmds_notice(fd, buffer);
 				nocommand = 1;
 			}
+			if (buffer.find("KICK") != std::string::npos)
+			{
+				std::cout << "je rentre dans kick" << std::endl;
+				this->Cmds_kick(fd);
+			}
+
 
 			if (buffer.find("QUIT") != std::string::npos)
 			{
@@ -263,6 +269,7 @@ int Server::readFdClient(int &fd)
 			}
 		}
 		/*---client error password---*/
+		/*
 		if (_fdStatus[fd] == 2)
 		{
 			std::string cap_response = "464 ERR_PASSWDMISMATCH\r\n";
@@ -275,7 +282,7 @@ int Server::readFdClient(int &fd)
 			return LOGOUT;
 		}
 		std::cout << "------------------------------------- " <<  std::endl;
-		return SUCCESS_LOG;
+		*/return SUCCESS_LOG;
 	}
 	return (parseError(read, fd));
 }
