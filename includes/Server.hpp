@@ -110,6 +110,10 @@ class	Server
 		
 	// cmd notice
 		void Cmds_notice(int const fd_client, std::string const command);
+
+	// cmd quit
+		void quit_channelUpdate(const std::string channel, const int fd_client);
+		void Cmds_quit (const int fd_client);
 		
 		int								_port;
 		std::string						_pass;

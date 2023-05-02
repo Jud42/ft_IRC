@@ -29,10 +29,7 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         // retrive the list of all FD attached to the channel
         channelClients = it_c->second->getChannelFDsModeMap();        
     }
-    else
-    {
-        return;
-    }
+
 
     std::map <int, std::string>::iterator it = channelClients.begin();
     
@@ -52,18 +49,18 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
             std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
             
             // look for channel
-            //for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
-            //{
-                //if (it_FD->second == it->first)
-                //{
+            for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
+            {
+                if (it_FD->first == it->first)
+                {
                     // channel for information
                     int fd_dest = it_FD->first;
                     //std::cout << RED << " it_FD->first :" << it_FD->first << NOC << std::endl;
 
                     send(fd_dest, message.c_str(), message.length(), 0);
-                    std::cout << fd_dest << " [Server->Client]" << message << std::endl;
-                //}
-            //}
+                    std::cout << RED << fd_dest << " [Server->Client]" << message << NOC << std::endl;
+                }
+            }
         }
 
     }   
