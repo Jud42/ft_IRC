@@ -127,7 +127,6 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				// block banned user to join the channel
 				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
-					//-->TBC
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
 					std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC + segment + "\r\n";
 					std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
@@ -136,15 +135,19 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				}
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
-				it->second->setChannelFDMode(fd_client, "");
+				it->second->setChannelFDMode(fd_client, "o");
 			}
 
 			// retrieve the channel's users
 			std::string channelUsers = ListConnectedUsers(segment);
 
+			std::cout << RED << "ListconnectedUser" << NOC << std::endl;
+
 			// send 4 messages ---------------------------------------------------------------
 
 			std::string cap_response = "";
+
+			std::cout << RED << "FD : "<< fd_client << NOC << std::endl;
 			
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
@@ -187,7 +190,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
 
+
+			std::cout << RED << "Cmds_inform_Channel" << NOC << std::endl;
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
+
+			std::cout << RED << "fin" << NOC << std::endl;
 
 		}
 	}
