@@ -17,6 +17,7 @@ std::string find_cmd_arg(std::string buffer, std::string command)
 	{
 		if (buffer[pos_start - 1] != '\n')
 		{
+			// return ("");
 			std::cout << command;
 			throw Server::CmdException();
 		}

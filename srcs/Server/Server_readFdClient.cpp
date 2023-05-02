@@ -25,6 +25,7 @@ static int parseError(int &read, int &client_fd) {
 int Server::readFdClient(int &fd)
 {
 	static std::string bufferTemp = "";
+	int	nocommand = 0;
 
 	memset(&_buffer, 0, BUFFER_SIZE);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
@@ -64,6 +65,7 @@ int Server::readFdClient(int &fd)
 					buffer = bufferTemp.substr(0, found) + "\r\n";
 					std::cout << "3" << std::endl;
 					print_all_caractere(buffer);
+					bufferTemp = "";
 				}
 				else
 					return SUCCESS_LOG;
@@ -158,21 +160,26 @@ int Server::readFdClient(int &fd)
 		/*---client validated---*/
 		else if (_fdStatus[fd] == 1)
 		{
+			std::cout << "4" << std::endl;
+			print_all_caractere(buffer);
 			if (buffer.find("PING") != std::string::npos)
 			{
 				std::cout << "je rentre dans ping" << std::endl;
 				this->Cmds_ping(fd);
+				nocommand = 1;
 			}
 			if (buffer.find("JOIN") != std::string::npos)
 			{
 				std::cout << "je rentre dans join" << std::endl;
-				this->Cmds_join(fd, this->_buffer, _fd_nick_list[fd]);
+				this->Cmds_join(fd, buffer, _fd_nick_list[fd]);
+				nocommand = 1;
 			}
 
 			if (buffer.find("PART") != std::string::npos)
 			{
 				std::cout << "je rentre dans part" << std::endl;
-				this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
+				this->Cmds_part(fd, buffer, _fd_nick_list[fd]);
+				nocommand = 1;
 			}
 
 			/*---cmd envoye par l'utilisateur client---*/
@@ -183,6 +190,7 @@ int Server::readFdClient(int &fd)
 				{
 					command = find_cmd_arg(buffer, "NICK");
 					this->Cmds_nick(fd, command);
+					nocommand = 1;
 				}
 				catch(const CmdException& e)
 				{
@@ -193,30 +201,35 @@ int Server::readFdClient(int &fd)
 			if (buffer.find("USER")!= std::string::npos)
 			{
 				std::cout << "je rentre dans user" << std::endl;
-				this->Cmds_user(fd, this->_buffer);
+				this->Cmds_user(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("WHOIS") != std::string::npos)
 			{
 				std::cout << "je rentre dans whois" << std::endl;
-				this->Cmds_whois(fd, this->_buffer);
+				this->Cmds_whois(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("MODE") != std::string::npos)
 			{
 				std::cout << "je rentre dans mode" << std::endl;
+				nocommand = 1;
 			}
 
 			if (buffer.find("PRIVMSG") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
-				this->Cmds_msg(fd, this->_buffer);
+				this->Cmds_msg(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("NOTICE") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
-				this->Cmds_notice(fd, this->_buffer);
+				this->Cmds_notice(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("QUIT") != std::string::npos)
@@ -238,6 +251,12 @@ int Server::readFdClient(int &fd)
 					<< "List [socket] before logout_server: "
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
+			}
+			if (nocommand == 0)
+			{
+				std::string cap_response = "Unknown command:" + buffer + "\r\n";
+				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+				send(fd, cap_response.c_str(), cap_response.length(), 0);
 			}
 		}
 		/*---client error password---*/
