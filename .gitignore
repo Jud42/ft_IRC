@@ -33,4 +33,6 @@ ircserv
 *.app
 ircserv
 
-
+*.log
+.DS_Store
+*.swp
