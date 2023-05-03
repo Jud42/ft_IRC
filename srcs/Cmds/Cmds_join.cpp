@@ -115,7 +115,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
 
-				// block banned user to join the channel
+				// block banned user to join the channels
 				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
@@ -131,7 +131,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					// check if the fd was ivited
 					if (it->second->getChannelConnectedFDMode(fd_client) != "i")
 					{
-						// >> :helix.oftc.net 473 VRO_D2 #blablai :Cannot join channel (+i)
+						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
 						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
 						std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 						send(fd_client, cap_response.c_str(), cap_response.length(), 0);
