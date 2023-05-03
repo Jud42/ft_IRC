@@ -19,7 +19,6 @@ class Client
 		std::string					_realname;
 		std::string					_password;
 		std::string					_modes;
-		std::vector<std::string>	_channel;
 		std::vector<int>			_privMsgContactsFd;
 		int							_clientFd;
 		std::string					_ip;
@@ -37,14 +36,10 @@ class Client
 		void						setModes(std::string mode);
 		std::string					getModes();
 
-		bool						findChannel(std::string channel_name);
-		std::vector<std::string>	getChannel();
-		void						addChannel(std::string channel);
-		void						removeChannel(std::string channel);
-
 		bool						findContactFd(int contact_fd);
 		void						addContactFd(int contact_fd);
 		void						delContactFd(int contact_fd);
+		std::vector<int>			&getContactsFd();
 
 		void						set_ip(std::string ip);
 		std::string					get_ip();
