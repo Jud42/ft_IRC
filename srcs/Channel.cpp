@@ -5,6 +5,8 @@
 // constructor of the channel
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
+    // empty the topic
+    this->_topic = "";
 
      if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
