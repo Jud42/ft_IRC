@@ -32,7 +32,7 @@ bool Server::isNewClient(int &client_fd, std::string buffer)
 			send(client_fd, cap_response.c_str(), cap_response.length(), 0);
 			std::cout << "Nickname already used" << std::endl;
 		}
-		else
+		else if (temp->get_data() == _clientList[temp->getNickname()]->get_data())
 		{
 			std::string cap_response = "Connexion restored \r\n";
 			std::cout << _clientList[nick]->getClientFd() << " [Server->Client]" << cap_response << std::endl;
