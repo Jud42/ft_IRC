@@ -3,6 +3,7 @@
 void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag) 
 {
 	int fdDel = it->fd;
+	
 	std::cout << "fd " << fdDel << "deleting:" << std::endl;
 	if (flag == LOGOUT || flag == LOGOUT_SERVER) {
 		

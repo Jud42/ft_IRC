@@ -71,7 +71,7 @@ class	Server
 
 	//tmp
 		void createConnexion();
-		bool isNewClient(int &client_fd, std::string buffer); //old treat_new
+		bool isNewClient(int &client_fd); //old treat_new
 		int readFdClient(int &fd);
 		void printAddressIp(int &fd);
 		void logoutClient(std::vector<struct pollfd>::iterator &, int);
@@ -107,17 +107,16 @@ class	Server
 		void Cmds_whois(int const fd_client, std::string const command);
 	// cmd msg / privmsg
 		void Cmds_msg(int const fd_client, std::string const command);
-
+		
 	// cmd notice
 		void Cmds_notice(int const fd_client, std::string const command);
+	//cmd kick
+		void Cmds_kick(const int fd_client);
 
 	// cmd quit
 		void quit_channelUpdate(const std::string channel, const int fd_client);
 		void Cmds_quit (const int fd_client);
-
-	//cmd kick
-		void Cmds_kick(const int fd_client);
-
+		
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;

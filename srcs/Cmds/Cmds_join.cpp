@@ -125,11 +125,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
 				// block banned user to join the channel
+
 				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
-					std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC + segment + "\r\n";
-					std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
+					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 					continue;
 				}
@@ -141,13 +142,10 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// retrieve the channel's users
 			std::string channelUsers = ListConnectedUsers(segment);
 
-			std::cout << RED << "ListconnectedUser" << NOC << std::endl;
-
 			// send 4 messages ---------------------------------------------------------------
 
 			std::string cap_response = "";
 
-			std::cout << RED << "FD : "<< fd_client << NOC << std::endl;
 			
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
@@ -190,11 +188,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
 
-
-			std::cout << RED << "Cmds_inform_Channel" << NOC << std::endl;
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-
-			std::cout << RED << "fin" << NOC << std::endl;
 
 		}
 	}
