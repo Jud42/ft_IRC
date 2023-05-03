@@ -10,6 +10,7 @@ void Server::monitoring( void )
 	while (activity != LOGOUT_SERVER) {
 
 		std::cout << "==av poll==" << std::endl;
+
 		//take evenement
 		event = poll(_fds.data(), _fds.size(), TIMEOUT);
 		if (event < 0)
@@ -37,7 +38,7 @@ void Server::monitoring( void )
 						break ;
 					}
 					std::cout << "********CONNEXION******" << std::endl;
-					// this->printAddressIp(it->fd);
+					this->printAddressIp(it->fd);
 					std::cout << "***********************" << std::endl;
 					continue ;
 				}
@@ -49,10 +50,10 @@ void Server::monitoring( void )
 
 				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
-				break ;
+				// break ;
 			}
-			//else if (it->revents & POLLERR) //error on fd
+			else if (it->revents == 32)
+				_fds.erase(it);
 		}
-
 	}
 }

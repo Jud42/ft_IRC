@@ -40,6 +40,7 @@ int Server::readFdClient(int &fd)
 		std::cout << "1" << std::endl;
 		print_all_caractere(buffer);
 		std::string command = buffer;
+		std::cout << "bufferTemp" << bufferTemp << std::endl;
 	// check if the command is complete
 		if (buffer.find("\r\n") == std::string::npos)
 		{
@@ -47,11 +48,12 @@ int Server::readFdClient(int &fd)
 			{
 				std::string cap_response = "message/argument too long will be cropped\r\n";
 				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
-				send(fd, cap_response.c_str(), cap_response.length(), 0);
 				buffer[read - 2] = '\r';
 				buffer[read - 1] = '\n';
 				std::cout << fd << " [Server->Client]" << buffer << std::endl;
 				send(fd, cap_response.c_str(), cap_response.length(), 0);
+				bufferTemp = "cropped";
+				std::cout << "1bufferTemp" << bufferTemp << std::endl;
 			}
 			else
 			{
@@ -273,15 +275,17 @@ int Server::readFdClient(int &fd)
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
 			}
-			if (nocommand == 0)
+			if (nocommand == 0 && bufferTemp != "cropped")
 			{
 				std::string cap_response = "Unknown command:" + buffer + "\r\n";
 				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
 				send(fd, cap_response.c_str(), cap_response.length(), 0);
 			}
+			if (nocommand == 0 && bufferTemp == "cropped")
+				bufferTemp = "";
 		}
 		/*---client error password---*/
-		/*
+
 		if (_fdStatus[fd] == 2)
 		{
 			std::string cap_response = "464 ERR_PASSWDMISMATCH\r\n";
@@ -294,7 +298,7 @@ int Server::readFdClient(int &fd)
 			return LOGOUT;
 		}
 		std::cout << "------------------------------------- " <<  std::endl;
-		*/return SUCCESS_LOG;
+		return SUCCESS_LOG;
 	}
 	return (parseError(read, fd));
 }
