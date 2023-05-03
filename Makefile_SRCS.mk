@@ -19,6 +19,7 @@ srcs/Cmds/Cmds_msg.cpp \
 srcs/Cmds/Cmds_notice.cpp \
 srcs/Cmds/Cmds_kick.cpp \
 srcs/Cmds/Cmds_quit.cpp \
+srcs/Cmds/Cmds_topic.cpp \
 srcs/Cmds/Cmds_inform_Channel.cpp \
 srcs/Server/Server_createConnexion.cpp \
 srcs/Server/Server_readFdClient.cpp \

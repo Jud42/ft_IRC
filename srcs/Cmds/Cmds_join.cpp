@@ -66,16 +66,6 @@ std::string Server::PrepJchannel(std::string const command)
 	return (jchannel);
 }
 
-void sleepcp (int millisecond)
-{
-	clock_t end_time;
-	end_time = clock() + millisecond * CLOCKS_PER_SEC/1000;
-	while (clock() < end_time)
-	{
-		// loop for waiting
-	}
-}
-
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
@@ -154,7 +144,20 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			//sleepcp (100); // 10 milliseconds
+			
+			// ------------------
+			// send optional message when topic exist e.g. :
+			// >> :helix.oftc.net 332 VRO_D2 #blabla1 :ceci est un channel de test
+			// 
+			std::string topic = this->_channels[segment]->getTopic();
+			if (topic != "")
+			{
+				cap_response = ":" + hostname + " 332 " + user_client + " " + typeC + segment + " :" + it->second->getTopic() + "\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			}
+
 
 			// ------------------
 			// send second message with the list of users e.g : 

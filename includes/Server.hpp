@@ -71,7 +71,7 @@ class	Server
 
 	//tmp
 		void createConnexion();
-		bool isNewClient(int &client_fd); //old treat_new
+		bool isNewClient(int &client_fd, std::string buffer); //old treat_new
 		int readFdClient(int &fd);
 		void printAddressIp(int &fd);
 		void logoutClient(std::vector<struct pollfd>::iterator &, int);
@@ -116,6 +116,9 @@ class	Server
 	// cmd quit
 		void quit_channelUpdate(const std::string channel, const int fd_client);
 		void Cmds_quit (const int fd_client);
+
+	// cmd topic
+		void Cmds_topic(int const fd_client, std::string const command);
 		
 		int								_port;
 		std::string						_pass;
