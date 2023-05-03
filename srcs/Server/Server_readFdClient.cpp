@@ -47,7 +47,6 @@ int Server::readFdClient(int &fd)
 			{
 				std::string cap_response = "message/argument too long will be cropped\r\n";
 				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
-				send(fd, cap_response.c_str(), cap_response.length(), 0);
 				buffer[read - 2] = '\r';
 				buffer[read - 1] = '\n';
 				std::cout << fd << " [Server->Client]" << buffer << std::endl;

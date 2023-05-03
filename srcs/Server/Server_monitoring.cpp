@@ -20,6 +20,8 @@ void Server::monitoring( void )
 		for (it = _fds.begin(); it != _fds.end(); it++)
 			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 		/*-----*/
+		while (_fds.begin()->fd != _listener) //suppression fd parasites cree par des overflow
+			_fds.erase(_fds.begin());
 
 		for (it = _fds.begin(); it != _fds.end(); it++) {
 			//data in
@@ -37,7 +39,7 @@ void Server::monitoring( void )
 						break ;
 					}
 					std::cout << "********CONNEXION******" << std::endl;
-					// this->printAddressIp(it->fd);
+					this->printAddressIp(it->fd);
 					std::cout << "***********************" << std::endl;
 					continue ;
 				}
@@ -51,8 +53,6 @@ void Server::monitoring( void )
 				this->logoutClient(it, LOGOUT);
 				break ;
 			}
-			//else if (it->revents & POLLERR) //error on fd
 		}
-
 	}
 }
