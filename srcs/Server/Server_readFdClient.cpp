@@ -240,7 +240,14 @@ int Server::readFdClient(int &fd)
 			{
 				std::cout << "je rentre dans kick" << std::endl;
 				this->Cmds_kick(fd);
+				nocommand = 1;
 			}
+			if (buffer.find("TOPIC") != std::string::npos)
+			{
+				std::cout << "je rentre dans topic" << std::endl;
+				this->Cmds_topic(fd, buffer);
+				nocommand = 1;
+			}			
 
 
 			if (buffer.find("QUIT") != std::string::npos)

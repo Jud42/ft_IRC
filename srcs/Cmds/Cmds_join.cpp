@@ -66,16 +66,6 @@ std::string Server::PrepJchannel(std::string const command)
 	return (jchannel);
 }
 
-void sleepcp (int millisecond)
-{
-	clock_t end_time;
-	end_time = clock() + millisecond * CLOCKS_PER_SEC/1000;
-	while (clock() < end_time)
-	{
-		// loop for waiting
-	}
-}
-
 
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
@@ -125,11 +115,12 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
 				// block banned user to join the channel
+
 				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
-					std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC + segment + "\r\n";
-					std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
+					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 					continue;
 				}
@@ -141,13 +132,10 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// retrieve the channel's users
 			std::string channelUsers = ListConnectedUsers(segment);
 
-			std::cout << RED << "ListconnectedUser" << NOC << std::endl;
-
 			// send 4 messages ---------------------------------------------------------------
 
 			std::string cap_response = "";
 
-			std::cout << RED << "FD : "<< fd_client << NOC << std::endl;
 			
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
@@ -156,7 +144,20 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			//sleepcp (100); // 10 milliseconds
+			
+			// ------------------
+			// send optional message when topic exist e.g. :
+			// >> :helix.oftc.net 332 VRO_D2 #blabla1 :ceci est un channel de test
+			// 
+			std::string topic = this->_channels[segment]->getTopic();
+			if (topic != "")
+			{
+				cap_response = ":" + hostname + " 332 " + user_client + " " + typeC + segment + " :" + it->second->getTopic() + "\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			}
+
 
 			// ------------------
 			// send second message with the list of users e.g : 
@@ -190,11 +191,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
 
-
-			std::cout << RED << "Cmds_inform_Channel" << NOC << std::endl;
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-
-			std::cout << RED << "fin" << NOC << std::endl;
 
 		}
 	}
