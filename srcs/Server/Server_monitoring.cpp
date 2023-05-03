@@ -10,6 +10,7 @@ void Server::monitoring( void )
 	while (activity != LOGOUT_SERVER) {
 
 		std::cout << "==av poll==" << std::endl;
+
 		//take evenement
 		event = poll(_fds.data(), _fds.size(), TIMEOUT);
 		if (event < 0)
@@ -20,8 +21,6 @@ void Server::monitoring( void )
 		for (it = _fds.begin(); it != _fds.end(); it++)
 			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 		/*-----*/
-		while (_fds.begin()->fd != _listener) //suppression fd parasites cree par des overflow
-			_fds.erase(_fds.begin());
 
 		for (it = _fds.begin(); it != _fds.end(); it++) {
 			//data in
@@ -51,8 +50,10 @@ void Server::monitoring( void )
 
 				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
-				break ;
+				// break ;
 			}
+			else if (it->revents == 32)
+				_fds.erase(it);
 		}
 	}
 }
