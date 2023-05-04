@@ -249,7 +249,7 @@ int Server::readFdClient(int &fd)
 				std::cout << "je rentre dans topic" << std::endl;
 				this->Cmds_topic(fd, buffer);
 				nocommand = 1;
-			}			
+			}
 			if (buffer.find("INVITE") != std::string::npos)
 			{
 				std::cout << "je rentre dans invite" << std::endl;
@@ -277,6 +277,11 @@ int Server::readFdClient(int &fd)
 					<< "List [socket] before logout_server: "
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
+			}
+			if (buffer.find("WHO") != std::string::npos)
+			{
+				// commande not treated and automatically sent by the client  after a join
+				nocommand = 1;
 			}
 			if (nocommand == 0 && bufferTemp != "cropped")
 			{
