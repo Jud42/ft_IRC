@@ -118,7 +118,7 @@ void Server::delete_channelFD(const int fd_client)
 			{
 				// delete the channel
 				it->second->~Channel();
-				std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
+				//std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
 				this->_channels.erase(it);
 			}
 		}

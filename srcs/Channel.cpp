@@ -5,6 +5,8 @@
 // constructor of the channel
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
+    // empty the topic
+    this->_topic = "";
 
      if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
@@ -175,7 +177,40 @@ int Channel::getNbUsers (void)
 // return topic associated to the channel
 const std::string Channel::getTopic (void)
 {
+    
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getTopic" <<  std::endl;
+        std::cout << " Topic:" << this->_topic << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------  
     return (this->_topic);
+}
+
+// ***********************************************************************************************
+// Check if an invited fd has been set for the channel
+bool Channel::checkChannelInvite(const int fd)
+{
+    bool result = false;
+
+    unsigned int i = 0;
+    for ( ; i < this->_invite.size() ; i++)
+    {
+        if (this->_invite[i] == fd)
+        {
+            result = true;
+            break;
+        }
+    }
+        if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] checkChannelInvite" <<  std::endl;
+        std::cout << " result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------   
+    return result;
 }
 
 // ***********************************************************************************************
@@ -250,6 +285,7 @@ void Channel::setChannelConnectedFD (const int newFD)
 	} // -------------------------------------------------------------------------------------- 
 }
 
+
 // ***********************************************************************************************
 // set the TOPIC message
 void Channel::setChannelTopic (const std::string message) 
@@ -264,6 +300,24 @@ void Channel::setChannelTopic (const std::string message)
         std::cout << " Topic :" << this->_topic << std::endl;
 	 	std::cout << NOC;
 	} // -------------------------------------------------------------------------------------- 
+}
+
+// ***********************************************************************************************
+// Insert an invited fd for the channel
+void Channel::setChannelInvite (const int fd)
+{
+        std::vector<int>::iterator it;
+        it = this->_invite.end();
+
+        if (!this->checkChannelInvite(fd))
+            this->_invite.insert(it, fd);
+        
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelInvite" <<  std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------             
 }
 
 

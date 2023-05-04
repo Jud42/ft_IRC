@@ -114,9 +114,10 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			{
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
-				// block banned user to join the channel
 
-				if (it->second->getChannelConnectedFDMode(fd_client) == "b")
+
+				// block banned user to join the channels
+				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
 					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
@@ -124,6 +125,22 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 					continue;
 				}
+
+				// retrieve the channel mode to check if join on invite
+				if (it->second->getChannelMode() == "i")
+				{
+					// check if the fd was ivited
+					if (it->second->getChannelConnectedFDMode(fd_client) != "i")
+					{
+						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
+						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
+						std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+						send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+						continue;
+					}
+				}
+
+
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
 				it->second->setChannelFDMode(fd_client, "o");
