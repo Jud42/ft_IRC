@@ -348,7 +348,7 @@ void Channel::setChannelPass (const std::string pass)
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] setChannelPass" <<  std::endl;
-        std::cout << " Pass :" << this->_pass << std::endl;
+        std::cout << " Pass :" << this->_pass << std::endl:
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------    
 

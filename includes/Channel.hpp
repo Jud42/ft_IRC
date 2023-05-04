@@ -44,7 +44,7 @@ private:
 
         std::map <int, std::string>            _channel_FD_Mode; // FD & mode related to the channel (mode[o, O, b, i] + owner=#)
         std::vector <int>                      _invite; // for FD that were invited
-        std::string                            _pass; // channel's password - optional
+        std::string                            _pass; // channel's password (optional)
 
 
         // for debug
