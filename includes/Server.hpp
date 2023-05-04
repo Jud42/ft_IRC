@@ -120,6 +120,9 @@ class	Server
 	// cmd topic
 		void Cmds_topic(int const fd_client, std::string const command);
 		
+//cmd invite 
+		void Cmds_invite(int fd_client);
+		
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
