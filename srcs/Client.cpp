@@ -15,8 +15,7 @@ Client::Client(int client_fd, std::string client_data)
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
 
-	_channel.push_back("0");
-	_privMsgContactsFd.push_back(1000);
+	// _privMsgContactsFd.push_back(1000);
 
     std::string remains = "";
 
@@ -73,7 +72,7 @@ Client::Client(int client_fd, std::string client_data)
 
 Client::Client(Client cpyClient, std::string newNickname)
 	: _nickname(newNickname), _username(cpyClient._username), _password(cpyClient._password),
-	_modes(cpyClient._modes), _channel(cpyClient._channel), _clientFd(cpyClient._clientFd)
+	_modes(cpyClient._modes), _clientFd(cpyClient._clientFd)
 {
 }
 
@@ -84,8 +83,16 @@ Client::~Client()
 	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
 	send(_clientFd, cap_response.c_str(), cap_response.length(), 0);
 
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();
+	for( ; it != _privMsgContactsFd.end(); ++it)
+	{
+		std::string cap_response = ":" + _nickname + "!~" + _username + '@' + _ip + " QUIT\r\n";
+		std::cout << *it << " [Server->Client]" << cap_response << std::endl;
+		send(*it, cap_response.c_str(), cap_response.length(), 0);
+	}
+
     // Fermer la connexion avec le serveur IRC
-    close(this->_clientFd);
+    // close(this->_clientFd);
 
 }
 
@@ -119,46 +126,6 @@ std::string Client::getModes()
 	return(this->_modes);
 }
 
-bool	Client::findChannel(std::string channel_name)
-{
-	std::vector<std::string>::iterator it = _channel.begin();;
-
-	for( ; it !=_channel.end(); ++it)
-	{
-		if (*it == channel_name)
-			return (true);
-	}
-	return (false);
-}
-
-std::vector<std::string>	Client::getChannel()
-{
-	std::vector<std::string>::iterator it = _channel.begin();
-
-	// print all channel but return the vector
-	for( ; it !=_channel.end(); ++it)
-	{
-		std::cout << *it << std::endl;
-	}
-	return (this->_channel);
-}
-
-void	Client::removeChannel(std::string channel)
-{
-	std::vector<std::string>::iterator it = _channel.begin();;
-
-	for( ; it !=_channel.end(); ++it)
-	{
-		if (*it == channel)
-			_channel.erase(it);
-	}
-}
-
-void	Client::addChannel(std::string channel)
-{
-	_channel.push_back(channel);
-}
-
 bool	Client::findContactFd(int contact_fd)
 {
 	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
@@ -172,11 +139,12 @@ bool	Client::findContactFd(int contact_fd)
 }
 void	Client::addContactFd(int contact_fd)
 {
-	_privMsgContactsFd.push_back(contact_fd);
+	if (!findContactFd(contact_fd))
+		_privMsgContactsFd.push_back(contact_fd);
 }
 void	Client::delContactFd(int contact_fd)
 {
-	std::vector<int>::iterator it = _privMsgContactsFd.begin();;
+	std::vector<int>::iterator it = _privMsgContactsFd.begin();
 
 	for( ; it !=_privMsgContactsFd.end(); ++it)
 	{
@@ -188,6 +156,11 @@ void	Client::delContactFd(int contact_fd)
 int Client::getClientFd()
 {
 	return(this->_clientFd);
+}
+
+std::vector<int>			&Client::getContactsFd()
+{
+	return (_privMsgContactsFd);
 }
 
 void Client::set_ip(std::string ip)

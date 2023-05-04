@@ -62,8 +62,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 		std::string cap_response = ":" + nick + " PRIVMSG " + dest + " " + msg + "\r\n";
 		std::cout << fd_dest<< " [Server->Client]" << cap_response << std::endl;
 		send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
-		if (this->_clientList[nick]->findContactFd(fd_dest) == 0)
-			this->_clientList[nick]->addContactFd(fd_dest);
+		this->_clientList[nick]->addContactFd(fd_dest);
 	}
 }
 

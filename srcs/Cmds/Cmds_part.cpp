@@ -18,15 +18,15 @@ std::string Server::PrepPchannel(std::string const command)
 	// cut the \r\n at the end of the string
 	pchannel = pchannel.substr(0, pchannel.length()-2);
 
-	// if the part is issued from a channel session, format is different 
+	// if the part is issued from a channel session, format is different
 	// this is to keep only the information required after the :
 	if (pchannel.find(":") )
 	{
-		pchannel = pchannel.substr(pchannel.find(":")+1);	
+		pchannel = pchannel.substr(pchannel.find(":")+1);
 	}
 	// include a , to help in the next step
 	pchannel = pchannel + ",";
-	
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
         std::cout << BLU;
@@ -34,7 +34,7 @@ std::string Server::PrepPchannel(std::string const command)
         std::cout << "  command :" << ">" << command << "<" << std::endl;
 		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 	return (pchannel);
 }
 
@@ -48,7 +48,7 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
         std::cout << "[ SERVER::Cmds_part] Cmd_channelparse" <<  std::endl;
 		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------		
+    } // --------------------------------------------------------------------------------------
 
 	std::map<std::string, std::string> segment_typeC;
 	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
@@ -69,7 +69,7 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
 			}
 			else
 			{
-				typeC = "";	
+				typeC = "";
 				segment = pchannel.substr(0, pchannel.find(","));
 			}
 			// reduce the size of the pchannel for the next cycle
@@ -91,7 +91,7 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
         	std::cout << "  segment & typeC :" << ">" << it->first << "<>" << it->second << "<" << std::endl;
 		}
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 
 
 	return (segment_typeC);
@@ -101,7 +101,7 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
 // Drive the delete of the fd into all channels
 void Server::delete_channelFD(const int fd_client)
 {
-	// find all channels, 
+	// find all channels,
 	std::map<std::string, Channel*>::iterator it = this->_channels.begin();
 
 	if (it == this->_channels.end())
@@ -132,7 +132,7 @@ void Server::delete_channelFD(const int fd_client)
         std::cout << "[ SERVER::Cmds_part] delete_channelFD" <<  std::endl;
 		std::cout << "  fd_client :" << ">" << fd_client << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 
 }
 
@@ -148,14 +148,14 @@ void Server::part_channelUpdate(const std::string channel, const int fd_client)
         std::cout << "  channel :" << ">" << channel << "<" << std::endl;
 		std::cout << "  fd_client :" << ">" << fd_client << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 
 	std::map<std::string, Channel * >::const_iterator it_c(this->_channels.find(channel));
 	//std::cout << RED << "FD " << fd_client << " to be treated "<< it_c->first << NOC << std::endl;
 
 	if (it_c != this->_channels.end())
 	{
-		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")		
+		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")
 		{
 			// delete the user
 			//std::cout << RED << "FD " << fd_client << " away from channel "<< it_c->first << NOC << std::endl;
@@ -176,7 +176,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 	std::string pchannel = PrepPchannel(command);
 	// fullfil the (segment & typec) based on value in pchannel
 	std::map<std::string, std::string> segment_typeC = Cmd_channelParse(pchannel);
-	
+
 	std::string hostname = this->_hostname;
 	std::string segment = "";
 	std::string typeC = "";
@@ -218,7 +218,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 		// :VRO!~VRoch@185.25.195.181 PART #blabla
 		cap_response = ":" + nickname + "!~" + userName + '@' + ip_client + " PART " + typeC + segment + "\r\n";
 		Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-	
+
 
 		// **** delete channel's user and/or channel itself
 		part_channelUpdate(segment, fd_client);
@@ -247,6 +247,6 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 	}
 	// --------------------------------------------------------------------------------------
 
-	
+
 
 }
