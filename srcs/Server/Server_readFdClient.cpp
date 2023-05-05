@@ -169,26 +169,28 @@ int Server::readFdClient(int &fd)
 		else if (_fdStatus[fd] == 1)
 		{
 			std::cout << "4" << std::endl;
+			nocommand = 0;
+			std::cout << YEL << "no command et buffer temp" << nocommand << bufferTemp << NOC << std::endl;
 			print_all_caractere(buffer);
-			if (buffer.find("PING") != std::string::npos)
+			if (buffer.find("PING ") != std::string::npos)
 			{
 				std::cout << "je rentre dans ping" << std::endl;
 				this->Cmds_ping(fd);
 				nocommand = 1;
 			}
-			if (buffer.find("WHO") != std::string::npos)
+			if (buffer.find("WHO ") != std::string::npos)
 			{
 				// commande not treated and automatically sent by the client  after a join
 				nocommand = 1;
 			}
-			if (buffer.find("JOIN") != std::string::npos)
+			if (buffer.find("JOIN ") != std::string::npos)
 			{
 				std::cout << "je rentre dans join" << std::endl;
 				this->Cmds_join(fd, buffer, _fd_nick_list[fd]);
 				nocommand = 1;
 			}
 
-			if (buffer.find("PART") != std::string::npos)
+			if (buffer.find("PART ") != std::string::npos)
 			{
 				std::cout << "je rentre dans part" << std::endl;
 				this->Cmds_part(fd, buffer, _fd_nick_list[fd]);
@@ -196,7 +198,7 @@ int Server::readFdClient(int &fd)
 			}
 
 			/*---cmd envoye par l'utilisateur client---*/
-			if (buffer.find("NICK") != std::string::npos)
+			if (buffer.find("NICK ") != std::string::npos)
 			{
 				std::cout << "je rentre dans nick" << std::endl;
 				try
@@ -211,57 +213,57 @@ int Server::readFdClient(int &fd)
 				}
 			}
 
-			if (buffer.find("USER")!= std::string::npos)
+			if (buffer.find("USER ")!= std::string::npos)
 			{
 				std::cout << "je rentre dans user" << std::endl;
 				this->Cmds_user(fd, buffer);
 				nocommand = 1;
 			}
 
-			if (buffer.find("WHOIS") != std::string::npos)
+			if (buffer.find("WHOIS ") != std::string::npos)
 			{
 				std::cout << "je rentre dans whois" << std::endl;
 				this->Cmds_whois(fd, buffer);
 				nocommand = 1;
 			}
 
-			if (buffer.find("MODE") != std::string::npos)
+			if (buffer.find("MODE ") != std::string::npos)
 			{
 				std::cout << "je rentre dans mode" << std::endl;
 				nocommand = 1;
 			}
 
-			if (buffer.find("PRIVMSG") != std::string::npos)
+			if (buffer.find("PRIVMSG ") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
 				this->Cmds_msg(fd, buffer);
 				nocommand = 1;
 			}
 
-			if (buffer.find("NOTICE") != std::string::npos)
+			if (buffer.find("NOTICE ") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
 				this->Cmds_notice(fd, buffer);
 				nocommand = 1;
 			}
-			if (buffer.find("KICK") != std::string::npos)
+			if (buffer.find("KICK ") != std::string::npos)
 			{
 				std::cout << "je rentre dans kick" << std::endl;
 				this->Cmds_kick(fd);
 				nocommand = 1;
 			}
-			if (buffer.find("TOPIC") != std::string::npos)
+			if (buffer.find("TOPIC ") != std::string::npos)
 			{
 				std::cout << "je rentre dans topic" << std::endl;
 				this->Cmds_topic(fd, buffer);
 				nocommand = 1;
 			}
-			if (buffer.find("INVITE") != std::string::npos)
+			if (buffer.find("INVITE ") != std::string::npos)
 			{
 				std::cout << "je rentre dans invite" << std::endl;
 				this->Cmds_invite(fd);
 			}
-			if (buffer.find("QUIT") != std::string::npos)
+			if (buffer.find("QUIT ") != std::string::npos)
 			{
 				// deconnecter les channels
 				this->Cmds_quit(fd);
@@ -277,17 +279,17 @@ int Server::readFdClient(int &fd)
 				// p.ex. vhaefeli a recu lorsque vanilou a quitte: :vanilou!~vanilouH@185.25.195.181 QUIT :
 			}
 
-			if (buffer.find("squit", 0) == 0)
+			if (buffer.find("squit ", 0) == 0)
 			{
 				std::cout << "[SERVER WILL DISCONNECT...]\n"
 					<< "List [socket] before logout_server: "
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
 			}
-
+			std::cout << "no command et buffer temp" << nocommand << bufferTemp << std::endl;
 			if (nocommand == 0 && bufferTemp != "cropped")
 			{
-				std::string cap_response = "Unknown command:" + buffer + "\r\n";
+				std::string cap_response = "Unknown command:" + buffer ;
 				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
 				send(fd, cap_response.c_str(), cap_response.length(), 0);
 			}
