@@ -229,7 +229,7 @@ void Server::Cmds_part(int const fd_client, std::string const command, std::stri
 			// delete the channel
 			//std::cout << RED << "Deleted channel " << it_c->first << NOC << std::endl;
 			it_c->second->~Channel();
-			//this->_channels.erase(it_c);
+			this->_channels.erase(it_c);
 		}
 	}
 
