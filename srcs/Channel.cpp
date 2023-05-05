@@ -342,15 +342,15 @@ void Channel::setChannelInvite (const int fd)
 void Channel::setChannelPass (const std::string pass)
 {
     this->_pass = pass;
-}
         
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] setChannelPass" <<  std::endl;
-        std::cout << " Pass :" << this->_pass << std::endl:
+        std::cout << " Pass :" << this->_pass << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------    
+}
 
 // ***********************************************************************************************
 // Erase the user (through the FD identification) to the given channel
