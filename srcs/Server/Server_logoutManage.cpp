@@ -6,6 +6,7 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag)
 	std::cout << "fd " << fdDel << "deleting:" << std::endl;
 	if (flag == LOGOUT || flag == LOGOUT_SERVER)
 	{
+		this->Cmds_quit(it->fd);
 		delete(_clientList[_fd_nick_list[it->fd]]);
 		_clientList.erase(_fd_nick_list.at(it->fd));
 		std::cout << "client deleted" << std::endl;
@@ -24,23 +25,23 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag)
 	std::cout << "everything from " << fdDel << "deleted" << std::endl;
 }
 
-void Server::logoutServer( void ) {
-
+void Server::logoutServer( void )
+{
+	std::cout << RED << "logoutServer " << NOC << std::endl;
  	if (_fds.size() == 0)
 		return ;
 	std::vector< struct pollfd >::iterator it_lst;
 	it_lst = _fds.end() - 1;
 	if (it_lst != _fds.begin())
 	{
-		this->Cmds_quit(it_lst->fd);
 		logoutClient(it_lst, LOGOUT);
 		logoutServer();
 	}
-	close(it_lst->fd);
-	_fds.erase(it_lst);
+	if (it_lst->fd == _listener)
+	{
+		close(it_lst->fd);
+		_fds.erase(it_lst);
+	}
 	std::cout << "List [socket] after logout_server: "
 		<< _fds.size() << std::endl;
-	free(_buffer);
-	free(_ipstr);
-	free(_hostname);
 }
