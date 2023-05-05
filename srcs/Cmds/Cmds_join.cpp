@@ -1,7 +1,8 @@
 #include "Server.hpp"
 
 
-
+// **********************************************************************************************
+// Retrieve channel's connected users 
 const std::string Server::ListConnectedUsers(std::string const Channel)
 {
 
@@ -38,6 +39,8 @@ const std::string Server::ListConnectedUsers(std::string const Channel)
 
 }
 
+// **********************************************************************************************
+// Prep channel's names extraction
 std::string Server::PrepJchannel(std::string const command)
 {
 	// Will contain the list of all channels pass into parameters
@@ -52,13 +55,24 @@ std::string Server::PrepJchannel(std::string const command)
 	// cut the \r\n at the end of the string
 	jchannel = jchannel.substr(0, jchannel.length()-2);
 
+	// remove the channels passwords at the end of the command if any
+	std::string passwords = "";
+	if (jchannel.find(" ") < jchannel.length())
+	{
+		passwords = jchannel.substr(jchannel.find(" ")+1);
+		// truncate the pchannel to keep only channel's names
+		jchannel = jchannel.substr(0, jchannel.find(" "));
+	}
+
 	// include a , to help in the next step
 	jchannel = jchannel + ",";
+	if (passwords != "")
+		passwords = passwords + ",";
 
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
         std::cout << BLU;
-        std::cout << "[ SERVER::Cmds_join] Prepjchannel" <<  std::endl;
+        std::cout << "[ SERVER::Cmds_join] PrepJchannel" <<  std::endl;
         std::cout << "  command :" << ">" << command << "<" << std::endl;
 		std::cout << "  pchannel :" << ">" << jchannel << "<" << std::endl;
         std::cout << NOC;
@@ -66,13 +80,113 @@ std::string Server::PrepJchannel(std::string const command)
 	return (jchannel);
 }
 
+// **********************************************************************************************
+// parse the pchannel to get std::map<std::string, std::string> segment_typeCpass
+std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pchannel, std::string passwords)
+{
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_part] Cmd_channelparse" <<  std::endl;
+		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------
 
+	std::map<std::string, std::string> segment_typeCpass;
+	std::map<std::string, std::string>::iterator it(segment_typeCpass.begin());
+
+	std::string typeC;
+	std::string segment;
+	std::string pass;
+
+	std::cout << RED << "Init pass >" << pass << "<" << NOC << std::endl;
+	std::cout << RED << "Init passwords >" << passwords << "<" << NOC << std::endl;
+
+	// the pchannel alway end by a , as this has been forced in previous function
+	if (pchannel.find(",") < pchannel.size())
+	{
+		pass = "";
+		// extract the related pass if any
+		if (passwords != " ")
+		{
+			pass = passwords.substr(0, passwords.find(","));
+			passwords = passwords.substr(0, passwords.find(",")+1);
+		}
+
+		std::cout << RED << "pass >" << pass << "<" << NOC << std::endl;
+		std::cout << RED << "passwords >" << passwords << "<" << NOC << std::endl;
+
+
+	while (pchannel != "")
+	{
+			typeC = pchannel.substr(0, 1);
+			// treat the case where a # is set and might be separated from the name
+			if (typeC == "#")
+			{
+				segment = pchannel.substr(1, pchannel.find(",")-1);
+			}
+			else
+			{
+				typeC = "";
+				segment = pchannel.substr(0, pchannel.find(","));
+			}
+			// reduce the size of the pchannel for the next cycle
+			pchannel = pchannel.substr(pchannel.find(",")+1);
+		}
+
+		it = segment_typeCpass.find(segment);
+
+		if (it == segment_typeCpass.end())
+			segment_typeCpass.insert(std::pair<std::string, std::string>(segment, typeC));
+
+
+	}
+	    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+		it = segment_typeCpass.begin();
+		for ( ; it != segment_typeCpass.end() ; it++)
+		{
+        	std::cout << "  segment & typeC :" << ">" << it->first << "<>" << it->second << "<" << std::endl;
+		}
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------
+
+
+	return (segment_typeCpass);
+}
+
+// **********************************************************************************************
+// Entry point for JOIN command
 void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
 {
 	// parse command into jchannel
 	std::string jchannel = PrepJchannel(command);
+	
+	// extract the channels passwords at the end of the command if any
+	std::string passwords = command;
+
+
+	// temporary code to remove the PART  in the command
+	if (passwords.find("JOIN ") == 0)
+		passwords = passwords.substr(5);
+
+	// cut the \r\n at the end of the passwords
+	passwords = passwords.substr(0, passwords.length()-2);
+
+	// remove the channels at the begining of the passwords 
+	if (passwords.find(" ") < passwords.length())
+	{
+		passwords = passwords.substr(passwords.find(" ")+1);
+	}
+	else
+	{
+		passwords = "";
+	}
+
+	std::cout << RED << "call passwords >" << passwords << "<" << NOC << std::endl;
 	// fullfil the (segment & typec) based on value in pchannel
-	std::map<std::string, std::string> segment_typeC = Cmd_channelParse(jchannel);
+	std::map<std::string, std::string> segment_typeC = Cmd_channelPassParse(jchannel, passwords);
 
 	// Find IP address
 	std::string ip_client = this->_clientList[nickname]->get_ip();
@@ -114,9 +228,10 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			{
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
-				// block banned user to join the channel
 
-				if (it->second->getChannelConnectedFDMode(fd_client) == "b")
+
+				// block banned user to join the channels
+				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
 					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
@@ -124,6 +239,22 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 					continue;
 				}
+
+				// retrieve the channel mode to check if join on invite
+				if (it->second->getChannelMode() == "i")
+				{
+					// check if the fd was ivited
+					if (it->second->getChannelConnectedFDMode(fd_client) != "i")
+					{
+						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
+						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
+						std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+						send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+						continue;
+					}
+				}
+
+
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
 				it->second->setChannelFDMode(fd_client, "o");
