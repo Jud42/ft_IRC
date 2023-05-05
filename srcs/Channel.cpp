@@ -214,6 +214,20 @@ bool Channel::checkChannelInvite(const int fd)
 }
 
 // ***********************************************************************************************
+// Set the mode of channel
+void Channel::setChannelMode (const std::string & new_mode)
+{
+	this->_mode = new_mode;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelMode" <<  std::endl;
+        std::cout << " mode set :" << _mode << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
+}
+
+// ***********************************************************************************************
 // Set the mode attached to the FD without returned value (see also setChannelUserMode)
 void Channel::setChannelFDMode (const int fd, const std::string channelMode)
 {

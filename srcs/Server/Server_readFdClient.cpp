@@ -222,6 +222,7 @@ int Server::readFdClient(int &fd)
 			if (buffer.find("MODE") != std::string::npos)
 			{
 				std::cout << "je rentre dans mode" << std::endl;
+				this->Cmds_mode(fd);
 				nocommand = 1;
 			}
 

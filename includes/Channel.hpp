@@ -25,7 +25,7 @@ public:
         int                                     getNbUsers (void);
         const std::string                       getTopic (void);
         bool                                    checkChannelInvite(const int fd);
-        
+       	void									setChannelMode(const std::string & new_mode); 
         void                                    setChannelFDMode (const int fd, const std::string channelMode);
         int                                     setChannelUserMode (const int fd, const std::string channelMode);
         void                                    setChannelConnectedFD (const int newFD);
