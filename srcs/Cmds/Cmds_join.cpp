@@ -65,8 +65,7 @@ std::string Server::PrepJchannel(std::string const command)
 
 	// include a , to help in the next step
 	jchannel = jchannel + ",";
-	if (passwords != "")
-		passwords = passwords + ",";
+
 
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
@@ -88,6 +87,7 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
         std::cout << BLU;
         std::cout << "[ SERVER::Cmds_part] Cmd_channelparse" <<  std::endl;
 		std::cout << "  pchannel :" << ">" << pchannel << "<" << std::endl;
+		std::cout << "  passwords :" << ">" << passwords << "<" << std::endl;
         std::cout << NOC;
     } // --------------------------------------------------------------------------------------
 
@@ -101,18 +101,22 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 	// the pchannel alway end by a , as this has been forced in previous function
 	if (pchannel.find(",") < pchannel.size())
 	{
-		pass = "";
-		// extract the related pass if any
-		if (passwords != " ")
+
+		while (pchannel != "")
 		{
-			pass = passwords.substr(0, passwords.find(",")-1);
-			passwords = passwords.substr(0, passwords.find(",")+1);
-		}
 
+			pass = "";
+			// extract the related pass if any
+			if (passwords != "")
+			{
+				pass = passwords.substr(0, passwords.find(","));
 
-	while (pchannel != "")
-	{
+				// passwords remaining for next channels
+				passwords = passwords.substr(passwords.find(","));
+			}
+
 			typeC = pchannel.substr(0, 1);
+
 			// treat the case where a # is set and might be separated from the name
 			if (typeC == "#")
 			{
@@ -123,16 +127,21 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 				typeC = "";
 				segment = pchannel.substr(0, pchannel.find(","));
 			}
+
 			// reduce the size of the pchannel for the next cycle
 			pchannel = pchannel.substr(pchannel.find(",")+1);
+			// reduce the size of passwords
+			passwords = passwords.substr(passwords.find(",")+1);
+			// attach pass to typeC
+			typeC += pass;
+		
+
+			it = segment_typeCpass.find(segment);
+
+			if (it == segment_typeCpass.end())
+				segment_typeCpass.insert(std::pair<std::string, std::string>(segment, typeC));
+
 		}
-
-		it = segment_typeCpass.find(segment);
-
-		if (it == segment_typeCpass.end())
-			segment_typeCpass.insert(std::pair<std::string, std::string>(segment, typeC));
-
-
 	}
 	    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
@@ -149,13 +158,11 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 	return (segment_typeCpass);
 }
 
+
 // **********************************************************************************************
-// Entry point for JOIN command
-void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
+// Preparation of passwords entered during the join 
+const std::string Server::PasswordPrep(std::string const command)
 {
-	// parse command into jchannel
-	std::string jchannel = PrepJchannel(command);
-	
 	// extract the channels passwords at the end of the command if any
 	std::string passwords = command;
 
@@ -178,187 +185,210 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		passwords = "";
 	}
 
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+    {
+        std::cout << BLU;
+        std::cout << "[ SERVER::Cmds_join] PasswordPrep" <<  std::endl;
+        std::cout << "  command :" << ">" << command << "<" << std::endl;
+		std::cout << "  passwords :" << ">" << passwords << "<" << std::endl;
+        std::cout << NOC;
+    } // --------------------------------------------------------------------------------------
+
+	return (passwords);
+
+}
+
+
+// **********************************************************************************************
+// Entry point for JOIN command
+void Server::Cmds_join(int const fd_client, std::string const command, std::string const nickname)
+{
+	std::string jchannel = PrepJchannel(command);
+	std::string passwords = PasswordPrep(command);
 
 	// fullfil the (segment & typec) based on value in pchannel
 	std::map<std::string, std::string> segment_typeC = Cmd_channelPassParse(jchannel, passwords);
 
-	// Find IP address
+	// find IP address
 	std::string ip_client = this->_clientList[nickname]->get_ip();
-	// Find user
+	// find user
 	std::string user_client = this->_clientList[nickname]->get_user();
-
+	// transform hostname as a string form + concatenation usage
 	std::string hostname = this->_hostname;
 
+	// key elements
 	std::string segment;
 	std::string typeC;
+
+	// initialisation
 	std::string channelMode = "";
 	std::string channelPass = "";
-	std::string FDpass;
+	std::string FDpass = "";
 
-	// send the messages related to the join & act on channel users & channel existence
-	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
+	// ** send the messages related to the join & act on channel users & channel existence
+	
+	std::map<std::string, std::string>::iterator it_ST(segment_typeC.begin());
 
 	// loop over the channel's
-	for ( ; it != segment_typeC.end() ; it++ )
+	for ( ; it_ST != segment_typeC.end() ; it_ST++ )
 	{
-		segment = it->first;
-		typeC = it->second;
-		FDpass = "";
+		segment = it_ST->first;
+		typeC = it_ST->second;
+		FDpass = ""; //password pass by the client irssi
 
+		// split typeC content
+		if (typeC.substr(0,1) == "#")
 		{
-			// retrieve the password from the passwords
-			if (passwords != "")
-			{
-				std::cout << RED << "passwords in loop " << passwords << NOC << std::endl;
-				FDpass = passwords.substr(0, passwords.find(","));
-				std::cout << RED << "FDpass in loop " << FDpass << " for " << segment << NOC << std::endl;
-
-				passwords = passwords.substr(passwords.find(","));
-				std::cout << RED << "passwords remaining " << passwords << NOC << std::endl;
-				if (passwords == ",")
-					passwords = "";
-			}
-
-
-			// find if the channel is already defined
-			std::map<std::string, Channel*>::iterator it = this->_channels.find(segment);
-
-			if (it != this->_channels.end())
-			{
-			// retrieve the mode(s)
-				channelMode = it->second->getChannelMode();
-
-			// retrieve the pass
-				channelPass = it->second->getChannelPass();
-			}
-
-			// insert a new channel or update the channel
-			if (it == this->_channels.end())
-			{
-				//create a new set into the _channel map
-				Channel *temp = new Channel(segment, this->_IRCconfig);
-				this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
-
-				// find the newly created record
-				std::map<std::string, Channel*>::iterator it = _channels.find(segment);
-				//  record the user and the ownership of the channel
-				it->second->setChannelConnectedFD(fd_client);
-
-
-// -------------------- insert the defaulted value "nt"				
-				// it->second->setChannelMode("+nt");
-
-				it->second->setChannelFDMode(fd_client, "O@");
-			}
-			else // update an existing channel
-			{
-				// retieve the user Mode to ensure the user has not been already banned
-				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
-
-
-				// block banned user to join the channels
-				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
-				{
-					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
-					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
-					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-					continue;
-				}
-
-				// use the channel mode to check if join on invite required
-				if (channelMode.find("i") < channelMode.length())
-				{
-					// check if the fd was invited
-					if (it->second->checkChannelInvite(fd_client) == true)
-					{
-						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
-						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
-						std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-						send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-						continue;
-					}
-				}
-
-				// treat channels set with password
-				if (channelMode.find("k") < channelMode.length() && channelPass != FDpass)
-				{
-					// ERR_BADCHANNELKEY 475 "<channel> :Cannot join channel (+k)"
-					std::string cap_response = ":" + hostname + " 475 " + nickname + " " + typeC + segment + " [+n]\r\n";
-					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-					continue;
-				}
-
-				// incase of new connection to the channel, add the new user
-				it->second->setChannelConnectedFD(fd_client);
-				it->second->setChannelFDMode(fd_client, "o");
-			}
-
-			// retrieve the channel's users
-			std::string channelUsers = ListConnectedUsers(segment);
-
-			// send 4 messages ---------------------------------------------------------------
-
-			std::string cap_response = "";
-
-
-			// ------------------
-			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
-			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-
-			// ------------------
-			// send optional message when topic exist e.g. :
-			// >> :helix.oftc.net 332 VRO_D2 #blabla1 :ceci est un channel de test
-			//
-			std::string topic = this->_channels[segment]->getTopic();
-			if (topic != "")
-			{
-				cap_response = ":" + hostname + " 332 " + user_client + " " + typeC + segment + " :" + it->second->getTopic() + "\r\n";
-				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-			}
-
-
-			// ------------------
-			// send second message with the list of users e.g :
-			// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
-			//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
-
-			cap_response = ":" + hostname + " 353 " + nickname + " @ " + typeC + segment + " :" + channelUsers + "\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-			// ------------------
-			// send third message ending up the process of joining e.g. :
-			// :kinetic.oftc.net 366 VRO_D1 #blabla :End of /NAMES list.
-			//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
-			cap_response = ":" + hostname + " 366 " + nickname + " " + typeC + segment + " :End of NAMES list\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-			// ------------------
-			// send fourth message informing about add user e.g. :
-			// :exo-debian 324 exo_b #blabla [+n]
-			// 324     RPL_CHANNELMODEIS "<channel> <mode> <mode params>"
-			cap_response = ":" + hostname + " 324 " + nickname + " " + typeC + segment + " [+n]\r\n";
-			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
-
-			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-
-			// ------------------
-			// send complement message about new user e.g. :
-			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
-
-			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-
+			FDpass = typeC.substr(1);
+			typeC = typeC.substr(0, 1);
 		}
+		else
+		{
+			FDpass = typeC.substr(0);
+			typeC = "";
+		}
+
+		// find if the channel is already defined
+		std::map<std::string, Channel*>::iterator it_C = this->_channels.find(segment);
+
+		// for existing channels, extract main elements
+		if (it_C != this->_channels.end())
+		{
+		// retrieve the mode(s)
+			channelMode = it_C->second->getChannelMode();
+		// retrieve the pass
+			channelPass = it_C->second->getChannelPass();
+		}
+
+
+		// ** insert a new channel or update the channel
+
+		if (it_C == this->_channels.end()) // insert new channel
+		{
+			//create a new set into the _channel map
+			Channel *temp = new Channel(segment, this->_IRCconfig);
+			this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
+
+
+			// find the newly created record
+			it_C = _channels.find(segment);
+			//  record the user and the ownership of the channel
+			it_C->second->setChannelConnectedFD(fd_client);
+
+			// set the channel's default mode
+// -------------------- insert the defaulted value "nt"				
+			// it->second->setChannelMode("+nt");
+
+			it_C->second->setChannelFDMode(fd_client, "O@");
+		}
+		else // update an existing channel
+		{
+			// retieve the user Mode to ensure the user has not been already banned
+			std::map<std::string, Channel * >::iterator it=this->_channels.begin();
+
+
+			// block banned user to join the channels
+			if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
+			{
+				// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
+				std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+				continue;
+			}
+
+			// use the channel mode to check if join on invite required
+			if (channelMode.find("i") < channelMode.length())
+			{
+				// check if the fd was invited
+				if (it->second->checkChannelInvite(fd_client) == true)
+				{
+					// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
+					std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
+					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+					continue;
+				}
+			}
+
+			// treat channels set with password
+			if (channelMode.find("k") < channelMode.length() && channelPass != FDpass)
+			{
+				// ERR_BADCHANNELKEY 475 "<channel> :Cannot join channel (+k)"
+				std::string cap_response = ":" + hostname + " 475 " + nickname + " " + typeC + segment + " [+n]\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+				continue;
+			}
+
+			// incase of new connection to the channel, add the new FD
+			it->second->setChannelConnectedFD(fd_client);
+			it->second->setChannelFDMode(fd_client, "o");
+		}
+
+		// retrieve the channel's users
+		std::string channelUsers = ListConnectedUsers(segment);
+
+		// ** send 4 messages
+
+		std::string cap_response = "";
+
+		// ------------------
+		// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
+		cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+
+		// ------------------
+		// send optional message when topic exist e.g. :
+		// >> :helix.oftc.net 332 VRO_D2 #blabla1 :ceci est un channel de test
+		//
+		std::string topic = this->_channels[segment]->getTopic();
+
+		if (topic != "")
+		{
+			cap_response = ":" + hostname + " 332 " + user_client + " " + typeC + segment + " :" + it_C->second->getTopic() + "\r\n";
+			std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		}
+
+
+		// ------------------
+		// send second message with the list of users e.g :
+		// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
+		//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
+
+		cap_response = ":" + hostname + " 353 " + nickname + " @ " + typeC + segment + " :" + channelUsers + "\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+		// ------------------
+		// send third message ending up the process of joining e.g. :
+		// :kinetic.oftc.net 366 VRO_D1 #blabla :End of /NAMES list.
+		//366     RPL_ENDOFNAMES    "<channel> :End of /NAMES list"
+		cap_response = ":" + hostname + " 366 " + nickname + " " + typeC + segment + " :End of NAMES list\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+		// ------------------
+		// send fourth message informing about add user e.g. :
+		// :exo-debian 324 exo_b #blabla [+n]
+		// 324     RPL_CHANNELMODEIS "<channel> <mode> <mode params>"
+		cap_response = ":" + hostname + " 324 " + nickname + " " + typeC + segment + " [+n]\r\n";
+		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+
+		// ------------------
+		// send complement message about new user e.g. :
+		cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
+
+		Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
+
 	}
 }
