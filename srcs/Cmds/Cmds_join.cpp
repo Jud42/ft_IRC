@@ -5,7 +5,6 @@
 // Retrieve channel's connected users 
 const std::string Server::ListConnectedUsers(std::string const Channel)
 {
-
 	// find the channel and retrieve the map of connected fd
 	std::map<int, std::string> channelFDsMode = this->_channels[Channel]->getChannelFDsModeMap();
 	std::map<int, std::string>::iterator it(channelFDsMode.begin());
@@ -99,9 +98,6 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 	std::string segment;
 	std::string pass;
 
-	std::cout << RED << "Init pass >" << pass << "<" << NOC << std::endl;
-	std::cout << RED << "Init passwords >" << passwords << "<" << NOC << std::endl;
-
 	// the pchannel alway end by a , as this has been forced in previous function
 	if (pchannel.find(",") < pchannel.size())
 	{
@@ -109,12 +105,9 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 		// extract the related pass if any
 		if (passwords != " ")
 		{
-			pass = passwords.substr(0, passwords.find(","));
+			pass = passwords.substr(0, passwords.find(",")-1);
 			passwords = passwords.substr(0, passwords.find(",")+1);
 		}
-
-		std::cout << RED << "pass >" << pass << "<" << NOC << std::endl;
-		std::cout << RED << "passwords >" << passwords << "<" << NOC << std::endl;
 
 
 	while (pchannel != "")
@@ -178,13 +171,14 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	if (passwords.find(" ") < passwords.length())
 	{
 		passwords = passwords.substr(passwords.find(" ")+1);
+		passwords = passwords + ",";
 	}
 	else
 	{
 		passwords = "";
 	}
 
-	std::cout << RED << "call passwords >" << passwords << "<" << NOC << std::endl;
+
 	// fullfil the (segment & typec) based on value in pchannel
 	std::map<std::string, std::string> segment_typeC = Cmd_channelPassParse(jchannel, passwords);
 
@@ -197,6 +191,9 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 	std::string segment;
 	std::string typeC;
+	std::string channelMode = "";
+	std::string channelPass = "";
+	std::string FDpass;
 
 	// send the messages related to the join & act on channel users & channel existence
 	std::map<std::string, std::string>::iterator it(segment_typeC.begin());
@@ -206,10 +203,34 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	{
 		segment = it->first;
 		typeC = it->second;
+		FDpass = "";
 
 		{
+			// retrieve the password from the passwords
+			if (passwords != "")
+			{
+				std::cout << RED << "passwords in loop " << passwords << NOC << std::endl;
+				FDpass = passwords.substr(0, passwords.find(","));
+				std::cout << RED << "FDpass in loop " << FDpass << " for " << segment << NOC << std::endl;
+
+				passwords = passwords.substr(passwords.find(","));
+				std::cout << RED << "passwords remaining " << passwords << NOC << std::endl;
+				if (passwords == ",")
+					passwords = "";
+			}
+
+
 			// find if the channel is already defined
 			std::map<std::string, Channel*>::iterator it = this->_channels.find(segment);
+
+			if (it != this->_channels.end())
+			{
+			// retrieve the mode(s)
+				channelMode = it->second->getChannelMode();
+
+			// retrieve the pass
+				channelPass = it->second->getChannelPass();
+			}
 
 			// insert a new channel or update the channel
 			if (it == this->_channels.end())
@@ -222,6 +243,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				std::map<std::string, Channel*>::iterator it = _channels.find(segment);
 				//  record the user and the ownership of the channel
 				it->second->setChannelConnectedFD(fd_client);
+
+
+// -------------------- insert the defaulted value "nt"				
+				// it->second->setChannelMode("+nt");
+
 				it->second->setChannelFDMode(fd_client, "O@");
 			}
 			else // update an existing channel
@@ -240,11 +266,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					continue;
 				}
 
-				// retrieve the channel mode to check if join on invite
-				if (it->second->getChannelMode() == "i")
+				// use the channel mode to check if join on invite required
+				if (channelMode.find("i") < channelMode.length())
 				{
-					// check if the fd was ivited
-					if (it->second->getChannelConnectedFDMode(fd_client) != "i")
+					// check if the fd was invited
+					if (it->second->checkChannelInvite(fd_client) == true)
 					{
 						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
 						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
@@ -254,6 +280,15 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 					}
 				}
 
+				// treat channels set with password
+				if (channelMode.find("k") < channelMode.length() && channelPass != FDpass)
+				{
+					// ERR_BADCHANNELKEY 475 "<channel> :Cannot join channel (+k)"
+					std::string cap_response = ":" + hostname + " 475 " + nickname + " " + typeC + segment + " [+n]\r\n";
+					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+					continue;
+				}
 
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
