@@ -176,6 +176,11 @@ int Server::readFdClient(int &fd)
 				this->Cmds_ping(fd);
 				nocommand = 1;
 			}
+			if (buffer.find("WHO") != std::string::npos)
+			{
+				// commande not treated and automatically sent by the client  after a join
+				nocommand = 1;
+			}
 			if (buffer.find("JOIN") != std::string::npos)
 			{
 				std::cout << "je rentre dans join" << std::endl;
@@ -279,11 +284,7 @@ int Server::readFdClient(int &fd)
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
 			}
-			if (buffer.find("WHO") != std::string::npos)
-			{
-				// commande not treated and automatically sent by the client  after a join
-				nocommand = 1;
-			}
+
 			if (nocommand == 0 && bufferTemp != "cropped")
 			{
 				std::string cap_response = "Unknown command:" + buffer + "\r\n";
