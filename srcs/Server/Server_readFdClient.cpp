@@ -87,6 +87,7 @@ int Server::readFdClient(int &fd)
 		}
 		if (_fdStatus[fd] == 0)
 		{
+			std::cout << "buffer status 0:" << buffer <<  std::endl;
 			if (buffer.find("NICK") != std::string::npos && this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
 			{
 				std::cout << "je rentre dans nick config" << std::endl;
@@ -107,10 +108,10 @@ int Server::readFdClient(int &fd)
 					std::cerr << e.what() << '\n';
 				}
 			}
-			if (buffer.find("USER")!= std::string::npos && this->_clientList[_fd_nick_list[fd]]->get_user() == "")
+			if (buffer.find("USER")!= std::string::npos && this->_clientList[_fd_nick_list[fd]]->get_user() == "to_be_filled")
 			{
 				std::cout << "je rentre dans user" << std::endl;
-				this->Cmds_user(fd, this->_buffer);
+				this->Cmds_user(fd, buffer);
 				this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
 				std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
 			}

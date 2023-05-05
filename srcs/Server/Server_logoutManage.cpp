@@ -24,8 +24,10 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag)
 	std::cout << "everything from " << fdDel << "deleted" << std::endl;
 }
 
-void Server::logoutServer( void ) {
+void Server::logoutServer( void )
+{
 
+	std::cout << RED << "logoutServer " << NOC << std::endl;
  	if (_fds.size() == 0)
 		return ;
 	std::vector< struct pollfd >::iterator it_lst;
