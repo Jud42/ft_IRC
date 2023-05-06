@@ -17,8 +17,9 @@ srcs/Cmds/Cmds_user.cpp \
 srcs/Cmds/Cmds_whois.cpp \
 srcs/Cmds/Cmds_msg.cpp \
 srcs/Cmds/Cmds_notice.cpp \
-srcs/Cmds/Cmds_quit.cpp \
 srcs/Cmds/Cmds_kick.cpp \
+srcs/Cmds/Cmds_quit.cpp \
+srcs/Cmds/Cmds_topic.cpp \
 srcs/Cmds/Cmds_invite.cpp \
 srcs/Cmds/Cmds_mode.cpp \
 srcs/Cmds/Cmds_inform_Channel.cpp \

@@ -7,9 +7,9 @@ Recherche d'un client adequoit
   - https://irssi.org/New-users/
   - https://irssi.org/documentation/help/server/
 
-  
+
  Installation de irssi sous Debian
- 
+
 ```
 sudo apt install irssi
 ```
@@ -22,6 +22,9 @@ brew install irssi
 
 # Un serveur irc de reference
 irc.oftc.net
+pour avoir ses echanges avec le client lancer depuis le client:
+/rawlog open connection.log
+
 
 # Information sur les protocoles
   - https://datatracker.ietf.org/doc/html/rfc1459

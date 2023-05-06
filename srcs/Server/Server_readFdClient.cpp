@@ -24,81 +24,125 @@ static int parseError(int &read, int &client_fd) {
 
 int Server::readFdClient(int &fd)
 {
-	memset(&_buffer,0,256);
+	static std::string bufferTemp = "";
+	int	nocommand = 0;
+
+	memset(&_buffer, 0, BUFFER_SIZE);
 	int read = recv(fd, _buffer, sizeof(_buffer), 0);
 	std::cout << "read : " << read << std::endl;
 
 	if (read > 0)
 	{
 		_buffer[read] = '\0';
-		std::cout << "fd: " << fd << " => [readFdClient]: "
-			<< this->_buffer << std::endl;
-			std::string buffer = _buffer;
-			std::string command = buffer;
-		/*---client data analyse et filling---*/
-		if (_fdStatus[fd] == 0)
+
+		std::cout << "fd: " << fd << " => [readFdClient]: " << this->_buffer << std::endl;
+		std::string buffer = _buffer;
+		std::cout << "1" << std::endl;
+		print_all_caractere(buffer);
+		std::string command = buffer;
+		std::cout << "bufferTemp" << bufferTemp << std::endl;
+	// check if the command is complete
+		if (buffer.find("\r\n") == std::string::npos)
 		{
-			if (buffer.find("CAP ",0) != std::string::npos)
+			if(_buffer[BUFFER_SIZE - 1] != '\0')
 			{
-				std::cout << "je rentre dans cap" << std::endl;
-				if (isNewClient(fd))
-					this->Cmds_CAP(fd, _fd_nick_list[fd]);
-				else
-					return ERR_CLIENT_CONNEXION; //we remove this connexion
+				std::string cap_response = "message/argument too long will be cropped\r\n";
+				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+				buffer[read - 2] = '\r';
+				buffer[read - 1] = '\n';
+				std::cout << fd << " [Server->Client]" << buffer << std::endl;
+				send(fd, cap_response.c_str(), cap_response.length(), 0);
+				bufferTemp = "cropped";
+				std::cout << "1bufferTemp" << bufferTemp << std::endl;
 			}
 			else
 			{
-				if (buffer.find("NICK") != std::string::npos)
+				size_t found = buffer.find_last_not_of('\0');
+				bufferTemp += buffer.substr(0, found + 1);
+				std::cout << "2" << std::endl;
+				print_all_caractere(bufferTemp);
+				found = bufferTemp.find_last_not_of('\0');
+				if (bufferTemp[found] == '\n')
 				{
-					std::cout << "je rentre dans nick config" << std::endl;
-					try
-					{
-						command = find_cmd_arg(buffer, "NICK");
-						if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
-							this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
-						this->Cmds_nick(fd, command);
-						if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
-							return LOGOUT;
-					}
-					catch(const CmdException& e)
-					{
-						std::cerr << e.what() << '\n';
-					}
+					buffer = bufferTemp.substr(0, found) + "\r\n";
+					std::cout << "3" << std::endl;
+					print_all_caractere(buffer);
+					bufferTemp = "";
 				}
-
-				if (buffer.find("USER")!= std::string::npos)
+				else
+					return SUCCESS_LOG;
+			}
+		}
+		std::cout << "status " << buffer << _fdStatus[fd] << std::endl;
+	/*---client data analyse et filling---*/
+		if (_fdStatus[fd] == 9)
+		{
+			std::cout << "je cree un client" << std::endl;
+				if (isNewClient(fd, buffer))
 				{
-					std::cout << "je rentre dans user" << std::endl;
-					this->Cmds_user(fd, this->_buffer);
-					this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+					_fdStatus[fd] = 0;
 				}
-				if (buffer.find("PASS") != std::string::npos)
+				else
+					return ERR_CLIENT_CONNEXION; //we remove this connexion
+		}
+		if (_fdStatus[fd] == 0)
+		{
+			if (buffer.find("NICK") != std::string::npos && this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
+			{
+				std::cout << "je rentre dans nick config" << std::endl;
+				try
 				{
-					std::cout << "je rentre dans pass" << std::endl;
-					try
+					command = find_cmd_arg(buffer, "NICK");
+					if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
 					{
-						command = find_cmd_arg(buffer, "PASS");
-						if (command != _pass)
-							_fdStatus[fd] = 2;
-						else
-						{
-							this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
-							this->_clientList[_fd_nick_list[fd]]->setPassword(command);
-						}
+						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+						std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
 					}
-					catch(const CmdException& e)
-					{
-						_fdStatus[fd] = 2;
-						std::cerr << e.what() << '\n';
-					}
+					this->Cmds_nick(fd, command);
+					if (this->_clientList[_fd_nick_list[fd]]->getNickname() == "#")
+						return LOGOUT;
+				}
+				catch(const CmdException& e)
+				{
+					std::cerr << e.what() << '\n';
 				}
 			}
-			if (_fdStatus[fd] != 2 && this->_clientList[_fd_nick_list[fd]]->get_clientInfo() == 3)
+			if (buffer.find("USER")!= std::string::npos && this->_clientList[_fd_nick_list[fd]]->get_user() == "")
+			{
+				std::cout << "je rentre dans user" << std::endl;
+				this->Cmds_user(fd, this->_buffer);
+				this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+				std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
+			}
+			std::string pass = this->_clientList[_fd_nick_list[fd]]->getPassword();
+			if (buffer.find("PASS") != std::string::npos && ( pass == "0" || pass == "1" || pass == "2" || pass == "3"))
+			{
+				std::cout << "je rentre dans pass" << std::endl;
+				try
+				{
+					command = find_cmd_arg(buffer, "PASS");
+					if (command != _pass)
+						_fdStatus[fd] = 2;
+					else
+					{
+						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
+						this->_clientList[_fd_nick_list[fd]]->setPassword(command);
+						std::cout << "client info " << this->_clientList[_fd_nick_list[fd]]->get_clientInfo() << std::endl;
+					}
+				}
+				catch(const CmdException& e)
+				{
+					_fdStatus[fd] = 2;
+					std::cerr << e.what() << '\n';
+				}
+			}
+			if (_fdStatus[fd] != 2 && this->_clientList[_fd_nick_list[fd]]->get_clientInfo() >= 3)
 			{
 				_fdStatus[fd] = 1;
 				std::string cap_response = "Connexion established: Enjoy!\r\n";
 				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
 				send(fd, cap_response.c_str(), cap_response.length(), 0);
+				this->Cmds_CAP(fd, _fd_nick_list[fd]);
 			}
 			else
 			{
@@ -123,21 +167,26 @@ int Server::readFdClient(int &fd)
 		/*---client validated---*/
 		else if (_fdStatus[fd] == 1)
 		{
+			std::cout << "4" << std::endl;
+			print_all_caractere(buffer);
 			if (buffer.find("PING") != std::string::npos)
 			{
 				std::cout << "je rentre dans ping" << std::endl;
 				this->Cmds_ping(fd);
+				nocommand = 1;
 			}
 			if (buffer.find("JOIN") != std::string::npos)
 			{
 				std::cout << "je rentre dans join" << std::endl;
-				this->Cmds_join(fd, this->_buffer, _fd_nick_list[fd]);
+				this->Cmds_join(fd, buffer, _fd_nick_list[fd]);
+				nocommand = 1;
 			}
 
 			if (buffer.find("PART") != std::string::npos)
 			{
 				std::cout << "je rentre dans part" << std::endl;
-				this->Cmds_part(fd, this->_buffer, _fd_nick_list[fd]);
+				this->Cmds_part(fd, buffer, _fd_nick_list[fd]);
+				nocommand = 1;
 			}
 
 			/*---cmd envoye par l'utilisateur client---*/
@@ -148,6 +197,7 @@ int Server::readFdClient(int &fd)
 				{
 					command = find_cmd_arg(buffer, "NICK");
 					this->Cmds_nick(fd, command);
+					nocommand = 1;
 				}
 				catch(const CmdException& e)
 				{
@@ -158,37 +208,48 @@ int Server::readFdClient(int &fd)
 			if (buffer.find("USER")!= std::string::npos)
 			{
 				std::cout << "je rentre dans user" << std::endl;
-				this->Cmds_user(fd, this->_buffer);
+				this->Cmds_user(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("WHOIS") != std::string::npos)
 			{
 				std::cout << "je rentre dans whois" << std::endl;
-				this->Cmds_whois(fd, this->_buffer);
+				this->Cmds_whois(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("MODE") != std::string::npos)
 			{
-				std::cout << "je rentre dans mode" 
-					<< std::endl;
+				std::cout << "je rentre dans mode" << std::endl;
 				this->Cmds_mode(fd);
+				nocommand = 1;
 			}
 
 			if (buffer.find("PRIVMSG") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
-				this->Cmds_msg(fd, this->_buffer);
+				this->Cmds_msg(fd, buffer);
+				nocommand = 1;
 			}
 
 			if (buffer.find("NOTICE") != std::string::npos)
 			{
 				std::cout << "je rentre dans msg" << std::endl;
-				this->Cmds_notice(fd, this->_buffer);
+				this->Cmds_notice(fd, buffer);
+				nocommand = 1;
 			}
 			if (buffer.find("KICK") != std::string::npos)
 			{
 				std::cout << "je rentre dans kick" << std::endl;
 				this->Cmds_kick(fd);
+				nocommand = 1;
+			}
+			if (buffer.find("TOPIC") != std::string::npos)
+			{
+				std::cout << "je rentre dans topic" << std::endl;
+				this->Cmds_topic(fd, buffer);
+				nocommand = 1;
 			}
 			if (buffer.find("INVITE") != std::string::npos)
 			{
@@ -218,9 +279,22 @@ int Server::readFdClient(int &fd)
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
 			}
+			if (buffer.find("WHO") != std::string::npos)
+			{
+				// commande not treated and automatically sent by the client  after a join
+				nocommand = 1;
+			}
+			if (nocommand == 0 && bufferTemp != "cropped")
+			{
+				std::string cap_response = "Unknown command:" + buffer + "\r\n";
+				std::cout << fd << " [Server->Client]" << cap_response << std::endl;
+				send(fd, cap_response.c_str(), cap_response.length(), 0);
+			}
+			if (nocommand == 0 && bufferTemp == "cropped")
+				bufferTemp = "";
 		}
 		/*---client error password---*/
-		/*
+
 		if (_fdStatus[fd] == 2)
 		{
 			std::string cap_response = "464 ERR_PASSWDMISMATCH\r\n";
@@ -233,7 +307,7 @@ int Server::readFdClient(int &fd)
 			return LOGOUT;
 		}
 		std::cout << "------------------------------------- " <<  std::endl;
-		*/return SUCCESS_LOG;
+		return SUCCESS_LOG;
 	}
 	return (parseError(read, fd));
 }

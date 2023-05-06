@@ -26,7 +26,6 @@ void Server::Cmds_quit(const int fd_client)
 			}
 		}
 	}
-
 }
 // **********************************************************************************************
 // Perform the delete of the fd into the channel
@@ -39,7 +38,7 @@ void Server::quit_channelUpdate(const std::string channel, const int fd_client)
         std::cout << "  channel :" << ">" << channel << "<" << std::endl;
 		std::cout << "  fd_client :" << ">" << fd_client << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 
     // get the nick name
     std::string nickname = "";
@@ -55,7 +54,7 @@ void Server::quit_channelUpdate(const std::string channel, const int fd_client)
 
 	if (it_c != this->_channels.end())
 	{
-		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")		
+		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")
 		{
 			// delete the user
 			//std::cout << RED << "FD " << fd_client << " away from channel "<< it_c->first << NOC << std::endl;

@@ -32,3 +32,8 @@ ircserv
 *.out
 *.app
 ircserv
+
+*.log
+.DS_Store
+.vscode/settings.json
+*.swp

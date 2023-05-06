@@ -12,7 +12,7 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		nick = this->_fd_nick_list[fd_client];
 	if (_clientList.count(nick) == 0)
 	{
-		std::string cap_response = "401 \r\n";
+		std::string cap_response = "401 user does not exist\r\n";
         std::cout << "user does not exist: *" << nick << "*" << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
     }
@@ -44,6 +44,15 @@ void Server::Cmds_whois(int const fd_client, std::string const command)
 		cap_response +=  nick + " :End of /WHOIS list.\r\n";
 		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+		std::cout << YEL << "info client: " <<  std::endl;
+		std::cout << "fd: " << (this->_clientList[_fd_nick_list[fd_client]])->getClientFd() << std::endl;
+		std::cout << "nick: " << (this->_clientList[_fd_nick_list[fd_client]])->getNickname() << std::endl;
+		std::cout << "password: " << (this->_clientList[_fd_nick_list[fd_client]])->getPassword() << std::endl;
+		std::cout << "modes: " << (this->_clientList[_fd_nick_list[fd_client]])->getModes() << std::endl;
+		std::cout << "user: " << (this->_clientList[_fd_nick_list[fd_client]])->get_user() << std::endl;
+		std::cout << "ip(temp): " << (this->_clientList[_fd_nick_list[fd_client]])->get_ip()  << std::endl;
+		std::cout << "realname: " << (this->_clientList[_fd_nick_list[fd_client]])->get_realname() << NOC << std::endl;
+		std::cout << "----------------------------- " <<  std::endl;
 	}
 }
 

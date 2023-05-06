@@ -3,8 +3,7 @@
 void Server::Cmds_nick(int const fd_client, std::string const command)
 {
 	std::string newNick = command;
-	std::vector<std::string>	channels = this->_clientList[_fd_nick_list[fd_client]]->getChannel();
-	std::vector<int>			contactsFd;
+	// std::vector<std::string>	channels = this->_clientList[_fd_nick_list[fd_client]]->getChannel();
 	std::string	oldNickname;
 	oldNickname = this->_clientList[_fd_nick_list[fd_client]]->getNickname();
 
@@ -57,21 +56,32 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 			cap_response = ":" + oldNickname + "!~" + this->_clientList[_fd_nick_list[fd_client]]->get_user() + "@";
 			cap_response += this->_clientList[_fd_nick_list[fd_client]]->get_ip() + " NICK :" + newNick + "\r\n";
 		}
-		std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+		std::cout << fd_client << " [Server->Client]own" << cap_response << std::endl;
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	// inform the other users in contact:
-		std::vector<std::string>::iterator it = channels.begin();
-		for ( ; it != channels.end() ; ++it)
+
+		std::map<std::string, Channel*>::iterator it = this->_channels.begin();
+
+		if (it == this->_channels.end())
+			return;
+
+		for ( ; it != this->_channels.end() ; it++)
 		{
-			if ( *it != "0")
-				Cmds_inform_Channel(cap_response.c_str(), *it, newNick);
+			if (it->second->getChannelConnectedFD(fd_client) == fd_client)
+			{
+				Cmds_inform_Channel(cap_response.c_str(), it->first, newNick);
+			}
 		}
-		std::vector<int>::iterator it_fd = contactsFd.begin();
-		it_fd = contactsFd.begin();
-		for ( ; it_fd != contactsFd.end() ; ++it_fd)
+
+
+
+		for (std::vector<int>::iterator it_fd = this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().begin(); it_fd != this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().end() ; ++it_fd)
 		{
 			if ( *it_fd != 1000)
+			{
+				std::cout << *it_fd << " [Server->Client]" << cap_response << std::endl;
 				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
+			}
 		}
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
 	}

@@ -5,6 +5,8 @@
 // constructor of the channel
 Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
 {
+    // empty the topic
+    this->_topic = "";
 
      if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
@@ -88,6 +90,8 @@ const std::map <int, std::string> Channel::getChannelFDsModeMap (void)
     return (result);
 }
 
+// **********************************************************************************************
+// return the FD if found in the channel
 int Channel::getChannelConnectedFD (const int fd)
 {
 
@@ -109,6 +113,8 @@ int Channel::getChannelConnectedFD (const int fd)
     return (result);
 }
 
+// **********************************************************************************************
+// return the mode if FD found in the channel
 const std::string Channel::getChannelConnectedFDMode (const int fd)
 {
     std::string result = "";
@@ -129,6 +135,7 @@ const std::string Channel::getChannelConnectedFDMode (const int fd)
 }
 
 // **********************************************************************************************
+// return the number of active (except banned) users attached to the channel
 int Channel::getNbUsers (void)
 {
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
@@ -166,7 +173,62 @@ int Channel::getNbUsers (void)
     return (result);
 }
 
+// **********************************************************************************************
+// return topic associated to the channel
+const std::string Channel::getTopic (void)
+{
+    
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getTopic" <<  std::endl;
+        std::cout << " Topic:" << this->_topic << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------  
+    return (this->_topic);
+}
+
 // ***********************************************************************************************
+// Check if an invited fd has been set for the channel
+bool Channel::checkChannelInvite(const int fd)
+{
+    bool result = false;
+
+    unsigned int i = 0;
+    for ( ; i < this->_invite.size() ; i++)
+    {
+        if (this->_invite[i] == fd)
+        {
+            result = true;
+            break;
+        }
+    }
+        if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] checkChannelInvite" <<  std::endl;
+        std::cout << " result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------   
+    return result;
+}
+
+// ***********************************************************************************************
+// Set the mode of channel
+void Channel::setChannelMode (const std::string & new_mode)
+{
+	this->_mode = new_mode;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelMode" <<  std::endl;
+        std::cout << " mode set :" << _mode << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
+}
+
+// ***********************************************************************************************
+// Set the mode attached to the FD without returned value (see also setChannelUserMode)
 void Channel::setChannelFDMode (const int fd, const std::string channelMode)
 {
     std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
@@ -183,7 +245,7 @@ void Channel::setChannelFDMode (const int fd, const std::string channelMode)
 
 
 // ***********************************************************************************************
-// Update the user mode with a return of status
+// Update the user mode with a return of status (see also setChannelFDMode)
 int Channel::setChannelUserMode (const int FD, const std::string channelMode)
 {
         int result = 0;
@@ -235,6 +297,41 @@ void Channel::setChannelConnectedFD (const int newFD)
         std::cout << " Mode set :" << it->second << std::endl;
 	 	std::cout << NOC;
 	} // -------------------------------------------------------------------------------------- 
+}
+
+
+// ***********************************************************************************************
+// set the TOPIC message
+void Channel::setChannelTopic (const std::string message) 
+{
+        
+    this->_topic = message;
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelTopic" <<  std::endl;
+        std::cout << " Topic :" << this->_topic << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
+}
+
+// ***********************************************************************************************
+// Insert an invited fd for the channel
+void Channel::setChannelInvite (const int fd)
+{
+        std::vector<int>::iterator it;
+        it = this->_invite.end();
+
+        if (!this->checkChannelInvite(fd))
+            this->_invite.insert(it, fd);
+        
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelInvite" <<  std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------             
 }
 
 

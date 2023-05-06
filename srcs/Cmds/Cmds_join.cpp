@@ -4,7 +4,7 @@
 
 const std::string Server::ListConnectedUsers(std::string const Channel)
 {
-	
+
 	// find the channel and retrieve the map of connected fd
 	std::map<int, std::string> channelFDsMode = this->_channels[Channel]->getChannelFDsModeMap();
 	std::map<int, std::string>::iterator it(channelFDsMode.begin());
@@ -12,7 +12,7 @@ const std::string Server::ListConnectedUsers(std::string const Channel)
 	// will contain the list of user connected (without the banned users)
 	std::string result;
 	for ( ; it != channelFDsMode.end() ; it++)
-	{   
+	{
 		// check mode, pos 0 mode, pos 1 @
 		std::string combo = it->second;
 		if (combo.substr(1,1) == "@")
@@ -32,7 +32,7 @@ const std::string Server::ListConnectedUsers(std::string const Channel)
 		else
 		{
 			result += "MISSING";
-		} 
+		}
 	}
 	return (result);
 
@@ -54,7 +54,7 @@ std::string Server::PrepJchannel(std::string const command)
 
 	// include a , to help in the next step
 	jchannel = jchannel + ",";
-	
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
         std::cout << BLU;
@@ -62,18 +62,8 @@ std::string Server::PrepJchannel(std::string const command)
         std::cout << "  command :" << ">" << command << "<" << std::endl;
 		std::cout << "  pchannel :" << ">" << jchannel << "<" << std::endl;
         std::cout << NOC;
-    } // --------------------------------------------------------------------------------------	
+    } // --------------------------------------------------------------------------------------
 	return (jchannel);
-}
-
-void sleepcp (int millisecond)
-{
-	clock_t end_time;
-	end_time = clock() + millisecond * CLOCKS_PER_SEC/1000;
-	while (clock() < end_time)
-	{
-		// loop for waiting
-	}
 }
 
 
@@ -113,7 +103,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				//create a new set into the _channel map
 				Channel *temp = new Channel(segment, this->_IRCconfig);
 				this->_channels.insert(std::pair<std::string, Channel* >(temp->getChannelName(), temp));
-	
+
 				// find the newly created record
 				std::map<std::string, Channel*>::iterator it = _channels.find(segment);
 				//  record the user and the ownership of the channel
@@ -124,15 +114,33 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			{
 				// retieve the user Mode to ensure the user has not been already banned
 				std::map<std::string, Channel * >::iterator it=this->_channels.begin();
-				// block banned user to join the channel
+
+
+				// block banned user to join the channels
 				if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
 				{
 					// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
-					std::string cap_response = ":" + nickname + "!" + user_client + '@' + ip_client + " 474 " + typeC + segment + "\r\n";
-					std::cout << RED << fd_client << " [Server->Client]" << cap_response << NOC << std::endl;
+					std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
+					std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 					send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 					continue;
 				}
+
+				// retrieve the channel mode to check if join on invite
+				if (it->second->getChannelMode() == "i")
+				{
+					// check if the fd was ivited
+					if (it->second->getChannelConnectedFDMode(fd_client) != "i")
+					{
+						// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
+						std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
+						std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+						send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+						continue;
+					}
+				}
+
+
 				// incase of new connection to the channel, add the new user
 				it->second->setChannelConnectedFD(fd_client);
 				it->second->setChannelFDMode(fd_client, "o");
@@ -141,14 +149,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// retrieve the channel's users
 			std::string channelUsers = ListConnectedUsers(segment);
 
-			std::cout << RED << "ListconnectedUser" << NOC << std::endl;
-
 			// send 4 messages ---------------------------------------------------------------
 
 			std::string cap_response = "";
 
-			std::cout << RED << "FD : "<< fd_client << NOC << std::endl;
-			
+
 			// ------------------
 			// send first message e.g. :VRO_D1!~VRoch_D1@185.25.195.181 JOIN :#blabla
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
@@ -156,10 +161,23 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 
 			send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 
-			//sleepcp (100); // 10 milliseconds
 
 			// ------------------
-			// send second message with the list of users e.g : 
+			// send optional message when topic exist e.g. :
+			// >> :helix.oftc.net 332 VRO_D2 #blabla1 :ceci est un channel de test
+			//
+			std::string topic = this->_channels[segment]->getTopic();
+			if (topic != "")
+			{
+				cap_response = ":" + hostname + " 332 " + user_client + " " + typeC + segment + " :" + it->second->getTopic() + "\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+			}
+
+
+			// ------------------
+			// send second message with the list of users e.g :
 			// :kinetic.oftc.net 353 VRO @ #blabla :VRO VRO_D1
 			//353     RPL_NAMREPLY     "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
 
@@ -190,11 +208,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			// send complement message about new user e.g. :
 			cap_response = ":" + nickname + "!~" + user_client + '@' + ip_client + " JOIN " + typeC + segment + "\r\n";
 
-
-			std::cout << RED << "Cmds_inform_Channel" << NOC << std::endl;
 			Cmds_inform_Channel(cap_response.c_str(), segment, nickname);
-
-			std::cout << RED << "fin" << NOC << std::endl;
 
 		}
 	}
