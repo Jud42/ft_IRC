@@ -90,6 +90,8 @@ class	Server
 	// cmd Join
 		std::string PrepJchannel(std::string const command);
 		const std::string ListConnectedUsers(std::string const Channel);
+		std::map<std::string, std::string> Cmd_channelPassParse (std::string pchannel, std::string passwords);
+		const std::string PasswordPrep(std::string const command);
 		void Cmds_join(int const fd_client, std::string const  channel, std::string const nickname);
 	// cmd Part
 		std::string PrepPchannel(std::string const command);

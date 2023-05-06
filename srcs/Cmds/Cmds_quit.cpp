@@ -4,6 +4,7 @@
 // Perform the delete of the fd into the channel
 void Server::Cmds_quit(const int fd_client)
 {
+	std::cout << RED << "Cmds_quit fd " << fd_client << NOC << std::endl;
     // find all channels associated to the FD
 	std::map<std::string, Channel*>::iterator it = this->_channels.begin();
 
@@ -31,6 +32,7 @@ void Server::Cmds_quit(const int fd_client)
 // Perform the delete of the fd into the channel
 void Server::quit_channelUpdate(const std::string channel, const int fd_client)
 {
+	std::cout << RED << "quit_channelUpdate fd " << fd_client << NOC << std::endl;
 	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
     {
         std::cout << BLU;

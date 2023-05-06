@@ -55,7 +55,7 @@ void	Server::Cmds_invite(int fd_client) {
 				resp = ":" + hostname + " 341 " + nick_op +
 					" " + target + " " + seg[2] + "\r\n";
 				send(fd_target, resp.c_str(), resp.size(), 0);
-				//setChanelInvite(fd_target);
+				ch->setChannelInvite(fd_target);
 			}
 		}
 		else { //target doesn't exist anywhere

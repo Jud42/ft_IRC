@@ -64,6 +64,7 @@ Client::Client(int client_fd, std::string client_data)
         }
         pos_start = 0;
 	}
+	 std::cout << "client info: " << _clientInfo << std::endl;
 	_username = _data.substr(_data.find(" ") + 1);
 	_username = _username.substr(0, _username.find(" "));
 	_realname = _data.substr(_data.find(":") + 1);

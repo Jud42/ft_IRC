@@ -24,13 +24,17 @@ public:
 
         int                                     getNbUsers (void);
         const std::string                       getTopic (void);
+        const std::string                       getChannelPass (void);        
         bool                                    checkChannelInvite(const int fd);
-       	void									setChannelMode(const std::string & new_mode); 
+
+       	void					setChannelMode(const std::string & new_mode); 
+
         void                                    setChannelFDMode (const int fd, const std::string channelMode);
         int                                     setChannelUserMode (const int fd, const std::string channelMode);
         void                                    setChannelConnectedFD (const int newFD);
         void                                    setChannelTopic (const std::string message);
         void                                    setChannelInvite (const int fd);
+        void                                    setChannelPass (const std::string);
 
         void                                    resetChannelConnectedFD (const int removeFD);
 
@@ -42,6 +46,7 @@ private:
 
         std::map <int, std::string>            _channel_FD_Mode; // FD & mode related to the channel (mode[o, O, b, i] + owner=#)
         std::vector <int>                      _invite; // for FD that were invited
+        std::string                            _pass; // channel's password (optional)
 
 
         // for debug

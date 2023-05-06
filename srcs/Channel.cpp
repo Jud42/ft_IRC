@@ -225,6 +225,20 @@ void Channel::setChannelMode (const std::string & new_mode)
         std::cout << " mode set :" << _mode << std::endl;
 	 	std::cout << NOC;
 	} // -------------------------------------------------------------------------------------- 
+
+// Return the channel's password
+const std::string Channel::getChannelPass (void)
+{
+    std::string result = this->_pass;
+
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelPass" <<  std::endl;
+        std::cout << " result :" << result << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------      
+    return (result);
 }
 
 // ***********************************************************************************************
@@ -234,6 +248,7 @@ void Channel::setChannelFDMode (const int fd, const std::string channelMode)
     std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
     if (it != this->_channel_FD_Mode.end())
         this->_channel_FD_Mode.at(fd) = channelMode;
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
@@ -334,6 +349,20 @@ void Channel::setChannelInvite (const int fd)
 	} // --------------------------------------------------------------------------------------             
 }
 
+// ***********************************************************************************************
+// set the channel's password
+void Channel::setChannelPass (const std::string pass)
+{
+    this->_pass = pass;
+        
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelPass" <<  std::endl;
+        std::cout << " Pass :" << this->_pass << std::endl;
+	 	std::cout << NOC;
+	} // --------------------------------------------------------------------------------------    
+}
 
 // ***********************************************************************************************
 // Erase the user (through the FD identification) to the given channel

@@ -22,7 +22,8 @@ void Server::monitoring( void )
 			std::cout << "_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 		/*-----*/
 
-		for (it = _fds.begin(); it != _fds.end(); it++) {
+		for (it = _fds.begin(); it != _fds.end(); it++)
+		{
 			//data in
 			if (it->revents == POLLIN) {
 				//incoming connection on server
@@ -32,6 +33,7 @@ void Server::monitoring( void )
 				}
 				//data available on fd_clients
 				else if (it->fd != _listener) {
+					std::cout << "fd != _listener:_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 					activity = this->readFdClient(it->fd);
 					if (activity != SUCCESS_LOG) {//recv()
 						this->logoutClient(it, activity);
@@ -44,13 +46,12 @@ void Server::monitoring( void )
 				}
 
 			}
-			//else if (it->revents & POLLOUT) //le fd est pret pour l'ecriture
 			else if (it->revents == POLLHUP ||
 					it->revents == POLLIN + POLLHUP) {//logout client
 
-				std::cout << "fd: " << it->fd << " LOGOUT" << std::endl;
+				std::cout << "Monitoring 51 fd: " << it->fd << " LOGOUT" << std::endl;
 				this->logoutClient(it, LOGOUT);
-				// break ;
+				break ;
 			}
 			else if (it->revents == 32)
 				_fds.erase(it);
