@@ -169,7 +169,9 @@ int Server::readFdClient(int &fd)
 
 			if (buffer.find("MODE") != std::string::npos)
 			{
-				std::cout << "je rentre dans mode" << std::endl;
+				std::cout << "je rentre dans mode" 
+					<< std::endl;
+				this->Cmds_mode(fd);
 			}
 
 			if (buffer.find("PRIVMSG") != std::string::npos)
@@ -193,10 +195,6 @@ int Server::readFdClient(int &fd)
 				std::cout << "je rentre dans invite" << std::endl;
 				this->Cmds_invite(fd);
 			}
-
-
-
-
 			if (buffer.find("QUIT") != std::string::npos)
 			{
 				// deconnecter les channels

@@ -118,8 +118,10 @@ class	Server
 	//cmd kick
 		void Cmds_kick(const int fd_client);
 		
-//cmd invite 
+	//cmd invite 
 		void Cmds_invite(int fd_client);
+	//cmd mode
+		void Cmds_mode(int fd_client);
 		
 		int								_port;
 		std::string						_pass;
