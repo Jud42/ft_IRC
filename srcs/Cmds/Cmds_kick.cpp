@@ -11,7 +11,7 @@ bool	isCorrectInput(std::string buffer, std::vector<std::string> &seg) {
 	//if [reason] is not specifie default value => :target_name
 	if (seg.size() != 4 || seg[1].find('#') == std::string::npos
 		|| seg[3].find(':') == std::string::npos) {
-		std::cout << "Error: input for KICK from _buffer" 
+		std::cout << "Error: input for KICK from _buffer"
 		<< std::endl;
 		return false;
 	}
@@ -23,9 +23,9 @@ bool	isCorrectInput(std::string buffer, std::vector<std::string> &seg) {
 }
 
 void	Server::Cmds_kick(const int fd_client) {
-	
+
 	std::vector<std::string> seg;
-	if (!isCorrectInput(_buffer, seg))	
+	if (!isCorrectInput(_buffer, seg))
 		return ;
 
 	//info the commander
@@ -39,7 +39,7 @@ void	Server::Cmds_kick(const int fd_client) {
 
 	//take #channel_name
 	std::string channel_name = seg[1].substr();
-	channel_name.erase(0, 1); //remove # 	
+	channel_name.erase(0, 1); //remove #
 	if (_channels.find(channel_name) != _channels.end()) {
 
 		//take instance channel
@@ -66,23 +66,24 @@ void	Server::Cmds_kick(const int fd_client) {
 					return ;
 				}
 				else {
-				
-					resp = ":" + nick_op + "!" + 
-					user_name_op + "@" + ip_op + " " + 
-					seg[0] + " " + seg[1] + " " + seg[2] + " " + seg[3];
-				
+
+					resp = ":" + nick_op + "!" +
+						user_name_op + "@" + ip_op + " " +
+						seg[0] + " " + seg[1] + " " + seg[2] + " " + seg[3];
+
 					//std::cout << "***ohatra*** " << resp << std::endl;
 					std::map<int, std::string>::iterator it;
-					for(it = fds_channel.begin(); 
+					for(it = fds_channel.begin();
 							it != fds_channel.end(); it++) {
-				
-						std::cout << "fd list: " 
+
+						std::cout << "fd list: "
 							<< it->first << std::endl;
 						send(it->first, resp.c_str(), resp.size(), 0);
 					}
+					std::cout << "name forbidden channel: " << ch->getChannelName() << std::endl;
 					ch->setChannelUserMode(fd_target, "b");
 					std::cout << "[" << target << "]\t=> BANI =>\t" <<
-						ch->getChannelConnectedFDMode(fd_target) 
+						ch->getChannelConnectedFDMode(fd_target)
 							<< std::endl;
 				}
 			}
@@ -98,10 +99,10 @@ void	Server::Cmds_kick(const int fd_client) {
 		}
 	}
 	else { //channel doesn't exist
-		
+
 		std::cout << "channel doesn't exist" << std::endl;
 		resp = ":" + hostname + " 403 " + nick_op +
 			" " + seg[1] + " :No such channel \r\n";
 		send(fd_client, resp.c_str(), resp.size(), 0);
 	}
-}	
+}

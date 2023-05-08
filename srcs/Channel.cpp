@@ -84,7 +84,7 @@ const std::map <int, std::string> Channel::getChannelFDsModeMap (void)
                 std::cout << BLU;
                 std::cout << " FD & Mode :" << it->first << " " << it->second << std::endl;
                 std::cout << NOC;
-            } // --------------------------------------------------------------------------------------            
+            } // --------------------------------------------------------------------------------------
         }
     }
     return (result);
@@ -119,6 +119,7 @@ const std::string Channel::getChannelConnectedFDMode (const int fd)
 {
     std::string result = "";
     std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
+	std::cout <<YEL << &_channel_FD_Mode << NOC << std::endl;
 
     if (it != this->_channel_FD_Mode.end())
         result = it->second;
@@ -129,7 +130,7 @@ const std::string Channel::getChannelConnectedFDMode (const int fd)
         std::cout << "[ CHANNEL::channel ] getChannelConnectedFDMode" <<  std::endl;
         std::cout << " mode found :" << result << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------    
+	} // --------------------------------------------------------------------------------------
 
     return (result);
 }
@@ -161,7 +162,7 @@ int Channel::getNbUsers (void)
                 std::cout << BLU;
                 std::cout << " FD :" << it->first << std::endl;
                 std::cout << NOC;
-            } // --------------------------------------------------------------------------------------            
+            } // --------------------------------------------------------------------------------------
         }
     }
          if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
@@ -177,14 +178,14 @@ int Channel::getNbUsers (void)
 // return topic associated to the channel
 const std::string Channel::getTopic (void)
 {
-    
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] getTopic" <<  std::endl;
         std::cout << " Topic:" << this->_topic << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------  
+	} // --------------------------------------------------------------------------------------
     return (this->_topic);
 }
 
@@ -209,7 +210,7 @@ bool Channel::checkChannelInvite(const int fd)
         std::cout << "[ CHANNEL::channel ] checkChannelInvite" <<  std::endl;
         std::cout << " result :" << result << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------   
+	} // --------------------------------------------------------------------------------------
     return result;
 }
 
@@ -224,7 +225,7 @@ void Channel::setChannelMode (const std::string & new_mode)
         std::cout << "[ CHANNEL::channel ] setChannelMode" <<  std::endl;
         std::cout << " mode set :" << _mode << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 }
 
 // Set limit
@@ -237,7 +238,7 @@ void Channel::setChannelLimit (const int limit)
         std::cout << "[ CHANNEL::channel ] setChannelLimit" <<  std::endl;
         std::cout << " limit set :" << _limit << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 }
 
 //Return channel limits
@@ -249,7 +250,7 @@ int  Channel::getChannelLimit (void)
         std::cout << "[ CHANNEL::channel ] getChannelLimit" <<  std::endl;
         std::cout << " result :" << _limit << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 	return this->_limit;
 }
 
@@ -264,7 +265,7 @@ const std::string Channel::getChannelPass (void)
         std::cout << "[ CHANNEL::channel ] getChannelPass" <<  std::endl;
         std::cout << " result :" << result << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------      
+	} // --------------------------------------------------------------------------------------
     return (result);
 }
 
@@ -282,7 +283,7 @@ void Channel::setChannelFDMode (const int fd, const std::string channelMode)
         std::cout << "[ CHANNEL::channel ] setChannelFDMode" <<  std::endl;
         std::cout << " mode set :" << it->second << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 }
 
 
@@ -310,16 +311,18 @@ int Channel::setChannelUserMode (const int FD, const std::string channelMode)
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] setChannelUserMode" <<  std::endl;
+		std::cout << "channel name: " << _name << std::endl;
+		std::cout << "channe Fd mode adresse" << &_channel_FD_Mode <<std::endl;
         std::cout << " mode set :" << it->second << std::endl;
         std::cout << " return value :" << result << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------    
-    return (result);     
+	} // --------------------------------------------------------------------------------------
+    return (result);
 }
 
 // ***********************************************************************************************
 // insert the user (through the FD identification) to the given channel
-void Channel::setChannelConnectedFD (const int newFD) 
+void Channel::setChannelConnectedFD (const int newFD)
 {
         // find if the newFD is already defined
 		std::map<int, std::string>::const_iterator it = this->_channel_FD_Mode.find(newFD);
@@ -338,15 +341,15 @@ void Channel::setChannelConnectedFD (const int newFD)
         std::cout << " FD set :" << it->first << std::endl;
         std::cout << " Mode set :" << it->second << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 }
 
 
 // ***********************************************************************************************
 // set the TOPIC message
-void Channel::setChannelTopic (const std::string message) 
+void Channel::setChannelTopic (const std::string message)
 {
-        
+
     this->_topic = message;
 
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
@@ -355,7 +358,7 @@ void Channel::setChannelTopic (const std::string message)
         std::cout << "[ CHANNEL::channel ] setChannelTopic" <<  std::endl;
         std::cout << " Topic :" << this->_topic << std::endl;
 	 	std::cout << NOC;
-	} // -------------------------------------------------------------------------------------- 
+	} // --------------------------------------------------------------------------------------
 }
 
 // ***********************************************************************************************
@@ -367,13 +370,13 @@ void Channel::setChannelInvite (const int fd)
 
         if (!this->checkChannelInvite(fd))
             this->_invite.insert(it, fd);
-        
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] setChannelInvite" <<  std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------             
+	} // --------------------------------------------------------------------------------------
 }
 
 // ***********************************************************************************************
@@ -381,14 +384,14 @@ void Channel::setChannelInvite (const int fd)
 void Channel::setChannelPass (const std::string pass)
 {
     this->_pass = pass;
-        
+
     if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] setChannelPass" <<  std::endl;
         std::cout << " Pass :" << this->_pass << std::endl;
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------    
+	} // --------------------------------------------------------------------------------------
 }
 
 // ***********************************************************************************************
@@ -398,9 +401,9 @@ void Channel::resetChannelConnectedFD (const int removedFD)
         // check if the removedFD is already defined
 		std::map<int, std::string>::iterator it = this->_channel_FD_Mode.find(removedFD);
 
-		
+
 		if (it != this->_channel_FD_Mode.end())
-		{ 
+		{
 			//	delete the set into the _channel_FD_Mode map
 			this->_channel_FD_Mode.erase(removedFD);
 		}
@@ -411,8 +414,8 @@ void Channel::resetChannelConnectedFD (const int removedFD)
         std::cout << " FD removed :" << removedFD << std::endl;
         it = this->_channel_FD_Mode.begin();
         for ( ; it != this->_channel_FD_Mode.end() ; it++)
-            std::cout << " FD still alive :" << it->first << std::endl; 
+            std::cout << " FD still alive :" << it->first << std::endl;
 
 	 	std::cout << NOC;
-	} // --------------------------------------------------------------------------------------         
+	} // --------------------------------------------------------------------------------------
 }

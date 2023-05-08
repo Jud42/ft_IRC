@@ -24,11 +24,11 @@ public:
 
         int                                     getNbUsers (void);
         const std::string                       getTopic (void);
-        const std::string                       getChannelPass (void);        
-       	int					getChannelLimit(void); 
+        const std::string                       getChannelPass (void);
+       	int					getChannelLimit(void);
         bool                                    checkChannelInvite(const int fd);
 
-       	void					setChannelMode(const std::string & new_mode); 
+       	void					setChannelMode(const std::string & new_mode);
 
         void                                    setChannelFDMode (const int fd, const std::string channelMode);
         int                                     setChannelUserMode (const int fd, const std::string channelMode);
@@ -36,7 +36,7 @@ public:
         void                                    setChannelTopic (const std::string message);
         void                                    setChannelInvite (const int fd);
         void                                    setChannelPass (const std::string);
-       	void					setChannelLimit(const int limit); 
+       	void					setChannelLimit(const int limit);
 
         void                                    resetChannelConnectedFD (const int removeFD);
 

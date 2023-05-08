@@ -14,8 +14,8 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
     // the purpose of this is to inform each user recorded into the cannel except :
     // - the user that is at the origin of message propagation request
     // - all the users banned are already excluded from the list
-    
-    
+
+
 
     // will contain an abstract from the channel - FD & Mode
     std::map<int, std::string>channelClients;
@@ -27,12 +27,12 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
     if (it_c->first == channel)
     {
         // retrive the list of all FD attached to the channel
-        channelClients = it_c->second->getChannelFDsModeMap();        
+        channelClients = it_c->second->getChannelFDsModeMap();
     }
 
 
     std::map <int, std::string>::iterator it = channelClients.begin();
-    
+
 
     // turn to send message
     for( ; it != channelClients.end() ; ++it)
@@ -45,7 +45,7 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
         if (it_nick->second != exceptUser)
         {
             std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
-            
+
             // look for channel
             for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
             {
@@ -60,6 +60,6 @@ void Server::Cmds_inform_Channel(std::string const message, std::string const ch
             }
         }
 
-    }   
+    }
 
 }

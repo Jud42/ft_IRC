@@ -22,6 +22,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 
 		if ( dest[0] == '#')
 		{
+			// std::cout << "mode " << this->_channels[dest]->getChannelConnectedFDMode(fd_client) << std::endl;
 			dest = dest.substr(1);
 			// std::cout << "dest " << dest << std::endl;
 			if (this->_channels.count(dest) == 0)

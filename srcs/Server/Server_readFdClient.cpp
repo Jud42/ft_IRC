@@ -258,6 +258,7 @@ int Server::readFdClient(int &fd)
 			{
 				std::cout << "je rentre dans invite" << std::endl;
 				this->Cmds_invite(fd);
+				nocommand = 1;
 			}
 			if (buffer.find("QUIT ") != std::string::npos)
 			{

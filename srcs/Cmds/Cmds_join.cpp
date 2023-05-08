@@ -2,7 +2,7 @@
 
 
 // **********************************************************************************************
-// Retrieve channel's connected users 
+// Retrieve channel's connected users
 const std::string Server::ListConnectedUsers(std::string const Channel)
 {
 	// find the channel and retrieve the map of connected fd
@@ -134,7 +134,7 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 			passwords = passwords.substr(passwords.find(",")+1);
 			// attach pass to typeC
 			typeC += pass;
-		
+
 
 			it = segment_typeCpass.find(segment);
 
@@ -160,7 +160,7 @@ std::map<std::string, std::string> Server::Cmd_channelPassParse (std::string pch
 
 
 // **********************************************************************************************
-// Preparation of passwords entered during the join 
+// Preparation of passwords entered during the join
 const std::string Server::PasswordPrep(std::string const command)
 {
 	// extract the channels passwords at the end of the command if any
@@ -174,7 +174,7 @@ const std::string Server::PasswordPrep(std::string const command)
 	// cut the \r\n at the end of the passwords
 	passwords = passwords.substr(0, passwords.length()-2);
 
-	// remove the channels at the begining of the passwords 
+	// remove the channels at the begining of the passwords
 	if (passwords.find(" ") < passwords.length())
 	{
 		passwords = passwords.substr(passwords.find(" ")+1);
@@ -226,7 +226,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 	std::string FDpass = "";
 
 	// ** send the messages related to the join & act on channel users & channel existence
-	
+
 	std::map<std::string, std::string>::iterator it_ST(segment_typeC.begin());
 
 	// loop over the channel's
@@ -283,11 +283,11 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 		else // update an existing channel
 		{
 			// retieve the user Mode to ensure the user has not been already banned
-			std::map<std::string, Channel * >::iterator it=this->_channels.begin();
+			std::map<std::string, Channel * >::iterator it=this->_channels.find(segment);
 
 
 			// block banned user to join the channels
-			if (it->second->getChannelConnectedFDMode(fd_client) == "b")	
+			if (it->second->getChannelConnectedFDMode(fd_client) == "b")
 			{
 				// ERR_BANNEDFROMCHAN 474 "<channel> :Cannot join channel (+b)"
 				std::string cap_response = ":" + hostname + " 474 " + nickname + " " + typeC + segment + " [+n]\r\n";
@@ -318,7 +318,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 				continue;
-			}	
+			}
 
 			// treat channels set with limits (users already connected + 1 for the incoming user)
 			if (channelMode.find("l") < channelMode.length() && it_C->second->getNbUsers() + 1 > it_C->second->getChannelLimit())
