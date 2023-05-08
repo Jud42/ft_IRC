@@ -119,8 +119,7 @@ const std::string Channel::getChannelConnectedFDMode (const int fd)
 {
     std::string result = "";
     std::map<int, std::string>::const_iterator it(this->_channel_FD_Mode.find(fd));
-	std::cout <<YEL << &_channel_FD_Mode << NOC << std::endl;
-
+	
     if (it != this->_channel_FD_Mode.end())
         result = it->second;
 
@@ -128,6 +127,7 @@ const std::string Channel::getChannelConnectedFDMode (const int fd)
 	{
 	 	std::cout << BLU;
         std::cout << "[ CHANNEL::channel ] getChannelConnectedFDMode" <<  std::endl;
+        std::cout << " FD :" << fd << std::endl;
         std::cout << " mode found :" << result << std::endl;
 	 	std::cout << NOC;
 	} // --------------------------------------------------------------------------------------

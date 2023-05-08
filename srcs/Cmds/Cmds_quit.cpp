@@ -6,24 +6,29 @@ void Server::Cmds_quit(const int fd_client)
 {
 	std::cout << RED << "Cmds_quit fd " << fd_client << NOC << std::endl;
     // find all channels associated to the FD
-	std::map<std::string, Channel*>::iterator it = this->_channels.begin();
-
-	if (it == this->_channels.end())
-		return;
+	std::map<std::string, Channel*>::iterator it(this->_channels.begin());
 
 	for ( ; it != this->_channels.end() ; it++)
 	{
+		std::cout << "1 " << fd_client << std::endl;
 		if (it->second->getChannelConnectedFD(fd_client) == fd_client)
 		{
+			std::cout << "2 " << fd_client << std::endl;
 			quit_channelUpdate(it->first, fd_client);
+			std::cout << "3 " << fd_client << std::endl;
 
 			// check if the user deleted was the last one (exclude banned users) = Nb users still connected
 			if (it->second->getNbUsers() == 0)
 			{
+				std::cout << "4 " << fd_client << std::endl;
 				// delete the channel
 				delete(it->second);
 				//std::cout << RED << "Deleted channel " << it->first << NOC << std::endl;
 				this->_channels.erase(it);
+				// hereafter is required to avoid issues at quit (heap-buffer-overflow)
+				it = this->_channels.begin();
+				if (it == this->_channels.end())
+					return;
 			}
 		}
 	}
