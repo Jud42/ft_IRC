@@ -276,7 +276,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			it_C->second->setChannelConnectedFD(fd_client);
 
 			// set the channel's default mode
-			it_C->second->setChannelMode("+nt");
+			it_C->second->setChannelMode("+t");
 
 			it_C->second->setChannelFDMode(fd_client, "O@");
 		}

@@ -11,9 +11,10 @@ void Server::Cmds_topic(int const fd_client, std::string const command)
 	else
 		topic = command;
 
+    // Find Nickname
+    std::string nickname = this->_fd_nick_list[fd_client];        
+
     // the entry message look's like : TOPIC #blabla :test ajout de topic
-
-
     // detect if the topic set is requested by the command
     if (topic.find(" :") < topic.length())
     {
@@ -26,12 +27,22 @@ void Server::Cmds_topic(int const fd_client, std::string const command)
         // cut the \r\n at the end of the string
         topic = topic.substr(0, topic.length()-2);        
 
-	//!!!A CORRIGER => si channel name n'existe pas risque segfault
+
+        // ensure the channel is existing otherwise error message
+        if (this->_channels.count(channel) == 0)
+        {
+            // std::string cap_response = "403 the channel doesn't exist\r\n";
+            // :helix.oftc.net 403 VRO blabla :No such channel
+            std::string cap_response = "403 " + nickname + " " + channel + " : \r\n";
+            std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+            send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+            return ;
+        }
+
         // ensure the requester is the channel's owner
         std::string user_mode = this->_channels[channel]->getChannelConnectedFDMode(fd_client);
 
-        // Find Nickname
-        std::string nickname = this->_fd_nick_list[fd_client];
+        
         // Find user
         std::string user_client = this->_clientList[nickname]->get_user();
         // Find IP address
