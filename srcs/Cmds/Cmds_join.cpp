@@ -276,8 +276,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			it_C->second->setChannelConnectedFD(fd_client);
 
 			// set the channel's default mode
-// -------------------- insert the defaulted value "nt"				
-			// it->second->setChannelMode("+nt");
+			it_C->second->setChannelMode("t");
 
 			it_C->second->setChannelFDMode(fd_client, "O@");
 		}
@@ -319,11 +318,21 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 				continue;
+			}	
+
+			// treat channels set with limits (users already connected + 1 for the incoming user)
+			if (channelMode.find("l") < channelMode.length() && it_C->second->getNbUsers() + 1 > it_C->second->getChannelLimit())
+			{
+				// ERR_CHANNELISFULL 471 "<channel> :Cannot join channel (+l)"
+				std::string cap_response = ":" + hostname + " 471 " + nickname + " " + typeC + segment + " [+n]\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+				continue;
 			}
 
 			// incase of new connection to the channel, add the new FD
 			it->second->setChannelConnectedFD(fd_client);
-			it->second->setChannelFDMode(fd_client, "o");
+			it->second->setChannelFDMode(fd_client, "i");
 		}
 
 		// retrieve the channel's users

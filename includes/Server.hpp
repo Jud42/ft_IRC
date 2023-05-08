@@ -110,7 +110,7 @@ class	Server
 		void Cmds_whois(int const fd_client, std::string const command);
 	// cmd msg / privmsg
 		void Cmds_msg(int const fd_client, std::string const command);
-		
+
 	// cmd notice
 		void Cmds_notice(int const fd_client, std::string const command);
 	//cmd kick
@@ -122,13 +122,13 @@ class	Server
 
 	// cmd topic
 		void Cmds_topic(int const fd_client, std::string const command);
-		
-	//cmd invite 
+
+	//cmd invite
 		void Cmds_invite(int fd_client);
 
-	//cmd mode 
+	//cmd mode
 		void Cmds_mode(int fd_client);
-		
+
 		int								_port;
 		std::string						_pass;
 		ConfigFile					*	_IRCconfig;
@@ -152,4 +152,15 @@ class	Server
 void		print_all_caractere(std::string src);
 std::string	find_cmd_arg(std::string buffer, std::string command);
 
+template<typename T>
+bool	find_in_vector(const std::vector<T>& vec, const T& val)
+{
+	typename std::vector<T>::const_iterator it;
+    for (it = vec.begin(); it != vec.end(); ++it) {
+        if (*it == val) {
+            return true;
+        }
+    }
+    return false;
+}
 #endif

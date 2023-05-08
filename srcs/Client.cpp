@@ -102,7 +102,7 @@ void Client::setNickname(std::string newNick)
 	this->_nickname = newNick;
 }
 
-std::string Client::getNickname()
+const std::string &Client::getNickname() const
 {
 	return(this->_nickname);
 }
@@ -112,7 +112,7 @@ void Client::setPassword(std::string pass)
 	this->_password = pass;
 }
 
-std::string Client::getPassword()
+const std::string &Client::getPassword() const
 {
 	return(this->_password);
 }
@@ -122,7 +122,7 @@ void Client::setModes(std::string mode)
 	this->_modes = mode;
 }
 
-std::string Client::getModes()
+const std::string &Client::getModes() const
 {
 	return(this->_modes);
 }
@@ -154,12 +154,12 @@ void	Client::delContactFd(int contact_fd)
 	}
 }
 
-int Client::getClientFd()
+const int &Client::getClientFd() const
 {
 	return(this->_clientFd);
 }
 
-std::vector<int>			&Client::getContactsFd()
+std::vector<int>	Client::getContactsFd() const
 {
 	return (_privMsgContactsFd);
 }
@@ -169,7 +169,7 @@ void Client::set_ip(std::string ip)
 	_ip = ip;
 }
 
-std::string Client::get_ip()
+const std::string &Client::get_ip() const
 {
 	return(_ip);
 }
@@ -179,7 +179,7 @@ void Client::set_user(std::string user)
 	_username = user;
 }
 
-std::string Client::get_user()
+const std::string &Client::get_user() const
 {
 	return(_username);
 }
@@ -189,7 +189,7 @@ void Client::set_realname(std::string realname)
 	_realname = realname;
 }
 
-std::string Client::get_realname()
+const std::string &Client::get_realname() const
 {
 	return(_realname);
 }
@@ -199,7 +199,7 @@ void Client::set_data(std::string data)
 	_data = data;
 }
 
-std::string Client::get_data()
+const std::string &Client::get_data() const
 {
 	return(_data);
 }
@@ -209,7 +209,7 @@ void	Client::set_clientInfo(int i)
 	_clientInfo += i;
 }
 
-int	Client::get_clientInfo()
+const int	&Client::get_clientInfo() const
 {
 	return (_clientInfo);
 }
