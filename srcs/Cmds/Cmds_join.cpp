@@ -301,7 +301,7 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 			if (channelMode.find("i") < channelMode.length())
 			{
 				// check if the fd was invited
-				if (it->second->checkChannelInvite(fd_client) == true)
+				if (it->second->checkChannelInvite(fd_client) == false)
 				{
 					// ERR_INVITEONLYCHAN 473 "<channel> :Cannot join channel (+i)"
 					std::string cap_response = ":" + hostname + " 473 " + nickname + " " + typeC + segment + " [+n]\r\n";
