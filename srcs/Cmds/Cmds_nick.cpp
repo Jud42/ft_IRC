@@ -60,6 +60,13 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	// inform the other users in contact:
 
+		std::vector<int> contacts = _clientList[_fd_nick_list[fd_client]]->getContactsFd();
+		for (std::vector<int>::iterator it_fd = contacts.begin(); it_fd != contacts.end() ; ++it_fd)
+		{
+				std::cout << *it_fd << " [Server->Client]" << cap_response << std::endl;
+				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
+		}
+
 		std::map<std::string, Channel*>::iterator it = this->_channels.begin();
 
 		if (it == this->_channels.end())
@@ -69,20 +76,51 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		{
 			if (it->second->getChannelConnectedFD(fd_client) == fd_client)
 			{
-				Cmds_inform_Channel(cap_response.c_str(), it->first, newNick);
+				// Cmds_inform_Channel whith a condition
+
+				std::map<int, std::string>channelClients; //fd du client a avertir - mode
+
+				// find the channel
+				std::map<std::string, Channel*>::iterator it_c(_channels.find(it->first));
+
+				if (it_c->first == it->first)
+				{
+					// retrive the list of all FD attached to the channel
+					channelClients = it_c->second->getChannelFDsModeMap();
+				}
+
+
+				std::map <int, std::string>::iterator it = channelClients.begin();
+
+
+				// turn to send message
+				for( ; it != channelClients.end() ; ++it)
+				{
+					// the user originating the message in not selected for the message
+					if (it_nick->second != fd_client)
+					{
+						std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
+
+						// look for channel
+						for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
+						{
+							if (it_FD->first == it->first && find_in_vector<int>(contacts, it->first) == false)
+							{
+								// channel for information
+								int fd_dest = it_FD->first;
+								contacts.push_back(fd_dest);
+								cap_response = ":" + oldNickname + "!~" + this->_clientList[_fd_nick_list[fd_client]]->get_user() + "@";
+								cap_response += this->_clientList[_fd_nick_list[fd_client]]->get_ip() + " NICK :" + newNick + "\r\n";
+								std::cout << fd_client << " [Server->Client]own" << cap_response << std::endl;
+								send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+							}
+						}
+					}
+
+				}
 			}
 		}
 
-
-
-		for (std::vector<int>::iterator it_fd = this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().begin(); it_fd != this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().end() ; ++it_fd)
-		{
-			if ( *it_fd != 1000)
-			{
-				std::cout << *it_fd << " [Server->Client]" << cap_response << std::endl;
-				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
-			}
-		}
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
 	}
 }

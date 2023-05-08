@@ -39,7 +39,7 @@ class Client
 		bool						findContactFd(int contact_fd);
 		void						addContactFd(int contact_fd);
 		void						delContactFd(int contact_fd);
-		const std::vector<int>		&getContactsFd() const;
+		std::vector<int>			getContactsFd() const;
 
 		void						set_ip(std::string ip);
 		const std::string			&get_ip() const;
