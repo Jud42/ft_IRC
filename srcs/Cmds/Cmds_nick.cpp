@@ -74,49 +74,20 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 
 		for ( ; it != this->_channels.end() ; it++)
 		{
-			if (it->second->getChannelConnectedFD(fd_client) == fd_client)
+			if (it->second->getChannelConnectedFD(fd_client) == fd_client) //client connected to this channel
 			{
-				// Cmds_inform_Channel whith a condition
-
-				std::map<int, std::string>channelClients; //fd du client a avertir - mode
-
-				// find the channel
-				std::map<std::string, Channel*>::iterator it_c(_channels.find(it->first));
-
-				if (it_c->first == it->first)
+				std::map <int, std::string>    channelClients = it->second->getChannelFDsModeMap();
+				for(std::map <int, std::string>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
 				{
-					// retrive the list of all FD attached to the channel
-					channelClients = it_c->second->getChannelFDsModeMap();
-				}
-
-
-				std::map <int, std::string>::iterator it = channelClients.begin();
-
-
-				// turn to send message
-				for( ; it != channelClients.end() ; ++it)
-				{
-					// the user originating the message in not selected for the message
-					if (it_nick->second != fd_client)
+					int fd_dest = it->first;
+					if (fd_dest != fd_client)
+					std::cout << "fd_dest " << fd_dest << std::endl;
+					if (fd_dest != fd_client && !find_in_vector<int>(contacts, fd_dest))
 					{
-						std::map <int, std::string>::const_iterator it_FD = this->_fd_nick_list.begin();
-
-						// look for channel
-						for( ; it_FD != this->_fd_nick_list.end() ; ++it_FD)
-						{
-							if (it_FD->first == it->first && find_in_vector<int>(contacts, it->first) == false)
-							{
-								// channel for information
-								int fd_dest = it_FD->first;
-								contacts.push_back(fd_dest);
-								cap_response = ":" + oldNickname + "!~" + this->_clientList[_fd_nick_list[fd_client]]->get_user() + "@";
-								cap_response += this->_clientList[_fd_nick_list[fd_client]]->get_ip() + " NICK :" + newNick + "\r\n";
-								std::cout << fd_client << " [Server->Client]own" << cap_response << std::endl;
-								send(fd_client, cap_response.c_str(), cap_response.length(), 0);
-							}
-						}
+						contacts.push_back(fd_dest);
+						std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
+						send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
 					}
-
 				}
 			}
 		}
