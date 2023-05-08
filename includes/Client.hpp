@@ -28,35 +28,35 @@ class Client
 	public:
 
 		void 						setNickname(std::string newNick);
-		std::string					getNickname();
+		const std::string			&getNickname() const;
 
 		void						setPassword(std::string pass);
-		std::string					getPassword();
+		const std::string			&getPassword() const;
 
 		void						setModes(std::string mode);
-		std::string					getModes();
+		const std::string			&getModes() const;
 
 		bool						findContactFd(int contact_fd);
 		void						addContactFd(int contact_fd);
 		void						delContactFd(int contact_fd);
-		std::vector<int>			&getContactsFd();
+		const std::vector<int>		&getContactsFd() const;
 
 		void						set_ip(std::string ip);
-		std::string					get_ip();
+		const std::string			&get_ip() const;
 
 		void						set_user(std::string user);
-		std::string					get_user();
+		const std::string			&get_user() const;
 
 		void						set_realname(std::string realname);
-		std::string					get_realname();
+		const std::string			&get_realname() const;
 
-		int							getClientFd();
+		const int					&getClientFd() const;
 
 		void						set_data(std::string data);
-		std::string					get_data();
+		const std::string			&get_data() const;
 
 		void						set_clientInfo(int i);
-		int							get_clientInfo();
+		const int					&get_clientInfo() const;
 
 		Client();
 		Client(int client_fd, std::string client_data);
