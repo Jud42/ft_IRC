@@ -26,8 +26,9 @@ void Server::Cmds_topic(int const fd_client, std::string const command)
         // cut the \r\n at the end of the string
         topic = topic.substr(0, topic.length()-2);        
 
+	//!!!A CORRIGER => si channel name n'existe pas risque segfault
         // ensure the requester is the channel's owner
-        std::string mode = this->_channels[channel]->getChannelConnectedFDMode(fd_client);
+        std::string user_mode = this->_channels[channel]->getChannelConnectedFDMode(fd_client);
 
         // Find Nickname
         std::string nickname = this->_fd_nick_list[fd_client];
@@ -37,8 +38,10 @@ void Server::Cmds_topic(int const fd_client, std::string const command)
         std::string ip_client = this->_clientList[nickname]->get_ip();
 
         std::string hostname = this->_hostname;
+	std::string channel_mode = this->_channels[channel]->getChannelMode();
 
-        if (mode == "O@")
+        if (channel_mode.find('t') == std::string::npos || 
+		user_mode == "O@")
         {
             // place the topic value into the channel
              this->_channels[channel]->setChannelTopic(topic);

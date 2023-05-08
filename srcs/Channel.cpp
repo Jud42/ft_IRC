@@ -3,7 +3,7 @@
 
 // **********************************************************************************************
 // constructor of the channel
-Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig)
+Channel::Channel (std::string name, ConfigFile *IRCconfig): _name(name), _IRCconfig(IRCconfig), _limit()
 {
     // empty the topic
     this->_topic = "";
@@ -225,6 +225,33 @@ void Channel::setChannelMode (const std::string & new_mode)
         std::cout << " mode set :" << _mode << std::endl;
 	 	std::cout << NOC;
 	} // -------------------------------------------------------------------------------------- 
+}
+
+// Set limit
+void Channel::setChannelLimit (const int limit)
+{
+	this->_limit = limit;
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] setChannelLimit" <<  std::endl;
+        std::cout << " limit set :" << _limit << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
+}
+
+//Return channel limits
+int  Channel::getChannelLimit (void)
+{
+    if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -----------------------------
+	{
+	 	std::cout << BLU;
+        std::cout << "[ CHANNEL::channel ] getChannelLimit" <<  std::endl;
+        std::cout << " result :" << _limit << std::endl;
+	 	std::cout << NOC;
+	} // -------------------------------------------------------------------------------------- 
+	return this->_limit;
+}
 
 // Return the channel's password
 const std::string Channel::getChannelPass (void)

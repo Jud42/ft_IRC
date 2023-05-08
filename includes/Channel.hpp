@@ -25,6 +25,7 @@ public:
         int                                     getNbUsers (void);
         const std::string                       getTopic (void);
         const std::string                       getChannelPass (void);        
+       	int					getChannelLimit(void); 
         bool                                    checkChannelInvite(const int fd);
 
        	void					setChannelMode(const std::string & new_mode); 
@@ -35,6 +36,7 @@ public:
         void                                    setChannelTopic (const std::string message);
         void                                    setChannelInvite (const int fd);
         void                                    setChannelPass (const std::string);
+       	void					setChannelLimit(const int limit); 
 
         void                                    resetChannelConnectedFD (const int removeFD);
 
@@ -51,10 +53,7 @@ private:
 
         // for debug
         ConfigFile		               *_IRCconfig;
-
-
-     
-
+	int					_limit;
 };
 
 #endif

@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <cstring>
+#include <cctype>
 #include <unistd.h>
 #include <iomanip>
 #include <arpa/inet.h>
