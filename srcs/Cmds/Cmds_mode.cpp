@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 
-static int	allIsDigit(std::string &str) {
+static int	findDigit(std::string &str) {
 	
 	std::string::iterator it = str.begin();
 	std::string result;
@@ -19,7 +19,8 @@ static int	allIsDigit(std::string &str) {
 }
 
 //clear duplicata char & char mode unknow
-static int	clean_strmode(std::vector<std::string> &seg, Channel &ch) {
+static int	parse_strmode(std::vector<std::string> &seg, Channel &ch, 
+		std::map<std::string, Client *> clientList) {
 
 	std::string result;
 	std::string mode = seg[2];
@@ -33,24 +34,69 @@ static int	clean_strmode(std::vector<std::string> &seg, Channel &ch) {
 		if (model_mode.find(mode[i]) != std::string::npos && 
 			result.find(mode[i]) == std::string::npos) {
 
-			if (mode[i] == 'l' && seg.size() > index_arg 
-			&& allIsDigit(seg[index_arg])) {
-				result += mode[i];
-				if (sign == '+')  
-					ch.setChannelLimit(std::atoi(seg[index_arg++].c_str()));
-				else if (sign == '-')
-					ch.setChannelLimit(0);
+
+				if (mode[i] == 'o' && index_arg < seg.size()) {
+					//check if target exist in server
+					if (clientList.find(seg[index_arg]) != clientList.end()) {
+						//take fd target from instance client in server
+						int fd_target = (clientList[seg[index_arg]])->getClientFd();
+						//check if target exist in channel
+						if (ch.getChannelConnectedFD(fd_target)) {
+
+							if (sign == '+') {
+								ch.setChannelFDMode(fd_target, "O@");
+								result += mode[i];
+							}
+							else if (sign == '-') {
+								if (ch.getChannelConnectedFDMode(fd_target) == "O@") {
+									ch.setChannelFDMode(fd_target, " ");
+									result += mode[i];
+								}
+							}
+						}
+					}
+					else
+						seg[index_arg] = " "; //remove
+					index_arg++;	
+				}
+				else if (mode[i] == 'l') {
+
+						if (sign == '+' && index_arg < seg.size()) {
+							if (findDigit(seg[index_arg])) { 
+								ch.setChannelLimit(std::atoi(seg[index_arg].c_str()));
+								result += mode[i];
+							}
+							else
+								seg[index_arg] = " "; //remove
+						}
+						else if (sign == '-') {
+							ch.setChannelLimit(0);
+							result += mode[i];
+						}
+						if (index_arg < seg.size()) {
+							if (sign == '-')
+								seg[index_arg] = " "; //remove
+							index_arg++;
+						}
+				}
+				else if (mode[i] == 'k') {
+					if (sign == '+' && index_arg < seg.size()) { 
+						ch.setChannelPass(seg[index_arg]);
+						result += mode[i];
+					}
+					else if (sign == '-') {
+						ch.setChannelPass(" ");
+						result += mode[i];
+					}
+					if (index_arg < seg.size()) {
+							if (sign == '-')
+								seg[index_arg] = " "; //remove
+							index_arg++;
+					}
+				}
+				else if (mode[i] != 'o')
+					result += mode[i];
 			}
-			else if (mode[i] == 'k' && seg.size() > index_arg) {
-				result += mode[i];
-				if (sign == '+')  
-					ch.setChannelPass(seg[index_arg++]);
-				else if (sign == '-')
-					ch.setChannelPass(" ");
-			}
-			else if (mode[i] != 'k' && mode[i] != 'l')
-				result += mode[i];
-		}
 	}
 	if (result.empty()) {
 
@@ -105,8 +151,9 @@ void	Server::Cmds_mode(const int fd_client) {
 				send(fd_client, resp.c_str(), resp.size(), 0);
 			}
 			else {		
-								
-				if (!clean_strmode(seg, *ch)) //remove doublon & mode unknow
+				
+				//remove doublon & mode unknow
+				if (!parse_strmode(seg, *ch, this->_clientList))
 					return ;
 				char sign = (seg[2])[0]; // + or -
 				std::string mode = seg[2];
