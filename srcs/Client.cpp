@@ -81,7 +81,6 @@ Client::~Client()
 {
 	std::cout << GRE << "destruction client" << NOC << std::endl;
 	std::string cap_response = "*\r\n";
-	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
 	send(_clientFd, cap_response.c_str(), cap_response.length(), 0);
 
 	std::vector<int>::iterator it = _privMsgContactsFd.begin();
@@ -91,7 +90,7 @@ Client::~Client()
 		std::cout << *it << " [Server->Client]" << cap_response << std::endl;
 		send(*it, cap_response.c_str(), cap_response.length(), 0);
 	}
-
+	std::cout << _clientFd << " [Server->Client]" << cap_response << std::endl;
     // Fermer la connexion avec le serveur IRC
     // close(this->_clientFd);
 

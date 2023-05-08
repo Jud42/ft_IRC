@@ -8,7 +8,7 @@ void Server::logoutClient(std::vector<struct pollfd>::iterator &it, int flag)
 	{
 		this->Cmds_quit(it->fd);
 		delete(_clientList[_fd_nick_list[it->fd]]);
-		_clientList.erase(_fd_nick_list[it->fd]);
+		_clientList.erase(_fd_nick_list.at(it->fd));
 		std::cout << "client deleted" << std::endl;
 		_fd_nick_list.erase(it->fd);
 		std::cout << "nickname  from fd_nick_list deleted" << std::endl;
