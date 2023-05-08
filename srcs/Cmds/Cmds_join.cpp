@@ -319,6 +319,16 @@ void Server::Cmds_join(int const fd_client, std::string const command, std::stri
 				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
 				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 				continue;
+			}	
+
+			// treat channels set with limits
+			if (channelMode.find("l") < channelMode.length() && ???)
+			{
+				// ERR_CHANNELISFULL 471 "<channel> :Cannot join channel (+l)"
+				std::string cap_response = ":" + hostname + " 471 " + nickname + " " + typeC + segment + " [+n]\r\n";
+				std::cout << fd_client << " [Server->Client]" << cap_response << std::endl;
+				send(fd_client, cap_response.c_str(), cap_response.length(), 0);
+				continue;
 			}
 
 			// incase of new connection to the channel, add the new FD
