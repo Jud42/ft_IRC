@@ -60,6 +60,13 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 		send(fd_client, cap_response.c_str(), cap_response.length(), 0);
 	// inform the other users in contact:
 
+		std::vector<int> contacts = _clientList[_fd_nick_list[fd_client]]->getContactsFd();
+		for (std::vector<int>::iterator it_fd = contacts.begin(); it_fd != contacts.end() ; ++it_fd)
+		{
+				std::cout << *it_fd << " [Server->Client]" << cap_response << std::endl;
+				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
+		}
+
 		std::map<std::string, Channel*>::iterator it = this->_channels.begin();
 
 		if (it == this->_channels.end())
@@ -67,22 +74,24 @@ void Server::Cmds_nick(int const fd_client, std::string const command)
 
 		for ( ; it != this->_channels.end() ; it++)
 		{
-			if (it->second->getChannelConnectedFD(fd_client) == fd_client)
+			if (it->second->getChannelConnectedFD(fd_client) == fd_client) //client connected to this channel
 			{
-				Cmds_inform_Channel(cap_response.c_str(), it->first, newNick);
+				std::map <int, std::string>    channelClients = it->second->getChannelFDsModeMap();
+				for(std::map <int, std::string>::iterator it = channelClients.begin() ;it != channelClients.end(); ++it)
+				{
+					int fd_dest = it->first;
+					if (fd_dest != fd_client)
+					std::cout << "fd_dest " << fd_dest << std::endl;
+					if (fd_dest != fd_client && !find_in_vector<int>(contacts, fd_dest))
+					{
+						contacts.push_back(fd_dest);
+						std::cout << fd_dest << " [Server->Client]" << cap_response << std::endl;
+						send(fd_dest, cap_response.c_str(), cap_response.length(), 0);
+					}
+				}
 			}
 		}
 
-
-
-		for (std::vector<int>::iterator it_fd = this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().begin(); it_fd != this->_clientList[_fd_nick_list[fd_client]]->getContactsFd().end() ; ++it_fd)
-		{
-			if ( *it_fd != 1000)
-			{
-				std::cout << *it_fd << " [Server->Client]" << cap_response << std::endl;
-				send(*it_fd, cap_response.c_str(), cap_response.length(), 0);
-			}
-		}
 		std::cout << " change of Nick fd: " << fd_client << "new nick : " << _fd_nick_list[fd_client] << std::endl;
 	}
 }

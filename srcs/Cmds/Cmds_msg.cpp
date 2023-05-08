@@ -23,7 +23,7 @@ void Server::Cmds_msg(int const fd_client, std::string const command)
 		if ( dest[0] == '#')
 		{
 			dest = dest.substr(1);
-			std::cout << "dest " << dest << std::endl;
+			// std::cout << "dest " << dest << std::endl;
 			if (this->_channels.count(dest) == 0)
 			{
 				// std::string cap_response = "403 the channel doesn't exist\r\n";

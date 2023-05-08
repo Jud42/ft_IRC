@@ -37,7 +37,6 @@ int Server::readFdClient(int &fd)
 
 		std::cout << "fd: " << fd << " => [readFdClient]: " << this->_buffer << std::endl;
 		std::string buffer = _buffer;
-		std::cout << "1" << std::endl;
 		print_all_caractere(buffer);
 		std::string command = buffer;
 		std::cout << "bufferTemp" << bufferTemp << std::endl;
@@ -59,13 +58,11 @@ int Server::readFdClient(int &fd)
 			{
 				size_t found = buffer.find_last_not_of('\0');
 				bufferTemp += buffer.substr(0, found + 1);
-				std::cout << "2" << std::endl;
 				print_all_caractere(bufferTemp);
 				found = bufferTemp.find_last_not_of('\0');
 				if (bufferTemp[found] == '\n')
 				{
 					buffer = bufferTemp.substr(0, found) + "\r\n";
-					std::cout << "3" << std::endl;
 					print_all_caractere(buffer);
 					bufferTemp = "";
 				}
@@ -168,9 +165,7 @@ int Server::readFdClient(int &fd)
 		/*---client validated---*/
 		else if (_fdStatus[fd] == 1)
 		{
-			std::cout << "4" << std::endl;
 			nocommand = 0;
-			std::cout << YEL << "no command et buffer temp" << nocommand << bufferTemp << NOC << std::endl;
 			print_all_caractere(buffer);
 			if (buffer.find("PING ") != std::string::npos)
 			{
@@ -287,7 +282,6 @@ int Server::readFdClient(int &fd)
 					<< _fds.size() << std::endl;
 				return LOGOUT_SERVER;
 			}
-			std::cout << "no command et buffer temp" << nocommand << bufferTemp << std::endl;
 			if (nocommand == 0 && bufferTemp != "cropped")
 			{
 				std::string cap_response = "Unknown command:" + buffer ;
