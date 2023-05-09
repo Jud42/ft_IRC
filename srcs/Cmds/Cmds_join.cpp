@@ -17,7 +17,7 @@ const std::string Server::ListConnectedUsers(std::string const Channel)
 		std::string combo = it->second;
 		if (combo.substr(1,1) == "@")
 		{
-			result += "@";
+			result += " @";
 		}
 		else
 		{
