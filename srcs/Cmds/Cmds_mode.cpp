@@ -36,13 +36,15 @@ static int	parse_strmode(std::vector<std::string> &seg, Channel &ch,
 
 
 				if (mode[i] == 'o' && index_arg < seg.size()) {
+					std::cout << "je passe dans mode o" << std::endl;
 					//check if target exist in server
 					if (clientList.find(seg[index_arg]) != clientList.end()) {
 						//take fd target from instance client in server
 						int fd_target = (clientList[seg[index_arg]])->getClientFd();
 						//check if target exist in channel
 						if (ch.getChannelConnectedFD(fd_target)) {
-
+							
+							std::cout << "client exist dans channel" << std::endl;
 							if (sign == '+') {
 								ch.setChannelFDMode(fd_target, "O@");
 								result += mode[i];
@@ -54,6 +56,8 @@ static int	parse_strmode(std::vector<std::string> &seg, Channel &ch,
 								}
 							}
 						}
+						else
+							seg[index_arg] = " "; //remove
 					}
 					else
 						seg[index_arg] = " "; //remove
@@ -135,7 +139,7 @@ void	Server::Cmds_mode(const int fd_client) {
 		Channel *ch = _channels[channel_name];
 		//verify if the commander is operator
 		std::string mode_op = ch->getChannelConnectedFDMode(fd_client);
-		if (mode_op == "O@") {
+		if (mode_op == "O@" || seg.size() == 2) {
 
 			std::cout << "is an operator" << std::endl;
 			//take list fd clients connected on channel
@@ -158,6 +162,10 @@ void	Server::Cmds_mode(const int fd_client) {
 				char sign = (seg[2])[0]; // + or -
 				std::string mode = seg[2];
 				mode.erase(0, 1); //remove sign
+				size_t pos_o = mode.find('o');
+				//don't save mode o
+				if (pos_o != std::string::npos)
+					mode.erase(pos_o, pos_o + 1);
 				std::string::reverse_iterator r_it; 
 				std::string mode_actu = ch->getChannelMode();
 				for (r_it = mode.rbegin(); r_it != mode.rend(); r_it++) {
@@ -165,17 +173,17 @@ void	Server::Cmds_mode(const int fd_client) {
 						if (sign == '+' && 
 						mode_actu.find(*r_it) == std::string::npos)
 							mode_actu.insert(mode_actu.begin(), *r_it);
-						else if (sign == '-' && 
-						mode_actu.find(*r_it) != std::string::npos) 
-							mode_actu.erase(mode_actu.find(*r_it));
+						else if (sign == '-') {
+						   size_t pos = mode_actu.find(*r_it);
+						   if (pos != std::string::npos)
+							   mode_actu.erase(pos, pos + 1);
+						}
 				}
 				//take all argument if they exist
 				std::string end;
-				if (sign == '+') {
-					for (size_t i = 3; i < seg.size(); i++) {
-						if (seg[i] != " ")
-							end += " " + seg[i];
-					}
+				for (size_t i = 3; i < seg.size(); i++) {
+					if (seg[i] != " ")
+						end += " " + seg[i];
 				}
 				end += "\r\n";
 
@@ -191,8 +199,6 @@ void	Server::Cmds_mode(const int fd_client) {
 				for(it = fds_channel.begin(); 
 						it != fds_channel.end(); it++) {
 			
-					std::cout << "fd list: " 
-						<< it->first << std::endl;
 					if (it->first != fd_client)
 						send(it->first, resp.c_str(), resp.size(), 0);
 				}
@@ -200,7 +206,7 @@ void	Server::Cmds_mode(const int fd_client) {
 			}
 							
 		}
-		else { //if commander is not operator
+		else if (seg[2] != "+b"){ //if commander is not operator
 
 			std::cout << "is not operator" << std::endl;
 			resp = ":" + hostname +  " " + "482" + " " + nick_op +
