@@ -61,11 +61,13 @@ void Server::quit_channelUpdate(const std::string channel, const int fd_client)
 
 	if (it_c != this->_channels.end())
 	{
-		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")
-		{
+
 			// delete the user
 			//std::cout << RED << "FD " << fd_client << " away from channel "<< it_c->first << NOC << std::endl;
 			it_c->second->resetChannelConnectedFD(fd_client);
+
+		if (it_c->second->getChannelConnectedFDMode(fd_client) != "b")
+		{			
             // inform the rest of the channel's users
             // ------------------
             // send complement message about quit user
