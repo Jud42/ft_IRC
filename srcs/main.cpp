@@ -12,7 +12,7 @@ int main (int argc, char *argv[])
 	std::string password = argv[2];
 	if (password.length() < 4)
 	{
-        std::cerr << "[MAIN] The password must at least have 3 caracters" << std::endl;
+        std::cerr << "[MAIN] The password must at least have 4 caracters" << std::endl;
 		return(0);
     }
 	// as per document RFC7194, ports are following hit the concensus
