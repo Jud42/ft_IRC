@@ -10,7 +10,7 @@ const std::string Server::ListConnectedUsers(std::string const Channel)
 	std::map<int, std::string>::iterator it(channelFDsMode.begin());
 
 	// will contain the list of user connected (without the banned users)
-	std::string result;
+	std::string result = "";
 	for ( ; it != channelFDsMode.end() ; it++)
 	{
 		// check mode, pos 0 mode, pos 1 @
