@@ -76,6 +76,9 @@ std::map<std::string, std::string> Server::Cmd_channelParse (std::string pchanne
 			pchannel = pchannel.substr(pchannel.find(",")+1);
 		}
 
+		// force typeC to content a #pragma endregion
+		typeC = "#";
+
 		it = segment_typeC.find(segment);
 		if (it == segment_typeC.end())
 			segment_typeC.insert(std::pair<std::string, std::string>(segment, typeC));
