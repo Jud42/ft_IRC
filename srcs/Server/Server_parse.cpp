@@ -14,7 +14,12 @@ std::string	Server::parse(const std::string _buffer, const int newListener)
     std::cout << BLU << "[PARSE] message : " << message << NOC << std::endl;
     unsigned int pos_start = 0;
     unsigned int pos_length = 0;
-	print_all_caractere(message);
+	if ("DEBUG" == this->_IRCconfig->getConfigValue("DEBUG")) // -------------------------------
+	{
+			std::cout << BLU;
+			print_all_caractere(message);
+			std::cout << NOC;
+	} // --------------------------------------------------------------------------------------
 
     std::string remains = "";
 

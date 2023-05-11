@@ -37,7 +37,7 @@ int Server::readFdClient(int &fd)
 
 		std::cout << "fd: " << fd << " => [readFdClient]: " << this->_buffer << std::endl;
 		std::string buffer = _buffer;
-		print_all_caractere(buffer);
+		// print_all_caractere(buffer);
 		std::string command = buffer;
 		std::cout << "bufferTemp" << bufferTemp << std::endl;
 	// check if the command is complete
@@ -58,12 +58,12 @@ int Server::readFdClient(int &fd)
 			{
 				size_t found = buffer.find_last_not_of('\0');
 				bufferTemp += buffer.substr(0, found + 1);
-				print_all_caractere(bufferTemp);
+				// print_all_caractere(bufferTemp);
 				found = bufferTemp.find_last_not_of('\0');
 				if (bufferTemp[found] == '\n')
 				{
 					buffer = bufferTemp.substr(0, found) + "\r\n";
-					print_all_caractere(buffer);
+					// print_all_caractere(buffer);
 					bufferTemp = "";
 				}
 				else
@@ -120,7 +120,12 @@ int Server::readFdClient(int &fd)
 				{
 					command = find_cmd_arg(buffer, "PASS");
 					if (command != _pass)
+					{
+						std::string cap_response = "464 ERR_PASSWDMISMATCH Wrong password\r\n";
+						send(fd, cap_response.c_str(), cap_response.length(), 0);
+						std::cout << "Erreur d'authentification : mot de passe invalide " << command << this->_pass << std::endl;
 						_fdStatus[fd] = 2;
+					}
 					else
 					{
 						this->_clientList[_fd_nick_list[fd]]->set_clientInfo(1);
@@ -166,7 +171,7 @@ int Server::readFdClient(int &fd)
 		else if (_fdStatus[fd] == 1)
 		{
 			nocommand = 0;
-			print_all_caractere(buffer);
+			// print_all_caractere(buffer);
 			if (buffer.find("PING ") != std::string::npos)
 			{
 				std::cout << "je rentre dans ping" << std::endl;
@@ -260,7 +265,7 @@ int Server::readFdClient(int &fd)
 				this->Cmds_invite(fd);
 				nocommand = 1;
 			}
-			if (buffer.find("QUIT ") != std::string::npos)
+			if (buffer.find("QUIT") != std::string::npos)
 			{
 				// deconnecter les channels
 				this->Cmds_quit(fd);

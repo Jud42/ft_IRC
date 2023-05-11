@@ -24,7 +24,7 @@ bool Server::isNewClient(int &client_fd, std::string buffer)
 		delete temp;
 		return (false);
 	}
-	if (_clientList.count(nick) > 0)
+	if (_clientList.count(nick) > 0 && nick != "#" )
 	{
 		if (temp->get_ip() != _clientList[temp->getNickname()]->get_ip() || temp->get_data() != _clientList[temp->getNickname()]->get_data())
 		{

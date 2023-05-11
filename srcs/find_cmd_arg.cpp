@@ -2,7 +2,7 @@
 #include <iostream>
 #include "define.hpp"
 #include "Server.hpp"
-void print_all_caractere(std::string buffer);
+
 
 
 

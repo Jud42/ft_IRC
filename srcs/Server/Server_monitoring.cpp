@@ -33,15 +33,16 @@ void Server::monitoring( void )
 				}
 				//data available on fd_clients
 				else if (it->fd != _listener) {
+					std::cout << "********CONNEXION******" << std::endl;
+					std::cout << it->fd << std::endl;
+					std::cout << "***********************" << std::endl;
 					std::cout << "fd != _listener:_fds fd: " << it->fd << " revents: " << it->revents << " POLLIN: " << POLLIN << " POLLHUP  " << POLLHUP << std::endl;
 					activity = this->readFdClient(it->fd);
 					if (activity != SUCCESS_LOG) {//recv()
 						this->logoutClient(it, activity);
 						break ;
 					}
-					std::cout << "********CONNEXION******" << std::endl;
-					this->printAddressIp(it->fd);
-					std::cout << "***********************" << std::endl;
+
 					continue ;
 				}
 
