@@ -35,10 +35,12 @@ A chat server implementing the IRC (Internet Relay Chat) protocol, developed in 
 -   C++ compiler
 -   client IRC: `irssi 1.2.3`
 
-==irssi installation==
+***irssi installation***
 **macOS**: `brew install irssi`
+
 **linux**: `sudo apt install irssi`
-**source code:** https://github.com/irssi/irssi.git
+
+**source code**: https://github.com/irssi/irssi.git
 
 ## Installation Steps:
 
