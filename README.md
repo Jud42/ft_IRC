@@ -32,7 +32,7 @@ A chat server implementing the IRC (Internet Relay Chat) protocol, developed in 
 
 ## Prerequisites:
 
--   C++ compiler
+-   C++ 98
 -   client IRC: `irssi 1.2.3`
 
 ==irssi installation==
@@ -45,7 +45,7 @@ A chat server implementing the IRC (Internet Relay Chat) protocol, developed in 
 1.  Clone the project repository: `git clone https://github.com/Jud42/ft_IRC.git`
 2.  Navigate to the project directory: `cd ft_IRC`
 3.  Compile the source code: `make`
-4.  Run the ft_IRC server: `./ircserv <port> <the connexion password>`
+4.  Run the ft_IRC server: `./ircserv <port> <password>`
 > password: The connection password. It will be needed by any IRC client that tries to connect to your server.
 
 ## connexion
